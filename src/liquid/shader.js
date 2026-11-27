@@ -35,6 +35,9 @@ uniform float uIri;        // iridescence amount
 uniform float uPresence;   // 0 = page background only, 1 = full liquid
 uniform float uFocus;      // where the pool lives horizontally (-1 left … 1 right)
 uniform float uTilt;       // perspective: 0 flat … 1.2 deep horizon
+uniform float uEnergy;     // soundtrack: overall level (0 when silent)
+uniform float uBass;       // soundtrack: low end
+uniform float uHigh;       // soundtrack: high end
 uniform vec3  uBg, uFloor, uSky, uBox, uKey, uHue;
 
 #define OCTAVES ${octaves}
@@ -99,7 +102,7 @@ float field(vec2 p) {
   vec2 r = vec2(fbm2(p + warp * q + vec2(1.7, 9.2) + 0.127 * t), fbm2(p + warp * q + vec2(8.3, 2.8) - 0.0961 * t));
   float h = fbm(p + warp * r + vec2(0.031 * t, -0.017 * t));
 
-  h += uPush * 0.5 * exp(-dm * 3.2);                     // the dome under the cursor
+  h += (uPush * 0.5 + uBass * 0.35) * exp(-dm * 3.2);    // the dome under the cursor (the bass deepens it)
   vec2 a = p - attractP;
   h += uAttract.z * 0.55 * exp(-dot(a, a) * 3.0);        // hovered element: the metal swells
 
@@ -163,12 +166,22 @@ void main() {
   // far layer: slow ribbons of light behind the pool — keeps the edges alive
   vec2 fp = (uv - 0.5) * vec2(aspect, 1.0) * 0.8;
   float ribbon = fbm2(fp * 1.3 + vec2(uTime * 0.021, -uTime * 0.013) + fbm2(fp * 0.7 - uTime * 0.011));
-  vec3 far = uBg + (mix(uBox, uHue, 0.5 + 0.5 * ribbon) - uBg) * smoothstep(0.15, 0.85, ribbon) * 0.16;
+  vec3 far = uBg + (mix(uBox, uHue, 0.5 + 0.5 * ribbon) - uBg) * smoothstep(0.15, 0.85, ribbon) * (0.16 + uEnergy * 0.12);
+
+  // star dust: sparse specks drifting slowly through the far layer; the music's highs make them twinkle
+  vec2 sp = gl_FragCoord.xy / uRes.y * 46.0 + vec2(uTime * 0.35, uTime * 0.12);
+  vec2 cell = floor(sp);
+  float rnd = hash(cell);
+  vec2 pos = vec2(hash(cell + 3.1), hash(cell + 7.7)) - 0.5;
+  float speck = step(0.972, rnd) * smoothstep(0.22, 0.0, length(fract(sp) - 0.5 - pos * 0.5));
+  float twinkle = 0.55 + 0.45 * sin(uTime * 3.0 + rnd * 60.0);
+  far += uKey * speck * twinkle * (0.12 + uHigh * 0.9 + uEnergy * 0.25);
 
   // where the pool lives on screen, fading into the far layer
   vec2 c = (uv - vec2(0.5 + uFocus * 0.28, 0.5)) * vec2(aspect, 1.0);
   float pool = smoothstep(1.4, 0.12, length(c));
-  col = mix(far, col, clamp(uPresence * pool, 0.0, 1.0));
+  col = mix(far, col, clamp((uPresence + uEnergy * 0.14) * pool, 0.0, 1.0));
+  col *= 1.0 + uEnergy * 0.1; // the light breathes with the music
 
   col += (hash(gl_FragCoord.xy + fract(uTime)) - 0.5) / 255.0;
   gl_FragColor = vec4(col, 1.0);

@@ -16,6 +16,7 @@
 
 import { VERTEX, fragment, RIPPLES } from "./shader.js";
 import { ATMOSPHERES } from "./atmospheres.js";
+import { sampleLevels } from "../audio/levels.js";
 
 const NUMERIC = ["presence", "warp", "iri", "speed", "focus", "tilt"];
 const COLORS = ["bg", "floor", "sky", "box", "key", "hue"];
@@ -75,7 +76,7 @@ export function createLiquid(canvas, { theme = "dark", section = "top", mobile =
   gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
 
   const U = {};
-  for (const name of ["uRes", "uTime", "uBreath", "uMouse", "uPush", "uSwirl", "uAttract", "uRip", "uScroll", "uWarp", "uIri", "uPresence", "uFocus", "uTilt", "uBg", "uFloor", "uSky", "uBox", "uKey", "uHue"]) {
+  for (const name of ["uEnergy", "uBass", "uHigh", "uRes", "uTime", "uBreath", "uMouse", "uPush", "uSwirl", "uAttract", "uRip", "uScroll", "uWarp", "uIri", "uPresence", "uFocus", "uTilt", "uBg", "uFloor", "uSky", "uBox", "uKey", "uHue"]) {
     U[name] = gl.getUniformLocation(program, name);
   }
 
@@ -97,6 +98,7 @@ export function createLiquid(canvas, { theme = "dark", section = "top", mobile =
   let flow = 11.3; // start mid-flow, not at the noise origin
   let clock = 0;
   let boost = 0; // easter egg: mercury mode
+  const music = { energy: 0, bass: 0, high: 0, lastBass: 0, lastDrop: 0 }; // smoothed soundtrack levels
 
   // loop state (declared before anything can request a frame)
   let raf = 0;
@@ -223,6 +225,19 @@ export function createLiquid(canvas, { theme = "dark", section = "top", mobile =
       if (ripples[j + 2] > 2.6) ripples[j + 3] = 0;
     }
 
+    // the soundtrack, when it plays: smoothed so the metal breathes rather than flickers
+    const lv = sampleLevels();
+    const on = lv.active && !gentle;
+    music.energy = approach(music.energy, on ? lv.energy : 0, 3, dt);
+    music.bass = approach(music.bass, on ? lv.bass : 0, 6, dt);
+    music.high = approach(music.high, on ? lv.high : 0, 5, dt);
+    // a strong low-end onset drops a soft ring under the light (at most every 1.4 s)
+    if (on && lv.bass - music.lastBass > 0.18 && clock - music.lastDrop > 1.4) {
+      drop(pointer.x, pointer.y, 0.03);
+      music.lastDrop = clock;
+    }
+    music.lastBass = on ? lv.bass : 0;
+
     scroll = approach(scroll, scrollTarget, 6, dt);
     glide(dt);
   }
@@ -242,6 +257,9 @@ export function createLiquid(canvas, { theme = "dark", section = "top", mobile =
     gl.uniform1f(U.uPresence, Math.min(1, current.presence + boost * 0.4));
     gl.uniform1f(U.uFocus, current.focus);
     gl.uniform1f(U.uTilt, current.tilt);
+    gl.uniform1f(U.uEnergy, music.energy);
+    gl.uniform1f(U.uBass, music.bass);
+    gl.uniform1f(U.uHigh, music.high);
     gl.uniform3fv(U.uBg, current.bg);
     gl.uniform3fv(U.uFloor, current.floor);
     gl.uniform3fv(U.uSky, current.sky);

@@ -16,6 +16,8 @@ import CommandPalette from "./components/CommandPalette";
 import Cursor from "./components/Cursor";
 import Toast from "./components/Toast";
 import LiquidBackground from "./components/LiquidBackground";
+import MusicPlayer from "./components/MusicPlayer";
+import { MusicProvider } from "./audio/MusicProvider";
 
 export default function App() {
   const { lang, dir, t } = usePrefs();
@@ -44,6 +46,7 @@ export default function App() {
 
   return (
     <UIProvider>
+      <MusicProvider>
       <LiquidBackground />
       <Header />
       <main id="main" ref={mainRef} tabIndex={-1} className="relative z-[1] outline-none">
@@ -57,9 +60,11 @@ export default function App() {
       <Footer />
       <Terminal />
       <CommandPalette />
+      <MusicPlayer />
       <Toast />
       <Cursor />
       <div className="grain" aria-hidden="true" />
+      </MusicProvider>
     </UIProvider>
   );
 }

@@ -12,13 +12,14 @@ import { SECTIONS } from "./ui";
 
 export const COMMANDS = [
   "help", "about", "whoami", "skills", "projects", "lab", "experience", "education",
-  "contact", "github", "social", "date", "clear", "lang", "theme", "goto", "open", "exit",
+  "contact", "github", "social", "date", "music", "clear", "lang", "theme", "goto", "open", "exit",
 ];
 
 const ARGS = {
   lang: ["en", "fr", "ar"],
   theme: ["dark", "light"],
   goto: SECTIONS,
+  music: ["on", "off"],
   open: projects.map((p) => p.id),
 };
 
@@ -260,6 +261,11 @@ export function run(raw, ctx) {
       }
       L.push(line(seg(t("term.goto.done", { section: t(`nav.${arg}`) }), "ok")));
       return { lines: L, goto: arg };
+    }
+
+    case "music": {
+      const want = arg === "on" || arg === "off" ? arg : "toggle";
+      return { lines: [], music: want };
     }
 
     case "clear": return { lines: [], clear: true };

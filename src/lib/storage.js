@@ -1,5 +1,5 @@
 // localStorage can throw (private mode, blocked storage) — never let it break the page.
-export const KEYS = { theme: "hk.theme", lang: "hk.lang" };
+export const KEYS = { theme: "hk.theme", lang: "hk.lang", music: "hk.music" };
 
 export function read(key) {
   try {

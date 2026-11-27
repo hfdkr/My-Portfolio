@@ -3,12 +3,14 @@ import { usePrefs, LANGS } from "../lib/preferences";
 import { useUI, scrollToSection, SECTIONS } from "../lib/ui";
 import { copyText } from "../lib/hooks";
 import { profile } from "../data/profile";
+import { useMusic } from "../audio/MusicProvider";
 
 const LANG_NAMES = { en: "English", fr: "Français", ar: "العربية" };
 
 export default function CommandPalette() {
   const { t, lang, setLang, toggleTheme, theme } = usePrefs();
   const { overlay, close, openTerminal } = useUI();
+  const { toggle: toggleMusic } = useMusic();
   const open = overlay === "palette";
   const [q, setQ] = useState("");
   const [active, setActive] = useState(0);
@@ -49,6 +51,7 @@ export default function CommandPalette() {
         run: () => setLang(l),
         keep: true,
       })),
+      { id: "music", group: t("pal.actions"), label: t("pal.music"), keywords: "music sound soundtrack audio musique son", icon: "♪", run: () => toggleMusic(), keep: true },
       {
         id: "copy",
         group: t("pal.actions"),
@@ -64,7 +67,7 @@ export default function CommandPalette() {
       { id: "linkedin", group: t("pal.links"), label: "LinkedIn", keywords: "linkedin cv", icon: "↗", href: profile.links.linkedin },
     ];
     return [...nav, ...actions, ...links];
-  }, [t, lang, theme, close, openTerminal, toggleTheme, setLang]);
+  }, [t, lang, theme, close, openTerminal, toggleTheme, setLang, toggleMusic]);
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();

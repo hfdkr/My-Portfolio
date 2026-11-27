@@ -4,6 +4,7 @@ import { useUI, scrollToSection } from "../lib/ui";
 import { usePrefersReducedMotion, LOCALES } from "../lib/hooks";
 import { run, complete } from "../lib/commands";
 import { emit, toast } from "../lib/events";
+import { useMusic } from "../audio/MusicProvider";
 
 const PROMPT_USER = "hafid@portfolio";
 // The terminal is always dark, whatever the site theme, so its colours are fixed.
@@ -38,6 +39,7 @@ export default function Terminal() {
   const prefs = usePrefs();
   const { t, lang } = prefs;
   const { overlay, close } = useUI();
+  const music = useMusic();
   const open = overlay === "terminal";
   const reduced = usePrefersReducedMotion();
 
@@ -133,6 +135,13 @@ export default function Terminal() {
     }
     if (res.after === "lang") pendingLang.current = true;
     print(res.lines);
+    if (res.music) {
+      // typed + Enter is a user gesture: the browser allows the sound to start
+      const on = res.music === "on" || (res.music === "toggle" && music.status !== "playing");
+      if (on) music.play();
+      else music.pause();
+      print([[{ t: t(on ? "term.music.on" : "term.music.off"), c: "ok" }]]);
+    }
     if (res.wave) {
       window.setTimeout(() => {
         close();
