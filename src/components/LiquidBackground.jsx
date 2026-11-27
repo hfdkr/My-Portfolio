@@ -41,7 +41,11 @@ export default function LiquidBackground() {
                 section: sectionRef.current,
                 mobile,
                 reduced,
-                onReady: () => !cancelled && setReady(true),
+                onReady: () => {
+                  if (cancelled) return;
+                  setReady(true);
+                  if (portalOpen.current) api.current?.setPortal(true);
+                },
                 onLost: () => !cancelled && setReady(false),
               });
             } catch {
@@ -86,6 +90,17 @@ export default function LiquidBackground() {
   }, []);
 
   useEffect(() => on("wave", () => api.current?.mercury()), []);
+
+  // The Sound Portal opens when the visitor turns the sound on (and stays open, dormant, when paused).
+  const portalOpen = useRef(false);
+  useEffect(
+    () =>
+      on("portal", (open) => {
+        portalOpen.current = open;
+        api.current?.setPortal(open);
+      }),
+    [],
+  );
 
   // Micro-interactions: the metal swells under what you point at, and the light leans toward it.
   // One delegated listener for the whole page; strength follows the element's importance.

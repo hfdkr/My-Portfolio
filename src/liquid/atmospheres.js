@@ -39,3 +39,16 @@ export const ATMOSPHERES = {
 };
 
 export const SECTION_ORDER = ["top", "resume", "about", "work", "skills", "experience", "contact"];
+
+// The Sound Portal's place and temperament in each section (theme-independent).
+// x, y: centre on screen (0..1, y up) — always on the side without text;
+// size: rim radius; energy: how strongly it answers the music; spin: how fast it turns.
+export const PORTAL = {
+  top: { x: 0.72, y: 0.56, size: 0.3, energy: 1, spin: 0.8 }, // mysterious, cinematic
+  resume: { x: 0.9, y: 0.6, size: 0.17, energy: 0.45, spin: 0.5 }, // out of the way: this is for reading
+  about: { x: 0.18, y: 0.5, size: 0.22, energy: 0.6, spin: 0.45 }, // calm, atmospheric
+  work: { x: 0.84, y: 0.5, size: 0.26, energy: 1.25, spin: 1.5 }, // stronger energy
+  skills: { x: 0.16, y: 0.55, size: 0.21, energy: 0.95, spin: 1 }, // subtle rhythmic motion
+  experience: { x: 0.88, y: 0.55, size: 0.19, energy: 0.6, spin: 0.6 },
+  contact: { x: 0.74, y: 0.55, size: 0.32, energy: 0.8, spin: 0.35 }, // peaceful, emotional
+};

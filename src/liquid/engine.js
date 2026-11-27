@@ -15,7 +15,7 @@
 ---------------------------------------------------------------------------- */
 
 import { VERTEX, fragment, RIPPLES } from "./shader.js";
-import { ATMOSPHERES } from "./atmospheres.js";
+import { ATMOSPHERES, PORTAL } from "./atmospheres.js";
 import { sampleLevels } from "../audio/levels.js";
 
 const NUMERIC = ["presence", "warp", "iri", "speed", "focus", "tilt"];
@@ -56,7 +56,7 @@ export function createLiquid(canvas, { theme = "dark", section = "top", mobile =
 
   const gentle = reduced; // reduced motion: slow drift, no ripples, no vortex
   const hp = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
-  let frag = fragment({ octaves: mobile ? 2 : 3, ripples: !gentle });
+  let frag = fragment({ octaves: mobile ? 2 : 3, ripples: !gentle, particles: mobile ? 24 : 40 });
   if (!hp || hp.precision === 0) frag = frag.replace("precision highp float;", "precision mediump float;");
 
   const program = gl.createProgram();
@@ -76,7 +76,7 @@ export function createLiquid(canvas, { theme = "dark", section = "top", mobile =
   gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
 
   const U = {};
-  for (const name of ["uEnergy", "uBass", "uHigh", "uRes", "uTime", "uBreath", "uMouse", "uPush", "uSwirl", "uAttract", "uRip", "uScroll", "uWarp", "uIri", "uPresence", "uFocus", "uTilt", "uBg", "uFloor", "uSky", "uBox", "uKey", "uHue"]) {
+  for (const name of ["uPortal", "uPortalLive", "uPortalGeo", "uPortalTime", "uAudio", "uEnergy", "uBass", "uHigh", "uRes", "uTime", "uBreath", "uMouse", "uPush", "uSwirl", "uAttract", "uRip", "uScroll", "uWarp", "uIri", "uPresence", "uFocus", "uTilt", "uBg", "uFloor", "uSky", "uBox", "uKey", "uHue"]) {
     U[name] = gl.getUniformLocation(program, name);
   }
 
@@ -99,6 +99,9 @@ export function createLiquid(canvas, { theme = "dark", section = "top", mobile =
   let clock = 0;
   let boost = 0; // easter egg: mercury mode
   const music = { energy: 0, bass: 0, high: 0, pulse: 0, lastDrop: 0 }; // smoothed soundtrack levels
+  // the Sound Portal: hidden until the visitor turns the sound on, then dormant or listening
+  const portal = { reveal: 0, target: 0, live: 0, time: 0, bass: 0, mid: 0, high: 0, ...PORTAL[sectionName] };
+  let portalGoal = { ...PORTAL[sectionName] };
 
   // loop state (declared before anything can request a frame)
   let raf = 0;
@@ -239,6 +242,17 @@ export function createLiquid(canvas, { theme = "dark", section = "top", mobile =
     }
     music.pulse = on ? lv.pulse : 0;
 
+    // the portal: grows open slowly on activation, glides between sections, listens while music plays
+    portal.reveal = approach(portal.reveal, portal.target, gentle ? 6 : 0.7, dt);
+    portal.live = approach(portal.live, on ? 1 : 0, on ? 0.8 : 1.5, dt);
+    for (const k of ["x", "y", "size", "energy", "spin"]) portal[k] = approach(portal[k], portalGoal[k], 1.1, dt);
+    const e = portal.energy;
+    portal.bass = approach(portal.bass, on ? Math.min(1, (lv.bass * 0.5 + lv.pulse * 0.5) * e) : 0, 7, dt);
+    portal.mid = approach(portal.mid, on ? Math.min(1, lv.mid * 1.2 * e) : 0, 4, dt);
+    portal.high = approach(portal.high, on ? Math.min(1, lv.high * 1.3 * e) : 0, 6, dt);
+    // its own clock: a slow idle drift, quicker when the music is full
+    portal.time += dt * (gentle ? 0.15 : portal.spin * (0.35 + 0.9 * portal.live * (0.4 + lv.energy)));
+
     scroll = approach(scroll, scrollTarget, 6, dt);
     glide(dt);
   }
@@ -258,6 +272,11 @@ export function createLiquid(canvas, { theme = "dark", section = "top", mobile =
     gl.uniform1f(U.uPresence, Math.min(1, current.presence + boost * 0.4));
     gl.uniform1f(U.uFocus, current.focus);
     gl.uniform1f(U.uTilt, current.tilt);
+    gl.uniform1f(U.uPortal, portal.reveal);
+    gl.uniform1f(U.uPortalLive, portal.live);
+    gl.uniform3f(U.uPortalGeo, portal.x, portal.y, portal.size);
+    gl.uniform1f(U.uPortalTime, portal.time);
+    gl.uniform3f(U.uAudio, portal.bass, portal.mid, portal.high);
     gl.uniform1f(U.uEnergy, music.energy);
     gl.uniform1f(U.uBass, music.bass);
     gl.uniform1f(U.uHigh, music.high);
@@ -333,6 +352,7 @@ export function createLiquid(canvas, { theme = "dark", section = "top", mobile =
       if (!ATMOSPHERES[themeName][name] || name === sectionName) return;
       sectionName = name;
       target = toState(ATMOSPHERES[themeName][name]);
+      if (PORTAL[name]) portalGoal = { ...PORTAL[name] };
     },
     setTheme(name) {
       if (!ATMOSPHERES[name]) return;
@@ -349,6 +369,10 @@ export function createLiquid(canvas, { theme = "dark", section = "top", mobile =
         attract.x = x;
         attract.y = y;
       }
+    },
+    /** The Sound Portal opens (first activation) — or closes, if ever needed. */
+    setPortal(open) {
+      portal.target = open ? 1 : 0;
     },
     /** Easter egg: everything turns iridescent and flows faster for a few seconds. */
     mercury() {
