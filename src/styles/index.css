@@ -1,60 +1,57 @@
 @import "tailwindcss";
 
-/* Self-hosted variable fonts (no third-party requests). */
-@import "@fontsource-variable/archivo/wdth.css";          /* display + UI, width axis 62–125 */
-@import "@fontsource-variable/jetbrains-mono/wght.css";   /* terminal + technical readouts */
-@import "@fontsource-variable/noto-sans-arabic/wdth.css"; /* Arabic text */
-@import "@fontsource-variable/noto-kufi-arabic/wght.css"; /* Arabic display */
+/* Self-hosted variable fonts — no third-party requests.
+   Latin files are small; the Arabic files only download when Arabic text is on screen (unicode-range). */
+@import "@fontsource-variable/fraunces/opsz.css";        /* display serif, optical size + weight */
+@import "@fontsource-variable/fraunces/wght-italic.css"; /* italic accents */
+@import "@fontsource-variable/geist/wght.css";           /* text + UI */
+@import "@fontsource-variable/geist-mono/wght.css";      /* labels, terminal, technical readouts */
+@import "@fontsource-variable/noto-sans-arabic/wght.css";/* Arabic text */
+@import "@fontsource-variable/noto-kufi-arabic/wght.css";/* Arabic display */
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 /* ------------------------------------------------------------------
-   Tokens
-   DARK  = midnight workspace: deep blue-black, metallic greys, three
-           controlled neons — Majorelle violet (identity), cyan (data
-           flowing), amber (things still being built / learned).
-   LIGHT = clean lab: cool neutral greys, white surfaces, soft shadows,
-           the same three hues, darkened for contrast.
+   Identity — "Zellige: built tile by tile"
+   NIGHT  = basalt workshop: warm near-black, bone-white type, one ember
+            accent (an Agadir sunset), one glaze green for "live" states.
+   DAY    = tadelakt plaster: warm off-white, deep ink, terracotta accent.
+   Every hue is warm on purpose — no violet, no cyan.
 ------------------------------------------------------------------- */
 :root {
-  --bg: #e9ebf1;
-  --bg-2: #f4f5f9;
-  --surface: rgb(255 255 255 / 0.78);
-  --surface-solid: #ffffff;
-  --ink: #10122a;
-  --muted: #545a78;
-  --line: rgb(16 18 42 / 0.12);
-  --line-strong: rgb(16 18 42 / 0.28);
-  --accent: #4a3dd0;
-  --accent-ink: #ffffff;
-  --accent-glow: rgb(74 61 208 / 0.22);
-  --cyan: #0a7c9c;
-  --amber: #8f5e00;
-  --amber-glow: rgb(214 150 20 / 0.22);
-  --pink: #b0306f;
-  --shadow: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 20px 50px -24px rgb(16 18 42 / 0.28);
-  --grid: rgb(16 18 42 / 0.06);
+  --bg: #f1ece3;
+  --bg-2: #e9e2d6;
+  --surface: #f8f4ed;
+  --ink: #1a1612;
+  --ink-2: #3b342c;
+  --muted: #6a6055;
+  --line: rgb(26 22 18 / 0.12);
+  --line-strong: rgb(26 22 18 / 0.3);
+  --accent: #b5401b;
+  --accent-ink: #fbf7f0;
+  --accent-soft: rgb(181 64 27 / 0.1);
+  --glaze: #0f7a63;
+  --chapter: var(--accent);
+  --scrim: 241 236 227;
+  --grain-opacity: 0.05;
   color-scheme: light;
 }
 
 [data-theme="dark"] {
-  --bg: #05061a;
-  --bg-2: #0b0d27;
-  --surface: rgb(17 20 48 / 0.72);
-  --surface-solid: #10132e;
-  --ink: #eef0ff;
-  --muted: #9ba1c9;
-  --line: rgb(190 196 255 / 0.12);
-  --line-strong: rgb(190 196 255 / 0.3);
-  --accent: #8b7dff;
-  --accent-ink: #07081c;
-  --accent-glow: rgb(139 125 255 / 0.35);
-  --cyan: #52e0ff;
-  --amber: #ffb547;
-  --amber-glow: rgb(255 181 71 / 0.28);
-  --pink: #ff7ac6;
-  --shadow: 0 1px 0 rgb(255 255 255 / 0.06) inset, 0 30px 60px -30px rgb(0 0 0 / 0.8);
-  --grid: rgb(190 196 255 / 0.05);
+  --bg: #0d0c0b;
+  --bg-2: #151311;
+  --surface: #1a1815;
+  --ink: #f2ece2;
+  --ink-2: #d4ccbf;
+  --muted: #a1978a;
+  --line: rgb(242 236 226 / 0.1);
+  --line-strong: rgb(242 236 226 / 0.26);
+  --accent: #ff7a45;
+  --accent-ink: #160b05;
+  --accent-soft: rgb(255 122 69 / 0.12);
+  --glaze: #45c9a6;
+  --scrim: 13 12 11;
+  --grain-opacity: 0.07;
   color-scheme: dark;
 }
 
@@ -62,22 +59,25 @@
   --color-bg: var(--bg);
   --color-bg-2: var(--bg-2);
   --color-surface: var(--surface);
-  --color-surface-solid: var(--surface-solid);
   --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
   --color-muted: var(--muted);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
-  --color-cyan: var(--cyan);
-  --color-amber: var(--amber);
+  --color-accent-soft: var(--accent-soft);
+  --color-glaze: var(--glaze);
+  --color-chapter: var(--chapter);
 
-  --font-sans: "Archivo Variable", "Noto Sans Arabic Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --font-arabic: "Noto Sans Arabic Variable", "Archivo Variable", ui-sans-serif, sans-serif;
+  --font-sans: "Geist Variable", "Noto Sans Arabic Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Fraunces Variable", "Noto Kufi Arabic Variable", ui-serif, Georgia, serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, "SFMono-Regular", Menlo, "Noto Sans Arabic Variable", monospace;
+  --font-arabic: "Noto Sans Arabic Variable", "Geist Variable", ui-sans-serif, sans-serif;
   --font-kufi: "Noto Kufi Arabic Variable", "Noto Sans Arabic Variable", sans-serif;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 @layer base {
@@ -86,8 +86,9 @@
     color: var(--ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    scroll-padding-top: 6rem;
+    scroll-padding-top: 5rem;
     overflow-x: clip;
   }
   html[lang="ar"] {
@@ -98,6 +99,7 @@
     font-size: 1.0625rem;
     line-height: 1.6;
     overflow-x: clip;
+    background: var(--bg);
   }
   ::selection {
     background: var(--accent);
@@ -106,7 +108,6 @@
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
-    border-radius: 4px;
   }
   img {
     display: block;
@@ -115,75 +116,95 @@
   button {
     cursor: pointer;
   }
+  dialog::backdrop {
+    background: rgb(8 7 6 / 0.6);
+  }
 }
 
-/* Theme switch: transition colours only while switching. */
+/* Theme switch: colours transition only while switching (never during normal interaction). */
 html.theme-transition,
-html.theme-transition * {
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
   transition:
-    background-color 450ms ease,
-    border-color 450ms ease,
-    color 450ms ease,
-    fill 450ms ease,
-    box-shadow 450ms ease !important;
+    background-color 600ms var(--ease-out-expo),
+    border-color 600ms var(--ease-out-expo),
+    color 600ms var(--ease-out-expo),
+    fill 600ms var(--ease-out-expo),
+    stroke 600ms var(--ease-out-expo) !important;
 }
 
 @layer components {
-  /* Display type: Archivo pushed to its widest — or Kufi in Arabic. */
+  /* Display serif. Fraunces' optical-size axis follows the font size automatically. */
   .display {
-    font-family: "Archivo Variable", var(--font-kufi);
-    font-stretch: 125%;
-    font-weight: 800;
-    letter-spacing: -0.02em;
+    font-family: var(--font-serif);
+    font-optical-sizing: auto;
+    font-weight: 340;
+    letter-spacing: -0.035em;
     line-height: 0.92;
+  }
+  .display em,
+  .serif-italic {
+    font-family: "Fraunces Variable", var(--font-kufi);
+    font-style: italic;
+    font-weight: 300;
   }
   html[lang="ar"] .display {
     font-family: var(--font-kufi);
+    font-weight: 600;
     letter-spacing: 0;
-    line-height: 1.25;
+    line-height: 1.3;
+  }
+  html[lang="ar"] .display em {
+    font-family: var(--font-kufi);
+    font-style: normal;
+    font-weight: 400;
+  }
+  .serif {
+    font-family: var(--font-serif);
+    font-optical-sizing: auto;
+  }
+  html[lang="ar"] .serif {
+    font-family: var(--font-kufi);
   }
   .mono {
     font-family: var(--font-mono);
   }
 
-  /* Spatial UI panel: a solid-ish surface with a hairline and a lit top edge. */
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(14px) saturate(1.2);
-    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  /* Small technical label. Uppercase tracking only for Latin scripts. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 450;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  html[lang="ar"] .eyebrow {
+    font-family: var(--font-arabic);
+    font-size: 0.82rem;
+    letter-spacing: 0;
+    text-transform: none;
   }
 
-  /* Corner ticks, like a HUD frame. */
-  .hud {
-    position: relative;
+  .gutter {
+    padding-inline: 1.25rem;
   }
-  .hud::before,
-  .hud::after {
-    content: "";
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    border-color: var(--accent);
-    pointer-events: none;
+  @media (min-width: 640px) {
+    .gutter {
+      padding-inline: 2rem;
+    }
   }
-  .hud::before {
-    top: -1px;
-    inset-inline-start: -1px;
-    border-top: 1.5px solid;
-    border-inline-start: 1.5px solid;
-  }
-  .hud::after {
-    bottom: -1px;
-    inset-inline-end: -1px;
-    border-bottom: 1.5px solid;
-    border-inline-end: 1.5px solid;
+  @media (min-width: 1024px) {
+    .gutter {
+      padding-inline: 3rem;
+    }
   }
 
+  /* Underline that draws from the reading direction. */
   .link-line {
     background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0% 1px;
-    transition: background-size 400ms var(--ease-out-expo);
+    transition: background-size 500ms var(--ease-out-expo);
   }
   [dir="rtl"] .link-line {
     background-position: 100% 100%;
@@ -193,17 +214,103 @@ html.theme-transition * {
     background-size: 100% 1px;
   }
 
+  /* Buttons — squared, editorial. The fill wipes in from the reading direction. */
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 3.25rem;
+    padding-inline: 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 560;
+    letter-spacing: -0.005em;
+    border: 1px solid var(--ink);
+    isolation: isolate;
+    overflow: hidden;
+    transition: color 500ms var(--ease-out-expo);
+  }
+  .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 600ms var(--ease-out-expo);
+  }
+  [dir="rtl"] .btn::before {
+    transform-origin: right;
+  }
+  .btn:hover::before,
+  .btn:focus-visible::before {
+    transform: scaleX(1);
+  }
+  .btn:hover,
+  .btn:focus-visible {
+    color: var(--bg);
+  }
+  .btn-solid {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .btn-solid::before {
+    background: var(--accent);
+  }
+  .btn-solid:hover,
+  .btn-solid:focus-visible {
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
+  .btn-sm {
+    min-height: 2.5rem;
+    padding-inline: 1rem;
+    font-size: 0.82rem;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.9rem;
+    padding-inline: 0.6rem;
+    border: 1px solid var(--line-strong);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-2);
+  }
+
+  .hairline {
+    height: 1px;
+    background: var(--line);
+  }
+
+  /* Text drawn as an outline — used for things still being learned. */
+  .outline-text {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--ink-2);
+  }
+
   .tnum {
     font-variant-numeric: tabular-nums;
   }
 
-  /* Soft grid floor used behind project previews. */
-  .grid-floor {
-    background-image:
-      linear-gradient(var(--grid) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-    background-size: 48px 48px;
+  /* Reveal masks for split lines. */
+  .line-mask {
+    overflow: clip;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
   }
+}
+
+/* Film grain: one static texture, no animation, no blend mode — almost free to composite. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
 /* Custom cursor: only when JS enabled it (fine pointer + hover devices). */
@@ -211,6 +318,9 @@ html.cursor-on,
 html.cursor-on a,
 html.cursor-on button,
 html.cursor-on [role="button"],
+html.cursor-on [role="radio"],
+html.cursor-on [role="option"],
+html.cursor-on label,
 html.cursor-on canvas {
   cursor: none;
 }
@@ -222,15 +332,15 @@ html.cursor-on textarea {
 @keyframes pulse-ring {
   0% {
     transform: scale(1);
-    opacity: 0.7;
+    opacity: 0.6;
   }
   100% {
-    transform: scale(2.6);
+    transform: scale(2.8);
     opacity: 0;
   }
 }
 .pulse-ring {
-  animation: pulse-ring 2.2s var(--ease-out-expo) infinite;
+  animation: pulse-ring 2.4s var(--ease-out-expo) infinite;
 }
 
 @keyframes caret {
@@ -239,13 +349,39 @@ html.cursor-on textarea {
   }
 }
 .caret {
-  animation: caret 1s steps(1) infinite;
+  animation: caret 1.05s steps(1) infinite;
 }
 
-@keyframes float-y {
-  50% {
-    transform: translateY(-10px);
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
   }
+  60%,
+  100% {
+    transform: translateY(300%);
+  }
+}
+.scroll-cue {
+  animation: scroll-cue 2.2s var(--ease-in-out-quart) infinite;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.rise-in {
+  animation: rise-in 600ms var(--ease-out-expo) both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+.fade-in {
+  animation: fade-in 400ms ease-out both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -259,31 +395,155 @@ html.cursor-on textarea {
   }
 }
 
-/* Overlay entrances */
-@keyframes term-in {
-  from {
-    opacity: 0;
-    transform: translateY(24px) scale(0.97);
+/* Each project carries its own colour (taken from its real UI). Light theme uses the darker variant. */
+.chapter {
+  --pc: var(--c-l, var(--accent));
+}
+[data-theme="dark"] .chapter {
+  --pc: var(--c, var(--accent));
+}
+
+/* ------------------------------------------------------------------
+   Interactive typography (components/InteractiveText.jsx)
+   One language everywhere: the letter under the pointer rises, grows a
+   little and takes the accent; its two neighbours follow at a third of
+   the strength. Fast in (≈45% of the duration), slow out — the release is
+   what makes it feel expensive. Transform/colour only: GPU-composited.
+------------------------------------------------------------------- */
+.it {
+  --it-color: var(--accent);
+  --it-color-em: var(--ink);
+  --it-lift: -0.07em;
+  --it-scale: 1.05;
+  --it-dur: 750ms;
+}
+.it-w {
+  display: inline-block;
+  white-space: nowrap;
+}
+.it-w-break {
+  display: inline;
+  white-space: normal;
+}
+.it-c {
+  display: inline-block;
+}
+.it-g {
+  display: inline-block;
+  transform-origin: 50% 85%;
+  transition:
+    transform var(--it-dur) var(--ease-out-expo),
+    color calc(var(--it-dur) * 0.8) ease,
+    text-shadow var(--it-dur) ease,
+    -webkit-text-stroke-color var(--it-dur) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .it-c:hover > .it-g {
+    transform: translateY(var(--it-lift)) scale(var(--it-scale));
+    color: var(--it-color);
+    transition-duration: calc(var(--it-dur) * 0.45);
+  }
+  .it em .it-c:hover > .it-g {
+    color: var(--it-color-em);
+  }
+  .it-c:hover + .it-c > .it-g,
+  .it-c:has(+ .it-c:hover) > .it-g {
+    transform: translateY(calc(var(--it-lift) * 0.35)) scale(calc(1 + (var(--it-scale) - 1) * 0.35));
+    transition-duration: calc(var(--it-dur) * 0.6);
+  }
+  /* a soft glow, at night only */
+  [data-theme="dark"] .it[data-variant="title"] .it-c:hover > .it-g,
+  [data-theme="dark"] .it[data-variant="footer"] .it-c:hover > .it-g {
+    text-shadow: 0 0 0.4em color-mix(in srgb, var(--it-color) 35%, transparent);
   }
 }
-.term-in {
-  animation: term-in 420ms var(--ease-out-expo);
-}
-@keyframes pal-in {
-  from {
-    opacity: 0;
-    transform: translateY(-10px) scale(0.98);
+
+/* Touch: a tap gives the same answer for a moment. */
+@media (hover: none) {
+  .it-c:active > .it-g {
+    transform: translateY(var(--it-lift)) scale(var(--it-scale));
+    color: var(--it-color);
+    transition-duration: 120ms;
   }
 }
-.pal-in {
-  animation: pal-in 300ms var(--ease-out-expo);
+
+/* Keyboard: a focused link or button sends a small wave through its letters. */
+a:focus-visible .it-g,
+button:focus-visible .it-g {
+  transform: translateY(calc(var(--it-lift) * 0.6));
+  color: var(--it-color);
+  transition-delay: calc(var(--i, 0) * 18ms);
 }
-@keyframes skill-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+
+/* Variants */
+.it[data-variant="nav"] {
+  --it-lift: -0.24em;
+  --it-scale: 1.12;
+  --it-dur: 550ms;
+}
+.it[data-variant="skill"] {
+  --it-lift: -0.1em;
+  --it-scale: 1.08;
+}
+.it[data-variant="word"] {
+  --it-lift: -0.12em;
+  --it-scale: 1.06;
+  --it-dur: 600ms;
+}
+.it[data-variant="cta"] {
+  --it-color: currentColor;
+  --it-lift: -0.28em;
+  --it-scale: 1.08;
+  --it-dur: 500ms;
+}
+.it[data-variant="footer"] {
+  --it-lift: -0.035em;
+  --it-scale: 1.015;
+  --it-dur: 1400ms;
+}
+/* Outlined (learning) names fill in, letter by letter. */
+.outline-text .it-c:hover > .it-g,
+.outline-text .it-c:active > .it-g {
+  -webkit-text-stroke-color: transparent;
+}
+
+/* Hero name: driven by a pointer field (lib/motion.js → useLetterField), not :hover.
+   --f (0…1) is each letter's closeness to the pointer. Weight rides Fraunces' variable axis. */
+.it[data-variant="hero"] {
+  --it-lift: -0.06em;
+  --it-scale: 1.035;
+  --w0: 340;
+  --w1: 560;
+}
+.it[data-variant="hero"] em {
+  --w0: 290;
+  --w1: 470;
+  --it-color: var(--ink);
+}
+html[lang="ar"] .it[data-variant="hero"],
+html[lang="ar"] .it[data-variant="hero"] em {
+  --w0: 600;
+  --w1: 800;
+}
+.it.it[data-variant="hero"] .it-c > .it-g {
+  transition: none;
+  transform: translate(calc(var(--dx, 0) * 1px), calc(var(--f, 0) * var(--it-lift))) scale(calc(1 + var(--f, 0) * (var(--it-scale) - 1)));
+  font-variation-settings: "wght" calc(var(--w0) + var(--f, 0) * (var(--w1) - var(--w0)));
+  color: color-mix(in oklab, currentColor, var(--it-color) calc(var(--f, 0) * 100%));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .it-g,
+  .it[data-variant="hero"] .it-g {
+    transform: none !important;
   }
 }
-.skill-in {
-  animation: skill-in 450ms var(--ease-out-expo);
+/* Kufi is taller than Fraunces: give the Arabic name room to breathe (and to swell on hover). */
+html[lang="ar"] .hero-name .line-mask {
+  line-height: 1.12;
+}
+html[lang="ar"] .it[data-variant="hero"],
+html[lang="ar"] .it[data-variant="hero"] em {
+  --w1: 760;
 }

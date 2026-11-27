@@ -7,10 +7,11 @@ import { projects } from "../data/projects";
 import { experience } from "../data/experience";
 import { skills, skillGroups } from "../data/skills";
 import { journey } from "../data/journey";
+import { lab } from "../data/lab";
 import { SECTIONS } from "./ui";
 
 export const COMMANDS = [
-  "help", "about", "whoami", "skills", "projects", "experience", "education",
+  "help", "about", "whoami", "skills", "projects", "lab", "experience", "education",
   "contact", "github", "social", "date", "clear", "lang", "theme", "goto", "open", "exit",
 ];
 
@@ -58,6 +59,8 @@ export function run(raw, ctx) {
     case "help": {
       L.push(line(seg(t("term.help.title"), "title")));
       for (const c of COMMANDS) L.push(line(seg(c.padEnd(12), "accent"), seg(t(`term.help.${c}`), "dim")));
+      L.push(blank());
+      L.push(line(seg(t("term.help.secret"), "dim")));
       break;
     }
 
@@ -127,6 +130,55 @@ export function run(raw, ctx) {
       L.push(line(seg(`${t("work.stack")}: `, "dim"), p.stack.join(", ")));
       L.push(line(seg("code  ", "dim"), seg(p.repo, "accent", p.repo)));
       if (p.live) L.push(line(seg("live  ", "dim"), seg(p.live, "accent", p.live)));
+      break;
+    }
+
+    case "lab": {
+      lab.forEach((a, i) => {
+        if (i) L.push(blank());
+        L.push(line(seg(pick(a.name), "title"), seg(`  ${pick(a.kind)}, ${a.year}`, "dim")));
+        L.push(line(pick(a.summary)));
+        for (const [method, path, codes] of a.routes) L.push(line(seg(method.padEnd(7), "warn"), path.padEnd(18), seg(codes, "dim")));
+        L.push(line(seg("code  ", "dim"), seg(a.repo.replace("https://", ""), "accent", a.repo)));
+      });
+      break;
+    }
+
+    // ---- not listed in help: small rewards for the curious ----
+    case "sudo": {
+      L.push(line(seg(t("term.sudo"), "warn")));
+      break;
+    }
+    case "coffee": {
+      L.push(line(seg("   ( (", "dim")));
+      L.push(line(seg("    ) )", "dim")));
+      L.push(line(seg("  ........", "accent")));
+      L.push(line(seg("  |      |]", "accent")));
+      L.push(line(seg("  \      /", "accent")));
+      L.push(line(seg("   `----'", "accent")));
+      L.push(line(t("term.coffee")));
+      break;
+    }
+    case "zellige":
+    case "maalem": {
+      L.push(line(seg(t("term.zellige"), "ok")));
+      return { lines: L, wave: true };
+    }
+    case "hire": {
+      L.push(line(seg(t("term.hire"), "ok")));
+      return { lines: L, goto: "contact" };
+    }
+    case "rm": {
+      L.push(line(seg(t("term.rm"), "err")));
+      break;
+    }
+    case "ls": {
+      L.push(line(seg("about.md  work/  lab/  toolbox.json  journey.log  contact.txt  ", "accent"), seg(".secrets", "dim")));
+      break;
+    }
+    case "cat": {
+      if (arg === ".secrets") L.push(line(seg("↑ ↑ ↓ ↓ ← → ← → B A", "warn")));
+      else L.push(line(seg(t("term.usage", { usage: "cat .secrets" }), "dim")));
       break;
     }
 

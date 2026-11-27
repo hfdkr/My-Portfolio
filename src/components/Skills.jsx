@@ -1,149 +1,123 @@
-import { Suspense, lazy, useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { usePrefs } from "../lib/preferences";
-import { useIsMobile, useNearViewport, usePrefersReducedMotion, hasWebGL } from "../lib/hooks";
-import { skillGroups as rawGroups, skills } from "../data/skills";
-import SectionTitle from "./SectionTitle";
+import { usePrefersReducedMotion, useFinePointer } from "../lib/hooks";
+import { useReveals } from "../lib/motion";
+import { skills, skillGroups } from "../data/skills";
+import { focus } from "../data/journey";
+import { SectionHead, Star } from "./Primitives";
+import InteractiveText from "./InteractiveText";
 
-const SkillsScene = lazy(() => import("../three/SkillsScene"));
-
-function Marker({ status, color }) {
-  return status === "practice" ? (
-    <span className="inline-block h-2.5 w-2.5 shrink-0 rounded-full shadow-[0_0_10px_currentColor]" style={{ background: color, color }} aria-hidden="true" />
-  ) : (
-    <span className="inline-block h-2.5 w-2.5 shrink-0 rounded-full border-2 border-amber" aria-hidden="true" />
-  );
-}
-
-function Detail({ skill, skillGroups }) {
+function Detail({ skill, className = "" }) {
   const { t, pick } = usePrefs();
-  if (!skill) {
-    return <p className="text-sm text-muted">{t("skills.pick")}</p>;
-  }
-  const g = skillGroups.find((x) => x.id === skill.group);
-  const where = skill.where.map((w) => pick(w)).join(", ");
+  if (!skill) return null;
+  const learning = skill.status === "learning";
   return (
-    <div key={skill.id} className="skill-in">
-      <p className="mono text-xs" style={{ color: g.color }}>
-        {pick(g.title)}
+    <div key={skill.id} className={`fade-in border border-line bg-surface p-6 ${className}`} aria-live="polite">
+      <p className="mono flex items-center gap-2 text-[11px] text-muted">
+        <span className={`inline-block h-2 w-2 ${learning ? "border border-accent" : "bg-ink"}`} aria-hidden="true" />
+        {learning ? t("skills.learning") : t("skills.practice")}
       </p>
-      <h3 className="display mt-2 text-[clamp(1.6rem,2.6vw,2.2rem)]" dir="auto">
-        {pick(skill.name)}
-      </h3>
-      <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 text-xs font-semibold">
-        <Marker status={skill.status} color={g.color} />
-        {skill.status === "practice" ? t("skills.practice") : t("skills.learning")}
-      </p>
-      <p className="mt-4 leading-relaxed">{pick(skill.desc)}</p>
-      <p className="mt-4 text-sm">
-        <span className="text-muted">{t("skills.where")}: </span>
-        {where || <span className="text-muted">{t("skills.none")}</span>}
-      </p>
+      <p className="serif mt-4 text-[2rem] leading-none tracking-tight">{pick(skill.name)}</p>
+      <p className="mt-4 leading-relaxed text-ink-2">{pick(skill.desc)}</p>
+      <p className="eyebrow mt-6">{t("skills.where")}</p>
+      {skill.where.length ? (
+        <ul className="mt-2 flex flex-wrap gap-1.5">
+          {skill.where.map((w) => (
+            <li key={pick(w)} className="chip">
+              {pick(w)}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-2 text-sm text-muted">{t("skills.none")}</p>
+      )}
     </div>
   );
 }
 
 export default function Skills() {
-  const { t, pick, theme } = usePrefs();
-  const mobile = useIsMobile();
+  const { t, pick, lang } = usePrefs();
   const reduced = usePrefersReducedMotion();
-  const webgl = hasWebGL();
-  const stageRef = useRef(null);
-  const near = useNearViewport(stageRef, "150px");
-  const [selected, setSelected] = useState(null);
-  const [hovered, setHovered] = useState(null);
-  const [filter, setFilter] = useState(null);
-  const show3D = webgl && !mobile;
-  // Neon group colours on dark; deeper versions on the light theme (contrast).
-  const skillGroups = useMemo(() => rawGroups.map((g) => ({ ...g, color: theme === "dark" ? g.color : g.colorLight })), [theme]);
+  const fine = useFinePointer();
+  const root = useRef(null);
+  const [selected, setSelected] = useState("tailwind");
+  useReveals(root, { reduced, deps: [lang] });
 
-  const activeId = hovered || selected;
-  const active = skills.find((s) => s.id === activeId);
-  const visible = filter ? skills.filter((s) => s.group === filter) : skills;
-
-  const chip = (id, label, color) => (
-    <button
-      key={id ?? "all"}
-      type="button"
-      aria-pressed={filter === id}
-      onClick={() => setFilter(id)}
-      className={`min-h-9 rounded-full border px-3 text-xs font-semibold transition-colors ${
-        filter === id ? "border-transparent bg-ink text-bg" : "border-line text-muted hover:text-ink"
-      }`}
-    >
-      {color && <span className="me-1.5 inline-block h-2 w-2 rounded-full align-middle" style={{ background: color }} aria-hidden="true" />}
-      {label}
-    </button>
-  );
+  const current = skills.find((s) => s.id === selected);
 
   return (
-    <section id="skills" aria-labelledby="skills-title" className="relative overflow-x-clip py-24 md:py-32">
-      <SectionTitle id="skills-title" title={t("skills.title")} intro={t("skills.intro")} />
+    <section id="skills" ref={root} aria-labelledby="skills-title" className="relative border-t border-line py-28 md:py-40">
+      <SectionHead id="skills-title" eyebrow={t("skills.eyebrow")} title={t("skills.title")} intro={t("skills.intro")}>
+        <p className="mono mt-6 flex flex-wrap gap-x-6 gap-y-2 text-[11px] text-muted" data-reveal>
+          <span className="flex items-center gap-2">
+            <span className="inline-block h-2 w-2 bg-ink" aria-hidden="true" /> {t("skills.practice")}
+          </span>
+          <span className="flex items-center gap-2">
+            <span className="inline-block h-2 w-2 border border-accent" aria-hidden="true" /> {t("skills.learning")}
+          </span>
+        </p>
+      </SectionHead>
 
-      <div className="mx-auto grid max-w-[1440px] gap-6 px-5 sm:px-8 lg:grid-cols-12">
-        {show3D && (
-          <div ref={stageRef} className="panel hud relative h-[72vh] min-h-[520px] overflow-hidden rounded-3xl lg:col-span-8" data-cursor="drag">
-            <div className="pointer-events-none absolute inset-0 opacity-70" style={{ background: "radial-gradient(50% 50% at 50% 50%, var(--accent-glow), transparent 70%)" }} aria-hidden="true" />
-            <Suspense fallback={null}>
-              <SkillsScene
-                groups={skillGroups}
-                skills={skills}
-                activeId={activeId}
-                filter={filter}
-                onHover={setHovered}
-                onSelect={setSelected}
-                pick={pick}
-                theme={theme}
-                active={near}
-                reduced={reduced}
-                label={t("skills.intro")}
-              />
-            </Suspense>
-            <p className="mono pointer-events-none absolute bottom-4 start-5 flex gap-5 text-xs text-muted">
-              <span className="inline-flex items-center gap-2">
-                <Marker status="practice" color="var(--accent)" /> {t("skills.practice")}
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <Marker status="learning" /> {t("skills.learning")}
-              </span>
-            </p>
-          </div>
-        )}
+      <div className="gutter mx-auto mt-16 grid max-w-[1440px] gap-y-10 lg:grid-cols-12 lg:gap-x-8">
+        <div className="lg:col-span-8">
+          {skillGroups.map((g) => {
+            const items = skills.filter((s) => s.group === g.id);
+            return (
+              <div key={g.id} className="grid gap-y-3 border-t border-line py-6 md:grid-cols-[12rem_1fr] md:gap-x-6" data-reveal>
+                <h3 className="eyebrow flex items-baseline justify-between gap-2 pt-2 md:block">
+                  <span className="text-ink-2">{pick(g.title)}</span>
+                  <span className="mono block text-[10px] md:mt-1">{t("skills.count", { n: items.length })}</span>
+                </h3>
+                <div>
+                  <ul className="flex flex-wrap items-baseline gap-x-5 gap-y-1">
+                    {items.map((s) => {
+                      const on = s.id === selected;
+                      const learning = s.status === "learning";
+                      return (
+                        <li key={s.id}>
+                          <button
+                            type="button"
+                            aria-pressed={on}
+                            onClick={() => setSelected(s.id)}
+                            onPointerEnter={fine ? () => setSelected(s.id) : undefined}
+                            className="group relative py-1 text-start"
+                          >
+                            <InteractiveText
+                              text={pick(s.name)}
+                              variant="skill"
+                              color={on ? "var(--ink)" : undefined}
+                              className={`serif text-[clamp(1.6rem,3vw,2.6rem)] leading-[1.15] tracking-tight transition-colors duration-300 ${
+                                learning ? (on ? "text-accent [-webkit-text-stroke:0]" : "outline-text") : on ? "text-accent" : "text-ink"
+                              }`}
+                            />
+                            {learning && <sup className="mono ms-1 align-super text-[9px] text-accent">{t("skills.learning")}</sup>}
+                            <span className={`absolute inset-x-0 bottom-0 h-px origin-left bg-accent transition-transform duration-500 rtl:origin-right ${on ? "scale-x-100" : "scale-x-0"}`} aria-hidden="true" />
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  {/* On small screens the detail opens right under its group. */}
+                  {current?.group === g.id && <Detail skill={current} className="mt-5 lg:hidden" />}
+                </div>
+              </div>
+            );
+          })}
+        </div>
 
-        <aside className={`flex flex-col gap-5 ${show3D ? "lg:col-span-4" : "lg:col-span-12"}`}>
-          <div className="panel rounded-3xl p-6" aria-live="polite">
-            <Detail skill={active} skillGroups={skillGroups} />
-          </div>
-
-          <div className="panel rounded-3xl p-5">
-            <div className="flex flex-wrap gap-1.5" role="group" aria-label={t("skills.list")}>
-              {chip(null, t("skills.list"))}
-              {skillGroups.map((g) => chip(g.id, pick(g.title), g.color))}
+        <aside className="hidden lg:col-span-4 lg:block">
+          <div className="sticky top-24 space-y-6">
+            <Detail skill={current} />
+            <div className="border border-dashed border-line-strong p-6">
+              <p className="eyebrow flex items-center gap-2">
+                <Star size={11} className="text-accent" /> {t("journey.focus")}
+              </p>
+              <ul className="mt-4 space-y-2 text-[0.95rem] text-ink-2">
+                {focus.map((f) => (
+                  <li key={f.en}>— {pick(f)}</li>
+                ))}
+              </ul>
             </div>
-            <ul className={`mt-4 grid gap-1 ${show3D ? "" : "sm:grid-cols-2 lg:grid-cols-3"}`}>
-              {visible.map((s) => {
-                const g = skillGroups.find((x) => x.id === s.group);
-                return (
-                  <li key={s.id}>
-                    <button
-                      type="button"
-                      aria-pressed={selected === s.id}
-                      onClick={() => setSelected(selected === s.id ? null : s.id)}
-                      onMouseEnter={() => setHovered(s.id)}
-                      onMouseLeave={() => setHovered(null)}
-                      onFocus={() => setHovered(s.id)}
-                      onBlur={() => setHovered(null)}
-                      className={`flex min-h-10 w-full items-center gap-3 rounded-xl px-3 text-start text-sm transition-colors ${
-                        activeId === s.id ? "bg-[var(--accent-glow)]" : "hover:bg-[var(--accent-glow)]"
-                      }`}
-                    >
-                      <Marker status={s.status} color={g.color} />
-                      <span className="flex-1 font-medium">{pick(s.name)}</span>
-                      <span className={`text-xs ${activeId === s.id ? "text-ink" : "text-muted"}`}>{s.status === "practice" ? t("skills.practice") : t("skills.learning")}</span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
           </div>
         </aside>
       </div>

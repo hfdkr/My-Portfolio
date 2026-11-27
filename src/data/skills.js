@@ -61,6 +61,14 @@ export const skills = [
       ar: "واجهات بالإنجليزية والفرنسية والعربية، مع تخطيط كامل من اليمين إلى اليسار.",
     },
   },
+  {
+    id: "react", group: "frontend", name: "React", status: "learning", where: [], links: ["js"],
+    desc: {
+      en: "Components, props and state — the next step after vanilla JavaScript, learning it now.",
+      fr: "Composants, props et état — l’étape après le JavaScript natif, en cours d’apprentissage.",
+      ar: "المكوّنات والخصائص والحالة — الخطوة التالية بعد JavaScript الخالص، أتعلّمها الآن.",
+    },
+  },
   // Back-end
   {
     id: "node", group: "backend", name: "Node.js", status: "learning", where: ["Task Flow", "Code Arena"], links: ["express"],
@@ -71,7 +79,7 @@ export const skills = [
     },
   },
   {
-    id: "express", group: "backend", name: "Express.js", status: "learning", where: ["Task Flow", "Code Arena"], links: ["rest", "auth"],
+    id: "express", group: "backend", name: "Express.js", status: "learning", where: ["Task Flow", "Code Arena", "API ParcAuto"], links: ["rest", "auth"],
     desc: {
       en: "Routes, middleware and error handling, split into files that stay readable.",
       fr: "Routes, middlewares et gestion des erreurs, découpés en fichiers qui restent lisibles.",
@@ -79,7 +87,7 @@ export const skills = [
     },
   },
   {
-    id: "rest", group: "backend", name: { en: "REST APIs", fr: "API REST", ar: "واجهات REST" }, status: "learning", where: ["Task Flow", "Code Arena"], links: ["sql"],
+    id: "rest", group: "backend", name: { en: "REST APIs", fr: "API REST", ar: "واجهات REST" }, status: "learning", where: ["Task Flow", "Code Arena", "API ParcAuto"], links: ["sql"],
     desc: {
       en: "CRUD endpoints consumed by a vanilla front-end: resources, status codes, validation.",
       fr: "Endpoints CRUD consommés par un front-end natif : ressources, codes de statut, validation.",
@@ -159,6 +167,14 @@ export const skills = [
       en: "Deploying static sites and serverless Express apps.",
       fr: "Déploiement de sites statiques et d’applications Express serverless.",
       ar: "نشر المواقع الثابتة وتطبيقات Express السحابية.",
+    },
+  },
+  {
+    id: "postman", group: "tools", name: "Postman", status: "practice", where: ["API ParcAuto"], links: ["rest"],
+    desc: {
+      en: "Testing every route of my APIs — status codes, bodies and error cases.",
+      fr: "Tester chaque route de mes API — codes de statut, corps de réponse et cas d’erreur.",
+      ar: "اختبار كل مسارات واجهاتي البرمجية: رموز الحالة، ومحتوى الردود، وحالات الخطأ.",
     },
   },
   {

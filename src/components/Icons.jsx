@@ -25,12 +25,6 @@ export const MoonIcon = (p) => (
   </svg>
 );
 
-export const MenuIcon = (p) => (
-  <svg {...base} {...p}>
-    <path d="M4 8h16M4 16h16" />
-  </svg>
-);
-
 export const CloseIcon = (p) => (
   <svg {...base} {...p}>
     <path d="M6 6l12 12M18 6 6 18" />

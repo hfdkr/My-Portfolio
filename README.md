@@ -1,67 +1,77 @@
-# Hafid Karkouch — Portfolio (v2, immersive 3D)
+# Hafid Karkouch — Portfolio (v3, "Zellige")
 
-An interactive digital workspace: a real-time 3D scene, a working terminal, a command menu,
-a 3D skills universe and a scroll-driven timeline — in English, French and Arabic (full RTL),
-with designed dark and light themes.
+A cinematic, fast personal site in English, French and Arabic (full RTL), with designed night and day themes.
 
-## The concept: the full-stack core
+## The concept: built tile by tile
 
-The central 3D object is a stack of three layers. Each one is made of a different material
-because each one is at a different stage of my learning — the object tells the honest story:
+Zellige craftsmen in Morocco cut every tile by hand and set it piece by piece; the mosaic only works when
+every piece is precise. That is how I want to build software — and it is the visual identity of the site.
 
-| Layer | Material | Meaning |
-|---|---|---|
-| Interface | iridescent glass with glowing UI blocks inside | front-end: what I practise every day |
-| Logic | brushed metal with live cyan circuits | back-end: taking shape in team projects |
-| Data | amber wireframe, voxels being laid in on a loop | databases: being built this year |
+- **Hero** — a floor of glazed eight-point stars (khatam). A warm light follows the pointer; tiles lift and tilt
+  away from it, and the light rises through the cross-shaped gaps: the code under the surface.
+  Scrolling away peels the nearest rows off. Night = basalt glaze and ember light; day = tadelakt plaster.
+- **Palette** — warm only: basalt / bone white / ember (an Agadir sunset) at night, plaster / ink / terracotta by day,
+  plus one glaze green for "live" states. Each project keeps its own colour, taken from its real UI.
+- **Type** — Fraunces (display serif, optical size + weight axes), Geist (text), Geist Mono (labels),
+  Noto Kufi Arabic / Noto Sans Arabic for Arabic.
 
-A cyan beam carries data packets through the layers. Scrolling into **About** pulls the stack
-apart and highlights each layer as its story appears. The object, the camera and a light follow
-the pointer.
+## Sections
 
-Colours: Majorelle violet (identity), cyan (data flowing), amber (things still being built).
+Hero · About (scroll-lit manifesto, facts, "How I work") · Selected work (three chapters: problem → what I did →
+what it taught me, framed previews, full-screen case studies) · From the lab (course REST APIs with their real routes)
+· Toolbox (solid = in practice, outlined = learning) · Journey (education, internship, what's next) · Contact.
 
-## Features
+## Interactive typography
 
-- **3D hero + About** — React Three Fiber scene, sticky behind the text, choreographed with GSAP ScrollTrigger.
-- **Terminal** — real command parser, animated output, history (↑ ↓), Tab completion, Ctrl L, Esc.
-  Commands: `help about whoami skills projects experience education contact github social date clear`
-  + `lang en|fr|ar`, `theme dark|light`, `goto <section>`, `open <project>`, `exit`.
-  Command names are English everywhere; their output follows the site language.
-  Open it with the **Terminal** button, the floating **>_** button, **Ctrl + `** or from the command menu.
-- **Command menu** — **Ctrl K** (⌘K on Mac): search sections and actions (terminal, theme, language, copy email, links).
-- **Project showcase** — pinned, scroll-driven transitions between projects (wipe + text rise), 3D tilt previews,
-  screen switcher, full-details dialog. Each project has its own colour (from its real UI).
-- **Skills universe** — 3D constellation: core → five groups → technologies, dashed links between tools
-  that work together, pulses from the core. Hover/click or use the list. Solid node = in practice, amber ring = learning.
-- **Timeline** — the line fills as you scroll, nodes light up, cards swing in from their side.
-- **Contact** — pick a topic, the message is prepared, open it in your own mail app or copy it. No fake form.
-- **Status widget** — "Open to PFE internship — April 2027", clearly marked as set by hand.
-- **Context cursor** — grows on links, "View" on projects, "Drag" on 3D. Mouse/trackpad only.
+`src/components/InteractiveText.jsx` — letters react one at a time.
 
-## Performance and fallbacks
+```jsx
+<InteractiveText as="h2" variant="title" text="Three projects, *told honestly*." data-split />
+<Marked text="I {design} interfaces, {build} them…" />   // only {marked} words react
+```
 
-- Three.js code is **lazy-loaded** (separate chunks); the page is readable before it arrives.
-- A scene **stops rendering** when it is off screen (`frameloop="never"`).
-- **Adaptive quality**: `PerformanceMonitor` drops pixel ratio and the glass transmission pass on slow GPUs.
-- **Mobile** gets its own version: object placed above the name, 320 particles instead of 1 400,
-  no transmission/shadows, no floating shapes, the skills universe becomes an interactive list,
-  projects are stacked cards instead of a pinned stage.
-- **No WebGL** → a flat SVG drawing of the same stack, with all content intact.
-- **prefers-reduced-motion** → scenes render on demand (no idle animation), no pinned stage, no entrance animation.
-- Lighting, materials, fog and environment are different for dark and light themes.
+- Hover is **pure CSS** (`:hover`, `:has()` for the two neighbours) → no JavaScript and no React re-render per letter.
+- Each letter has two layers: `.it-c` (GSAP entrance) and `.it-g` (CSS hover), so they never fight over `transform`.
+- Variants: `hero` (pointer field: lift, colour and Fraunces weight follow the distance to the cursor — `useLetterField`),
+  `title`, `nav`, `skill`, `word`, `cta`, `footer` (the faded signature lights up letter by letter).
+- Props: `color`, `duration`, `lift`, `scale`, `stagger`, `breakable`, `as`, `variant`.
+- Arabic is never split into letters (it would break letter joining): each Arabic word reacts as one unit.
+- Screen readers get the plain text once (visual letters are `aria-hidden`); selection/copy gives clean text;
+  focused links/buttons send a wave through their letters; touch gets a tap response; reduced motion keeps colour only.
+
+## Other features
+
+- **Terminal** (`Ctrl + \``) — real parser, history, Tab completion: `help about whoami skills projects lab experience
+  education contact github social date clear lang theme goto open exit`. Some commands are not listed.
+- **Command menu** (`Ctrl K` / `⌘K`) — sections, theme, language, copy email, links.
+- **Context cursor** — "View", "Open", "Copy", "Write" on the right targets (mouse only).
+- **Secrets** — try the Konami code, five quick clicks on the star logo, or the browser console.
+
+## Performance (measured on the production build)
+
+| Scenario | LCP | CLS | Long tasks while scrolling |
+|---|---|---|---|
+| Desktop, no WebGL (fallback) | 0.42 s | 0.000 | 0 |
+| Desktop, CPU-rendered WebGL (worst case) | 0.78 s | 0.001 | 1 |
+| Mobile, 4× CPU throttle | 1.95 s | 0.000 | 1 (52 ms) |
+
+How:
+- **One WebGL canvas**, plain three.js (no React renderer): every tile is a single `InstancedMesh` = one draw call.
+  All motion runs in the vertex shader from a few uniforms — the CPU updates ~8 numbers per frame.
+- The 3D chunk is **lazy-loaded after the page is idle**; the name is the LCP. A flat SVG of the same motif shows first,
+  and stays as the experience without WebGL, on low-memory devices or with Data Saver.
+- Renders only while visible and the tab is active; drops its pixel ratio by itself if frames get slow;
+  renders on demand with `prefers-reduced-motion`; shaders compile in parallel where the driver allows.
+- No `backdrop-filter` over the canvas, no React state in scroll handlers, animation loops that stop when idle.
+- Self-hosted fonts, the three Latin files the hero needs are preloaded; Arabic fonts load only when Arabic shows.
 
 ## Stack
 
-React 19 · Vite 8 · Tailwind CSS 4 · three · @react-three/fiber 9 · @react-three/drei 10 · GSAP 3 (ScrollTrigger)
-· self-hosted fonts (Archivo variable, JetBrains Mono, Noto Sans Arabic, Noto Kufi Arabic).
-
-Not used on purpose: Framer Motion (GSAP already covers it), Lenis (native scroll stays accessible and fast),
-TypeScript (kept in JavaScript, like my other projects, to stay easy for me to maintain).
+React 19 · Vite 8 · Tailwind CSS 4 · three.js · GSAP 3 (ScrollTrigger, SplitText) · Fontsource.
 
 ## Run locally
 
-Requirements: Node.js 20.19+ or 22.12+.
+Requires Node.js 20.19+ or 22.12+.
 
 ```bash
 npm install
@@ -75,48 +85,24 @@ npm run preview   # serve the build
 ```
 src/
 ├── App.jsx
-├── data/                 ← everything you update (all text in en / fr / ar)
-│   ├── profile.js        name, email, links, facts, status
-│   ├── projects.js       projects (id = terminal name, color = project identity)
-│   ├── experience.js     internship
-│   ├── skills.js         groups + technologies (status, description, where, links)
-│   └── journey.js        timeline + current focus
-├── i18n/ui.js            interface text (incl. terminal and command menu)
-├── lib/
-│   ├── commands.js       terminal engine (parser, completion, outputs)
-│   ├── preferences.jsx   language + theme (saved, sets <html lang dir>)
-│   ├── ui.jsx            terminal / command menu state + shortcuts
-│   ├── store.js          pointer + scroll values shared with the 3D scenes
-│   ├── gsap.js, hooks.js, storage.js
-├── three/
-│   ├── StackScene.jsx    hero object, lights, particles, camera rig
-│   └── SkillsScene.jsx   skills universe
-└── components/           Header, Universe (hero + about), Work, Skills, Journey, Contact,
-                          Terminal, CommandPalette, Cursor, Floating, StackFallback, …
+├── data/            ← all content, in en / fr / ar (only describe what can be checked in the repos)
+│   ├── profile.js   projects.js   lab.js   experience.js   skills.js   journey.js
+├── i18n/ui.js       interface text; *italic* in titles, {interactive} words in paragraphs
+├── three/zellige.js the hero scene
+├── lib/             motion.js (reveals, magnetic, letter field) · commands.js (terminal) · preferences.jsx
+│                    ui.jsx · events.js · easter.js · hooks.js · gsap.js · storage.js
+└── components/      Header, Hero, About, Work, Lab, Skills, Journey, Contact, Footer,
+                     InteractiveText, Terminal, CommandPalette, Cursor, Toast, Primitives, Icons
 ```
 
 ## Updating content
 
-- **Add a project**: screenshots in `public/projects/<name>-1600.webp` and `-800.webp` (16:10), then copy an
-  object in `src/data/projects.js`. Its `id` automatically becomes `open <id>` in the terminal.
-- **A skill moves from learning to practice**: change `status` in `src/data/skills.js` and add the project to `where`.
-  The 3D node changes from an amber ring to a solid node by itself.
-- **Status widget**: `status` in `src/data/profile.js` and the `status.*` strings in `src/i18n/ui.js`.
-- **New terminal command**: add it to `COMMANDS` and a `case` in `src/lib/commands.js`, plus `term.help.<name>` in the three languages.
+- **Project**: screenshots in `public/projects/<name>-1600.webp` and `-800.webp` (16:10), then copy an object in
+  `src/data/projects.js` (role, challenge, approach, learned, features… in three languages). Its `id` becomes `open <id>`.
+- **Skill moves from learning to practice**: change `status` in `src/data/skills.js` and add evidence to `where`.
+- **Status line**: `status.*` strings in `src/i18n/ui.js`.
 
 ## Deploy on Vercel
 
-1. Push this folder to a GitHub repository.
-2. vercel.com → Add New… → Project → import the repo. Vite is detected (build `npm run build`, output `dist`). Deploy.
-3. Put your final URL in `SITE_URL` (`vite.config.js`) or as a `SITE_URL` environment variable on Vercel, then redeploy
-   (used for the canonical link, Open Graph image and structured data).
-
-## Checked before delivery
-
-- Production build without errors; no runtime errors in the browser console.
-- EN / FR / AR on desktop (1440) and mobile (390), Arabic fully mirrored (navigation, timeline, terminal icons, rulers of the layout).
-- Dark and light themes, including 3D lighting.
-- Terminal: commands, history, Tab completion, `lang`, `goto`, Esc; command menu: search, arrows, Enter.
-- WebGL disabled → flat fallback; reduced motion → static scenes, stacked projects.
-- axe-core: no WCAG A/AA violations in the tested combinations (contrast fixed for both themes).
-- No horizontal scrolling on mobile.
+Import the repository (Vite is detected: build `npm run build`, output `dist`), then set your final URL in
+`SITE_URL` (`vite.config.js`) or as a `SITE_URL` environment variable (canonical link, Open Graph, structured data).

@@ -45,7 +45,7 @@ export default function CommandPalette() {
         group: t("pal.actions"),
         label: `${t("lang.label")}: ${LANG_NAMES[l]}`,
         keywords: `language langue lang ${l} ${LANG_NAMES[l]}`,
-        icon: l === "ar" ? "ع" : l.toUpperCase(),
+        icon: l.toUpperCase(),
         run: () => setLang(l),
         keep: true,
       })),
@@ -123,12 +123,13 @@ export default function CommandPalette() {
   let lastGroup = "";
   return (
     <div className="fixed inset-0 z-[70] flex items-start justify-center px-4 pt-[12vh]">
-      <div className="absolute inset-0 bg-[#03040f]/45 backdrop-blur-[2px]" onClick={close} aria-hidden="true" />
-      <div role="dialog" aria-modal="true" aria-label={t("palette.open")} className="pal-in panel hud relative w-full max-w-xl overflow-hidden rounded-2xl bg-surface-solid/95">
+      <div className="fade-in absolute inset-0 bg-[#080706]/55" onClick={close} aria-hidden="true" />
+      <div role="dialog" aria-modal="true" aria-label={t("palette.open")} className="rise-in relative w-full max-w-xl overflow-hidden border border-line-strong bg-surface shadow-[0_50px_100px_-40px_rgb(0_0_0/0.6)]">
         <div className="flex items-center gap-3 border-b border-line px-4">
-          <span className="mono text-sm text-accent" aria-hidden="true">⌘K</span>
+          <span className="mono text-xs text-accent" aria-hidden="true">⌘K</span>
           <input
             ref={inputRef}
+            autoFocus
             role="combobox"
             aria-expanded="true"
             aria-controls="pal-list"
@@ -149,7 +150,7 @@ export default function CommandPalette() {
             lastGroup = item.group;
             return (
               <li key={item.id} role="presentation">
-                {header && <p className="px-3 pt-3 pb-1 text-xs text-muted">{header}</p>}
+                {header && <p className="eyebrow px-3 pt-3 pb-1">{header}</p>}
                 <div
                   id={`pal-${item.id}`}
                   role="option"
@@ -157,11 +158,11 @@ export default function CommandPalette() {
                   data-index={i}
                   onMouseMove={() => setActive(i)}
                   onClick={() => exec(item)}
-                  className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-lg px-3 text-[0.95rem] ${
-                    i === active ? "bg-[var(--accent-glow)] text-ink" : "text-ink/85"
+                  className={`flex min-h-11 cursor-pointer items-center gap-3 px-3 text-[0.95rem] ${
+                    i === active ? "bg-accent-soft text-ink" : "text-ink-2"
                   }`}
                 >
-                  <span className="mono inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-line text-xs text-accent" aria-hidden="true">
+                  <span className="mono inline-flex h-7 w-7 shrink-0 items-center justify-center border border-line text-xs text-accent" aria-hidden="true">
                     {item.icon}
                   </span>
                   <span className="flex-1">{item.label}</span>

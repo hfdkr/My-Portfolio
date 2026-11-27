@@ -18,5 +18,18 @@ export default defineConfig({
       name: "site-url",
       transformIndexHtml: (html) => html.replaceAll("%SITE_URL%", SITE_URL),
     },
+    {
+      // Preload the three Latin font files the hero needs, so the name renders in its real face sooner.
+      name: "preload-hero-fonts",
+      apply: "build",
+      transformIndexHtml(html, ctx) {
+        const wanted = /(fraunces-latin-opsz-normal|fraunces-latin-wght-italic|geist-latin-wght-normal)-[\w-]+\.woff2$/;
+        const links = Object.keys(ctx.bundle || {})
+          .filter((f) => wanted.test(f))
+          .map((f) => `<link rel="preload" href="./${f}" as="font" type="font/woff2" crossorigin />`)
+          .join("\n    ");
+        return html.replace("</title>", `</title>\n    ${links}`);
+      },
+    },
   ],
 });

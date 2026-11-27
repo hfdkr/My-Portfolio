@@ -1,150 +1,142 @@
 import { useLayoutEffect, useRef } from "react";
 import { usePrefs } from "../lib/preferences";
-import { usePrefersReducedMotion, useIsMobile } from "../lib/hooks";
+import { usePrefersReducedMotion } from "../lib/hooks";
 import { gsap } from "../lib/gsap";
+import { useReveals } from "../lib/motion";
 import { journey, focus } from "../data/journey";
 import { experience } from "../data/experience";
-import SectionTitle from "./SectionTitle";
+import { SectionHead, Star, LiveDot, ArrowUpRight } from "./Primitives";
+import { FrameGlyph } from "./Icons";
+import InteractiveText from "./InteractiveText";
 
-const KIND = {
-  education: { color: "var(--cyan)", key: "journey.education" },
-  project: { color: "var(--pink)", key: "journey.project" },
-  experience: { color: "var(--accent)", key: "journey.experience" },
-  learning: { color: "var(--amber)", key: "journey.learning" },
-  next: { color: "var(--ink)", key: "journey.next" },
+const KIND_LABEL = {
+  education: "journey.education",
+  project: "journey.project",
+  experience: "journey.experience",
+  learning: "journey.learning",
+  next: "journey.next",
 };
 
-function ExperienceCard({ job }) {
+function Internship({ job }) {
   const { t, pick } = usePrefs();
   return (
-    <div className="mt-4">
-      <p className="text-lg font-semibold">{pick(job.role)}</p>
-      <p className="text-muted">
-        {job.company}, {pick(job.place)}
-      </p>
-      <p className="mt-4 leading-relaxed">{pick(job.summary)}</p>
-      <p className="mono mt-6 text-xs text-accent">{t("journey.interfaces")}</p>
-      <ul className="mt-2 flex flex-wrap gap-1.5">
-        {job.interfaces.map((it, i) => (
-          <li key={i} className="rounded-lg border border-line bg-[var(--accent-glow)] px-2.5 py-1 text-xs">
-            {pick(it)}
-          </li>
-        ))}
-      </ul>
-      <p className="mono mt-6 text-xs text-accent">{t("journey.learned")}</p>
-      <ul className="mt-2 space-y-1.5">
-        {pick(job.learned).map((l) => (
-          <li key={l} className="flex gap-2.5 text-[0.95rem] leading-snug">
-            <span className="mt-[0.5em] h-1.5 w-1.5 shrink-0 rotate-45 bg-accent" aria-hidden="true" />
-            {l}
-          </li>
-        ))}
-      </ul>
+    <div className="mt-5 border border-line bg-surface">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-line px-5 py-4 sm:px-7">
+        <p className="font-medium">{job.company}</p>
+        <p className="mono text-[11px] text-muted">
+          {pick(job.place)} · {pick(job.period)}
+        </p>
+      </div>
+      <div className="px-5 py-6 sm:px-7">
+        <p className="serif text-[1.5rem] leading-tight tracking-tight">{pick(job.role)}</p>
+        <p className="mt-4 leading-relaxed text-ink-2">{pick(job.summary)}</p>
+        <div className="mt-7 grid gap-8 md:grid-cols-2">
+          <div>
+            <p className="eyebrow">{t("journey.interfaces")}</p>
+            <ul className="mt-3 border-t border-line text-[0.92rem]">
+              {job.interfaces.map((it) => (
+                <li key={it.en} className="flex items-center gap-2.5 border-b border-line py-2 text-ink-2">
+                  <FrameGlyph className="shrink-0 text-accent" />
+                  {pick(it)}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className="eyebrow">{t("journey.learned")}</p>
+            <ul className="mt-3 space-y-2 text-[0.92rem] text-ink-2">
+              {pick(job.learned).map((l) => (
+                <li key={l}>— {l}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <p className="mt-7 border-t border-dashed border-line-strong pt-5 text-[0.92rem] leading-relaxed text-muted">
+          <span className="eyebrow me-2 text-ink-2">{t("journey.after")}</span>
+          {pick(job.after)}
+        </p>
+        <a href={job.link} target="_blank" rel="noopener noreferrer" data-cursor="open" className="link-line mt-5 inline-flex items-center gap-1.5 py-1 text-sm font-medium">
+          github.com/hfdkr/Projet-M3AK <ArrowUpRight />
+          <span className="sr-only">({t("work.newTab")})</span>
+        </a>
+      </div>
     </div>
   );
 }
 
 export default function Journey() {
-  const { t, pick, dir } = usePrefs();
+  const { t, pick, lang } = usePrefs();
   const reduced = usePrefersReducedMotion();
-  const mobile = useIsMobile();
+  const root = useRef(null);
   const list = useRef(null);
+  const fill = useRef(null);
+  useReveals(root, { reduced, deps: [lang] });
 
+  // The line fills with the scroll; each node lights up as the fill reaches it.
   useLayoutEffect(() => {
+    if (reduced) return;
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".j-fill",
-        { scaleY: 0 },
-        { scaleY: 1, ease: "none", scrollTrigger: { trigger: list.current, start: "top 60%", end: "bottom 60%", scrub: reduced ? false : 0.6 } },
-      );
-      gsap.utils.toArray(".j-item").forEach((el, i) => {
-        const side = mobile ? 1 : i % 2 === 0 ? -1 : 1;
-        const sign = dir === "rtl" ? -1 : 1;
-        gsap.fromTo(
-          el.querySelector(".j-card"),
-          reduced ? { opacity: 1 } : { opacity: 0, x: 70 * side * sign, rotateY: 12 * side * sign, filter: "blur(6px)" },
-          {
-            opacity: 1,
-            x: 0,
-            rotateY: 0,
-            filter: "blur(0px)",
-            duration: 1.1,
-            ease: "expo.out",
-            scrollTrigger: {
-              trigger: el,
-              start: "top 78%",
-              toggleActions: "play none none reverse",
-              onEnter: () => el.classList.add("on"),
-              onLeaveBack: () => el.classList.remove("on"),
-            },
-          },
-        );
+      gsap.fromTo(fill.current, { scaleY: 0 }, { scaleY: 1, ease: "none", scrollTrigger: { trigger: list.current, start: "top 60%", end: "bottom 60%", scrub: true } });
+      list.current.querySelectorAll("[data-node]").forEach((node) => {
+        gsap.fromTo(node, { scale: 0.4, opacity: 0.3 }, { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(2)", scrollTrigger: { trigger: node, start: "top 60%", toggleActions: "play none none reverse" } });
       });
-    }, list);
+    }, root);
     return () => ctx.revert();
-  }, [reduced, mobile, dir]);
+  }, [reduced, lang]);
 
   return (
-    <section id="experience" aria-labelledby="journey-title" className="relative overflow-x-clip py-24 md:py-32">
-      <SectionTitle id="journey-title" title={t("journey.title")} intro={t("journey.intro")} />
+    <section id="experience" ref={root} aria-labelledby="journey-title" className="relative border-t border-line py-28 md:py-40">
+      <SectionHead id="journey-title" eyebrow={t("journey.eyebrow")} title={t("journey.title")} intro={t("journey.intro")} />
 
-      <ol ref={list} className="relative mx-auto max-w-[1200px] px-5 sm:px-8">
-        {/* spine */}
-        <span className="absolute top-0 bottom-0 start-[29px] w-px bg-line sm:start-[37px] md:start-1/2" aria-hidden="true">
-          <span className="j-fill absolute inset-0 origin-top bg-gradient-to-b from-[var(--cyan)] via-accent to-amber shadow-[0_0_12px_var(--accent)]" />
-        </span>
+      <div className="gutter mx-auto mt-20 max-w-[1440px]">
+        <div ref={list} className="relative">
+          {/* the rail */}
+          <span className="absolute top-2 bottom-2 start-[5px] w-px bg-line md:start-[calc(25%+1px)]" aria-hidden="true">
+            <span ref={fill} className="absolute inset-0 origin-top bg-accent" style={reduced ? undefined : { transform: "scaleY(0)" }} />
+          </span>
+          <ol className="md:grid md:grid-cols-12 md:gap-x-8">
 
-        {journey.map((j, i) => {
-          const k = KIND[j.kind];
-          const startSide = i % 2 === 0;
-          const job = j.experience != null ? experience[j.experience] : null;
-          return (
-            <li key={i} className={`j-item group relative grid pb-14 md:grid-cols-2 md:gap-16 md:pb-20 [perspective:1000px]`}>
-              {/* node */}
-              <span
-                className="absolute top-6 start-[10px] z-10 flex h-10 w-10 items-center justify-center sm:start-[18px] md:start-1/2 md:-translate-x-1/2 rtl:md:translate-x-1/2"
-                aria-hidden="true"
-              >
-                {j.current && <span className="pulse-ring absolute inset-1 rounded-full" style={{ background: k.color }} />}
+          {journey.map((j, i) => {
+            const job = j.kind === "experience" ? experience[j.experience] : null;
+            const isNext = j.kind === "next";
+            return (
+              <li key={i} className="relative grid pb-14 ps-8 last:pb-0 md:col-span-12 md:grid-cols-12 md:gap-x-8 md:ps-0">
+                <p className="mono text-[11px] text-muted md:col-span-3 md:pe-10 md:pt-1 md:text-end" data-reveal>
+                  {pick(j.date)}
+                </p>
                 <span
-                  className={`relative h-4 w-4 rounded-full border-2 transition-all duration-500 group-[.on]:scale-110 ${j.kind === "next" ? "border-dashed" : ""}`}
-                  style={{ borderColor: k.color, background: j.kind === "next" ? "var(--bg)" : "var(--bg)", boxShadow: `0 0 0 6px var(--bg)` }}
-                >
-                  <span className="absolute inset-[3px] scale-0 rounded-full transition-transform duration-500 group-[.on]:scale-100" style={{ background: j.kind === "next" ? "transparent" : k.color }} />
-                </span>
-              </span>
-
-              <div className={`ps-14 sm:ps-20 md:ps-0 ${startSide ? "md:col-start-1 md:pe-4 md:text-end" : "md:col-start-2 md:ps-4"}`}>
-                <article className={`j-card panel hud rounded-2xl p-6 text-start md:p-7 ${job ? "md:-me-0" : ""}`}>
-                  <p className="mono flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-                    <span className="rounded-full px-2 py-0.5 font-semibold" style={{ color: k.color, boxShadow: `inset 0 0 0 1px ${k.color}` }}>
-                      {t(k.key)}
-                    </span>
-                    <span className="text-muted tnum">{pick(j.date)}</span>
+                  data-node
+                  className={`absolute top-1.5 start-0 flex h-[11px] w-[11px] items-center justify-center md:start-[calc(25%-4px)] ${isNext ? "border border-dashed border-accent bg-bg" : "bg-accent"}`}
+                  style={{ transform: "rotate(45deg)" }}
+                  aria-hidden="true"
+                />
+                <div className="md:col-span-8 md:col-start-5 lg:col-span-7 lg:col-start-5" data-reveal>
+                  <p className="eyebrow flex items-center gap-2">
+                    {j.current && <LiveDot />}
+                    {t(KIND_LABEL[j.kind])}
                   </p>
-                  <h3 className="mt-3 text-xl font-bold leading-snug sm:text-2xl" style={{ fontStretch: "112%" }}>
-                    {pick(j.title)}
-                  </h3>
-                  {j.text && <p className="mt-2 leading-relaxed text-muted">{pick(j.text)}</p>}
-                  {job && <ExperienceCard job={job} />}
+                  <InteractiveText as="h3" text={pick(j.title)} className={`serif mt-2 text-[clamp(1.5rem,2.6vw,2.2rem)] leading-tight tracking-tight ${isNext ? "text-muted" : ""}`} />
+                  {j.text && <p className="mt-3 max-w-[62ch] leading-relaxed text-ink-2">{pick(j.text)}</p>}
+                  {job && <Internship job={job} />}
                   {j.showFocus && (
-                    <>
-                      <p className="mono mt-5 text-xs text-amber">{t("journey.focus")}</p>
-                      <ul className="mt-2 flex flex-wrap gap-1.5">
+                    <div className="mt-5 border border-dashed border-line-strong p-5 lg:hidden">
+                      <p className="eyebrow flex items-center gap-2">
+                        <Star size={11} className="text-accent" /> {t("journey.focus")}
+                      </p>
+                      <ul className="mt-3 grid gap-1.5 text-[0.95rem] text-ink-2 sm:grid-cols-2">
                         {focus.map((f) => (
-                          <li key={pick(f)} className="rounded-lg border border-amber/40 px-2.5 py-1 text-xs">
-                            {pick(f)}
-                          </li>
+                          <li key={f.en}>— {pick(f)}</li>
                         ))}
                       </ul>
-                    </>
+                    </div>
                   )}
-                </article>
-              </div>
-            </li>
-          );
-        })}
-      </ol>
+                </div>
+              </li>
+            );
+          })}
+          </ol>
+        </div>
+      </div>
     </section>
   );
 }

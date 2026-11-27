@@ -49,19 +49,6 @@ export function hasWebGL() {
   return webglCache;
 }
 
-/** True while the element is near or inside the viewport (used to pause 3D rendering). */
-export function useNearViewport(ref, margin = "200px") {
-  const [near, setNear] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => setNear(e.isIntersecting), { rootMargin: margin });
-    io.observe(el);
-    return () => io.disconnect();
-  }, [ref, margin]);
-  return near;
-}
-
 export const LOCALES = { en: "en-GB", fr: "fr-FR", ar: "ar-MA" };
 
 export async function copyText(text) {

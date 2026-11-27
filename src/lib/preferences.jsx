@@ -32,7 +32,7 @@ export function PreferencesProvider({ children }) {
     document.documentElement.dataset.theme = theme;
     document
       .querySelectorAll('meta[name="theme-color"]')
-      .forEach((m) => m.setAttribute("content", theme === "dark" ? "#05061a" : "#e9ebf1"));
+      .forEach((m) => m.setAttribute("content", theme === "dark" ? "#0d0c0b" : "#f1ece3"));
   }, [theme]);
 
   const setLang = useCallback((next) => {
@@ -47,7 +47,7 @@ export function PreferencesProvider({ children }) {
     root.classList.add("theme-transition");
     write(KEYS.theme, next);
     setThemeState(next);
-    window.setTimeout(() => root.classList.remove("theme-transition"), 500);
+    window.setTimeout(() => root.classList.remove("theme-transition"), 700);
   }, []);
 
   const toggleTheme = useCallback(() => {

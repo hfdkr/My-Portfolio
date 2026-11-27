@@ -1,28 +1,38 @@
 import { usePrefs } from "../lib/preferences";
-import { useLocalTime, LOCALES } from "../lib/hooks";
-import { profile } from "../data/profile";
+import { scrollToSection } from "../lib/ui";
+import { Star } from "./Primitives";
+import InteractiveText from "./InteractiveText";
 
 export default function Footer() {
   const { t, lang } = usePrefs();
-  const time = useLocalTime(profile.timeZone, LOCALES[lang]);
+  const name = lang === "ar" ? "حفيظ كركوش" : "Hafid Karkouch";
   return (
-    <footer className="border-t border-line">
-      <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-4 px-5 pt-8 pb-28 text-sm text-muted sm:px-8 sm:pb-24">
-        <p>
-          {t("footer.built")} <span className="tnum">© {new Date().getFullYear()}</span>
+    <footer className="relative overflow-hidden border-t border-line pt-14">
+      <div className="gutter mx-auto grid max-w-[1440px] gap-6 text-sm text-muted md:grid-cols-12 md:gap-8">
+        <p className="flex items-center gap-2.5 text-ink-2 md:col-span-3">
+          <Star size={14} className="text-accent" />
+          {t("footer.built")}
         </p>
-        <p className="hidden md:block">{t("footer.hint")}</p>
-        <p className="flex items-center gap-5">
-          {time && (
-            <span className="mono text-xs">
-              {t("term.date.agadir")} <time className="tnum">{time}</time>
-            </span>
-          )}
-          <a href="#top" className="link-line text-ink">
-            {t("footer.top")}
+        <p className="mono text-[11px] md:col-span-5">{t("footer.hint")}</p>
+        <div className="flex items-center justify-between gap-6 md:col-span-4 md:justify-end">
+          <p className="mono text-[11px]" title="↑ ↑ ↓ ↓ ← → ← → B A">
+            {t("footer.secret")}
+          </p>
+          <a
+            href="#top"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("top");
+            }}
+            className="link-line py-1 text-ink"
+          >
+            {t("footer.top")} ↑
           </a>
-        </p>
+        </div>
       </div>
+      {/* the signature: the name, cut by the bottom edge */}
+      {/* hover it: the faded letters light up one by one */}
+      <InteractiveText as="p" text={name} variant="footer" className="display mt-12 whitespace-nowrap text-center text-[clamp(4rem,17vw,17rem)] leading-[0.75] text-ink/[0.07]" aria-hidden="true" />
     </footer>
   );
 }

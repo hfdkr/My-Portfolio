@@ -1,40 +1,27 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { usePrefs } from "../lib/preferences";
-import { copyText, usePrefersReducedMotion } from "../lib/hooks";
+import { copyText, usePrefersReducedMotion, useFinePointer, useLocalTime, LOCALES } from "../lib/hooks";
 import { gsap } from "../lib/gsap";
+import { useReveals, useMagnetic } from "../lib/motion";
 import { profile } from "../data/profile";
-import { ExternalIcon, CopyIcon, CheckIcon } from "./Icons";
-import SectionTitle from "./SectionTitle";
+import { CopyIcon, CheckIcon } from "./Icons";
+import { LiveDot, ArrowUpRight } from "./Primitives";
+import InteractiveText from "./InteractiveText";
 
 const TOPICS = ["pfe", "project", "hello"];
 
-/** Buttons that lean toward the pointer. */
-function Magnetic({ children, className = "", ...props }) {
-  const ref = useRef(null);
-  const reduced = usePrefersReducedMotion();
-  const onMove = (e) => {
-    if (reduced || !ref.current) return;
-    const r = ref.current.getBoundingClientRect();
-    const x = e.clientX - (r.left + r.width / 2);
-    const y = e.clientY - (r.top + r.height / 2);
-    ref.current.style.transform = `translate(${x * 0.18}px, ${y * 0.25}px)`;
-  };
-  const onLeave = () => ref.current && (ref.current.style.transform = "");
-  const Tag = props.href ? "a" : "button";
-  return (
-    <Tag ref={ref} onPointerMove={onMove} onPointerLeave={onLeave} className={`transition-transform duration-300 ease-out ${className}`} {...props}>
-      {children}
-    </Tag>
-  );
-}
-
 export default function Contact() {
-  const { t } = usePrefs();
+  const { t, lang } = usePrefs();
   const reduced = usePrefersReducedMotion();
+  const fine = useFinePointer();
+  const time = useLocalTime(profile.timeZone, LOCALES[lang]);
   const [topic, setTopic] = useState("pfe");
   const [copied, setCopied] = useState(null);
-  const box = useRef(null);
   const root = useRef(null);
+  const box = useRef(null);
+  const email = useRef(null);
+  useReveals(root, { reduced, deps: [lang] });
+  useMagnetic(email, { enabled: fine && !reduced, strength: 0.08 });
 
   const subject = t(`contact.subject.${topic}`);
   const body = t(`contact.body.${topic}`);
@@ -46,116 +33,127 @@ export default function Contact() {
     window.setTimeout(() => setCopied(null), 2200);
   };
 
-  // Typewriter swap of the message when the topic changes.
+  // The draft rewrites itself line by line when the topic changes.
   useLayoutEffect(() => {
     if (reduced || !box.current) return;
-    gsap.fromTo(box.current.querySelectorAll(".msg-line"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.05, ease: "expo.out" });
-  }, [topic, reduced, t]);
-
-  // Orbiting envelope glyph entrance.
-  useLayoutEffect(() => {
-    if (reduced) return;
-    const ctx = gsap.context(() => {
-      gsap.from(".c-panel", { y: 60, opacity: 0, rotateX: 14, duration: 1.2, ease: "expo.out", scrollTrigger: { trigger: root.current, start: "top 70%" } });
-    }, root);
-    return () => ctx.revert();
-  }, [reduced]);
+    const tween = gsap.fromTo(box.current.querySelectorAll(".msg-line"), { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.04 });
+    return () => tween.kill();
+  }, [topic, reduced, lang]);
 
   return (
-    <section id="contact" ref={root} aria-labelledby="contact-title" className="relative overflow-hidden py-24 md:py-32">
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[70%]" style={{ background: "radial-gradient(60% 60% at 50% 100%, var(--accent-glow), transparent 70%)" }} aria-hidden="true" />
-      <SectionTitle id="contact-title" title={t("contact.title")} intro={t("contact.text")} />
-
-      <div className="relative mx-auto grid max-w-[1440px] gap-6 px-5 [perspective:1200px] sm:px-8 lg:grid-cols-12">
-        {/* composer */}
-        <div className="c-panel panel hud rounded-3xl p-6 sm:p-8 lg:col-span-7">
-          <p className="text-sm font-semibold" id="topic-label">
-            {t("contact.topic")}
+    <section id="contact" ref={root} aria-labelledby="contact-title" className="relative overflow-hidden border-t border-line pt-28 pb-20 md:pt-40">
+      <div className="gutter mx-auto max-w-[1440px]">
+        <div className="grid gap-y-6 md:grid-cols-12 md:gap-x-8">
+          <p className="eyebrow md:col-span-3" data-reveal>
+            {t("contact.eyebrow")}
           </p>
-          <div role="radiogroup" aria-labelledby="topic-label" className="mt-3 flex flex-wrap gap-2">
-            {TOPICS.map((k) => (
-              <button
-                key={k}
-                type="button"
-                role="radio"
-                aria-checked={topic === k}
-                onClick={() => setTopic(k)}
-                className={`min-h-11 rounded-full border px-4 text-sm font-semibold transition-all ${
-                  topic === k ? "border-transparent bg-accent text-accent-ink shadow-[0_8px_30px_-8px_var(--accent)]" : "border-line text-muted hover:text-ink"
-                }`}
-              >
-                {t(`contact.t.${k}`)}
-              </button>
-            ))}
-          </div>
+          <div className="md:col-span-9">
+            <InteractiveText as="h2" key={lang} id="contact-title" text={t("contact.title")} className="display text-[clamp(4rem,14vw,13rem)]" data-split />
+            <p className="mt-8 max-w-[52ch] text-lg leading-relaxed text-ink-2" data-reveal>
+              {t("contact.text")}
+            </p>
 
-          <div ref={box} className="mt-6 overflow-hidden rounded-2xl border border-line bg-bg-2/80">
-            <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-2.5">
-              <p className="text-xs text-muted">{t("contact.preview")}</p>
-              <p className="mono truncate text-xs text-muted" dir="ltr">
-                → {profile.email}
-              </p>
-            </div>
-            <div className="px-4 py-4 text-[0.95rem] leading-relaxed sm:px-5" dir="auto">
-              <p className="msg-line font-semibold">{subject}</p>
-              <div className="mt-3 whitespace-pre-line text-muted">
-                {body.split("\n").map((l, i) => (
-                  <span key={i} className="msg-line block min-h-[1.2em]">
-                    {l}
-                  </span>
-                ))}
+            {/* the main channel */}
+            <div className="mt-14 border-y border-line py-8" data-reveal>
+              <a ref={email} href={`mailto:${profile.email}`} data-cursor="write" className="group inline-block max-w-full" dir="ltr">
+                <span className="serif link-line block text-[clamp(1.6rem,5.2vw,4.6rem)] leading-[1.1] tracking-tight">
+                  <InteractiveText text={profile.email} variant="title" breakable />
+                </span>
+              </a>
+              <div className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-4">
+                <button type="button" onClick={() => doCopy("email", profile.email)} data-cursor="copy" className="btn btn-sm">
+                  {copied === "email" ? <CheckIcon /> : <CopyIcon />}
+                  {copied === "email" ? t("contact.copied") : t("contact.copyEmail")}
+                </button>
+                <p className="flex items-center gap-2.5 text-sm text-ink-2">
+                  <LiveDot />
+                  {t("status.text")}
+                </p>
+                <p className="mono tnum text-[11px] text-muted">{t("contact.local", { time })}</p>
               </div>
             </div>
-          </div>
 
-          <div className="mt-6 flex flex-wrap items-center gap-2.5">
-            <Magnetic href={mailto} className="inline-flex min-h-12 items-center rounded-full bg-accent px-6 text-sm font-bold text-accent-ink shadow-[0_12px_40px_-12px_var(--accent)]">
-              {t("contact.open")}
-            </Magnetic>
-            <button type="button" onClick={() => doCopy("msg", `${subject}\n\n${body}`)} className="panel inline-flex min-h-12 items-center gap-2 rounded-full px-5 text-sm font-semibold">
-              {copied === "msg" ? <CheckIcon /> : <CopyIcon />}
-              {copied === "msg" ? t("contact.copied") : t("contact.copyMsg")}
-            </button>
-            <span role="status" aria-live="polite" className="text-sm text-muted">
-              {copied === "fail" ? t("contact.copyFail") : ""}
-            </span>
-          </div>
-          <p className="mt-5 text-xs text-muted">{t("contact.note")}</p>
-        </div>
+            <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:gap-8">
+              {/* composer */}
+              <div className="lg:col-span-7" data-reveal>
+                <p className="eyebrow">{t("contact.compose")}</p>
+                <p className="mt-5 text-sm font-medium" id="topic-label">
+                  {t("contact.topic")}
+                </p>
+                <div role="radiogroup" aria-labelledby="topic-label" className="mt-3 flex flex-wrap gap-2">
+                  {TOPICS.map((k) => (
+                    <button
+                      key={k}
+                      type="button"
+                      role="radio"
+                      aria-checked={topic === k}
+                      onClick={() => setTopic(k)}
+                      className={`min-h-10 border px-4 text-sm transition-colors ${topic === k ? "border-ink bg-ink text-bg" : "border-line-strong text-ink-2 hover:border-ink"}`}
+                    >
+                      {t(`contact.t.${k}`)}
+                    </button>
+                  ))}
+                </div>
 
-        {/* direct channels */}
-        <div className="c-panel flex flex-col gap-4 lg:col-span-5">
-          <div className="panel rounded-3xl p-6 sm:p-8">
-            <p className="mono text-xs text-muted">email</p>
-            <p className="mt-2 break-all text-[clamp(1.25rem,2.4vw,1.9rem)] font-extrabold" style={{ fontStretch: "110%" }} dir="ltr">
-              {profile.email}
-            </p>
-            <button type="button" onClick={() => doCopy("email", profile.email)} className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-full border border-line px-4 text-sm font-semibold hover:border-accent hover:text-accent">
-              {copied === "email" ? <CheckIcon /> : <CopyIcon />}
-              {copied === "email" ? t("contact.copied") : t("contact.copyEmail")}
-            </button>
+                <div ref={box} className="mt-5 border border-line bg-surface">
+                  <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-2.5">
+                    <p className="eyebrow">{t("contact.preview")}</p>
+                    <p className="mono truncate text-[11px] text-muted" dir="ltr">
+                      → {profile.email}
+                    </p>
+                  </div>
+                  <div className="px-4 py-4 text-[0.95rem] leading-relaxed sm:px-5" dir="auto">
+                    <p className="msg-line font-medium">{subject}</p>
+                    <div className="mt-3 text-muted">
+                      {body.split("\n").map((l, i) => (
+                        <span key={i} className="msg-line block min-h-[1.2em]">
+                          {l}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-5 flex flex-wrap items-center gap-3">
+                  <a href={mailto} data-cursor="write" className="btn btn-solid">
+                    <InteractiveText text={t("contact.open")} variant="cta" />
+                  </a>
+                  <button type="button" onClick={() => doCopy("msg", `${subject}\n\n${body}`)} data-cursor="copy" className="btn">
+                    {copied === "msg" ? <CheckIcon /> : <CopyIcon />}
+                    {copied === "msg" ? t("contact.copied") : t("contact.copyMsg")}
+                  </button>
+                  <span role="status" aria-live="polite" className="text-sm text-muted">
+                    {copied === "fail" ? t("contact.copyFail") : ""}
+                  </span>
+                </div>
+                <p className="mt-4 text-xs text-muted">{t("contact.note")}</p>
+              </div>
+
+              {/* elsewhere */}
+              <nav aria-label={t("contact.elsewhere")} className="lg:col-span-4 lg:col-start-9" data-reveal>
+                <p className="eyebrow">{t("contact.elsewhere")}</p>
+                <ul className="mt-5 border-t border-line">
+                  {[
+                    ["LinkedIn", profile.links.linkedin, "linkedin.com/in/hafid-k"],
+                    ["GitHub", profile.links.github, "github.com/hfdkr"],
+                  ].map(([name, href, short]) => (
+                    <li key={name}>
+                      <a href={href} target="_blank" rel="noopener noreferrer" data-cursor="open" className="group flex items-center justify-between gap-4 border-b border-line py-5">
+                        <span>
+                          <InteractiveText text={name} className="serif block text-[1.8rem] leading-none tracking-tight" />
+                          <span className="mono mt-2 block text-[11px] text-muted" dir="ltr">
+                            {short}
+                          </span>
+                        </span>
+                        <ArrowUpRight className="h-5 w-5 transition-transform duration-500 group-hover:-translate-y-1 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+                        <span className="sr-only">({t("work.newTab")})</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
           </div>
-          <nav aria-label={t("contact.elsewhere")} className="grid gap-4 sm:grid-cols-2">
-            {[
-              ["LinkedIn", profile.links.linkedin, "linkedin.com/in/hafid-k"],
-              ["GitHub", profile.links.github, "github.com/hfdkr"],
-            ].map(([name, href, short]) => (
-              <Magnetic
-                key={name}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="panel group flex min-h-28 flex-col justify-between rounded-3xl p-6 hover:border-accent"
-              >
-                <span className="flex items-center justify-between">
-                  <span className="text-xl font-bold" style={{ fontStretch: "115%" }}>{name}</span>
-                  <ExternalIcon className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 rtl:-scale-x-100" />
-                </span>
-                <span className="mono text-xs text-muted" dir="ltr">{short}</span>
-                <span className="sr-only">({t("work.newTab")})</span>
-              </Magnetic>
-            ))}
-          </nav>
         </div>
       </div>
     </section>

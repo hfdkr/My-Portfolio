@@ -26,6 +26,38 @@ export const projects = [
       fr: "J’ai conçu les interfaces sur Figma et développé tout le front-end : chaque page, la mise en page commune et les petits modules JavaScript qui la font fonctionner. Le travail a commencé pendant mon stage et je l’ai poursuivi ensuite.",
       ar: "صمّمت الواجهات على Figma وبنيت الواجهة الأمامية كاملة: كل الصفحات، والتخطيط المشترك، ووحدات JavaScript الصغيرة التي تشغّله. بدأ العمل خلال التدريب وواصلت تطويره بعده.",
     },
+    role: {
+      en: "UI/UX design and front-end — internship",
+      fr: "Design UI/UX et front-end — stage",
+      ar: "تصميم UI/UX والواجهة الأمامية — تدريب",
+    },
+    challenge: {
+      en: "Twenty-two pages, three languages, two themes — and no framework to keep them consistent.",
+      fr: "Vingt-deux pages, trois langues, deux thèmes — et aucun framework pour garder l’ensemble cohérent.",
+      ar: "اثنتان وعشرون صفحة، وثلاث لغات، ووضعان للألوان، ولا إطار عمل يضمن التناسق بينها.",
+    },
+    approach: {
+      en: "I designed every screen in Figma first, then split the shared behaviour into small vanilla JavaScript modules — session, theme, translations, layout shell — that every page loads.",
+      fr: "J’ai d’abord conçu chaque écran sur Figma, puis découpé le comportement commun en petits modules JavaScript natifs — session, thème, traductions, structure de page — chargés par chaque page.",
+      ar: "صمّمت كل شاشة على Figma أولاً، ثم قسّمت السلوك المشترك إلى وحدات JavaScript صغيرة — الجلسة، والألوان، والترجمة، وهيكل الصفحة — تحمّلها كل صفحة.",
+    },
+    learned: {
+      en: [
+        "Turning desktop and mobile mockups into responsive pages",
+        "Adding a dark mode to a project that already had many pages",
+        "Splitting shared JavaScript into small, reusable modules",
+      ],
+      fr: [
+        "Transformer des maquettes desktop et mobile en pages responsives",
+        "Ajouter un mode sombre à un projet qui comptait déjà de nombreuses pages",
+        "Découper le JavaScript commun en petits modules réutilisables",
+      ],
+      ar: [
+        "تحويل تصاميم الحاسوب والهاتف إلى صفحات متجاوبة",
+        "إضافة الوضع الداكن إلى مشروع يضم صفحات كثيرة أصلاً",
+        "تقسيم كود JavaScript المشترك إلى وحدات صغيرة قابلة لإعادة الاستخدام",
+      ],
+    },
     features: {
       en: [
         "22 pages sharing one sidebar, header, footer and theme system",
@@ -122,6 +154,38 @@ export const projects = [
       fr: "Surtout le back-end. J’ai restructuré l’application Express en routes, middlewares et couche de stockage, déplacé les données et les sessions vers Redis pour qu’elle tourne sur les fonctions serverless de Vercel, ajouté la réinitialisation du mot de passe par e-mail et écrit la première suite de tests. Côté front-end, j’ai réalisé le tableau de bord Chart.js et le réordonnancement des colonnes Kanban.",
       ar: "أغلب عملي في الواجهة الخلفية: أعدت هيكلة تطبيق Express إلى مسارات ووسائط (middleware) وطبقة تخزين، ونقلت البيانات والجلسات إلى Redis ليعمل التطبيق على الدوال السحابية في Vercel، وأضفت استرجاع كلمة المرور عبر البريد الإلكتروني، وكتبت أول مجموعة اختبارات. وفي الواجهة الأمامية أنجزت لوحة الإحصائيات بـ Chart.js وإعادة ترتيب أعمدة Kanban.",
     },
+    role: {
+      en: "Back-end, plus the dashboard — team of four",
+      fr: "Back-end, plus le tableau de bord — équipe de quatre",
+      ar: "الواجهة الخلفية ولوحة الإحصائيات — فريق من أربعة",
+    },
+    challenge: {
+      en: "An Express app with sessions had to run on Vercel’s serverless functions, where nothing is kept between two requests.",
+      fr: "Une application Express avec sessions devait tourner sur les fonctions serverless de Vercel, où rien n’est conservé entre deux requêtes.",
+      ar: "كان على تطبيق Express يعتمد على الجلسات أن يعمل على الدوال السحابية في Vercel، حيث لا يُحفظ شيء بين طلبين.",
+    },
+    approach: {
+      en: "I restructured the app into routes, middleware and a storage layer, then moved data and sessions to Redis (Upstash) behind that layer.",
+      fr: "J’ai restructuré l’application en routes, middlewares et couche de stockage, puis déplacé les données et les sessions vers Redis (Upstash) derrière cette couche.",
+      ar: "أعدت هيكلة التطبيق إلى مسارات ووسائط وطبقة تخزين، ثم نقلت البيانات والجلسات إلى Redis (Upstash) خلف هذه الطبقة.",
+    },
+    learned: {
+      en: [
+        "Splitting an Express app into routes, middleware and a storage layer",
+        "Making an app work on serverless hosting",
+        "Git branches, pull requests and merge conflicts in a team of four",
+      ],
+      fr: [
+        "Découper une application Express en routes, middlewares et couche de stockage",
+        "Faire fonctionner une application sur un hébergement serverless",
+        "Branches Git, pull requests et conflits de fusion en équipe de quatre",
+      ],
+      ar: [
+        "تقسيم تطبيق Express إلى مسارات ووسائط وطبقة تخزين",
+        "تشغيل تطبيق على استضافة سحابية بلا خادم دائم (serverless)",
+        "فروع Git وطلبات الدمج وحلّ التعارضات ضمن فريق من أربعة",
+      ],
+    },
     features: {
       en: [
         "Session authentication with bcrypt and rate-limited login",
@@ -152,7 +216,7 @@ export const projects = [
     },
     stack: ["Node.js", "Express 5", "express-session", "bcrypt", "Redis (Upstash)", "Chart.js", "Tailwind CSS", "JavaScript", "node:test"],
     repo: "https://github.com/hfdkr/Task_Flow",
-    live: null,
+    live: "https://task-flow-two-black.vercel.app/",
     screens: [
       {
         src: "taskflow-board",
@@ -197,6 +261,38 @@ export const projects = [
       en: "I wrote the question bank for HTML, CSS, JavaScript and Python across difficulty levels, the JSON database read/write helpers, the online-users tracking and the forgot-password flow.",
       fr: "J’ai écrit la banque de questions HTML, CSS, JavaScript et Python sur plusieurs niveaux de difficulté, les fonctions de lecture/écriture de la base JSON, le suivi des utilisateurs en ligne et le parcours « mot de passe oublié ».",
       ar: "كتبت بنك الأسئلة في HTML وCSS وJavaScript وPython بمستويات صعوبة مختلفة، ودوال القراءة والكتابة في قاعدة بيانات JSON، وتتبّع المستخدمين المتصلين، ومسار «نسيت كلمة المرور».",
+    },
+    role: {
+      en: "Question bank, data layer and account flows — team of four",
+      fr: "Banque de questions, couche de données et parcours de compte — équipe de quatre",
+      ar: "بنك الأسئلة وطبقة البيانات ومسارات الحساب — فريق من أربعة",
+    },
+    challenge: {
+      en: "Users, scores, lessons and questions had to be stored and served without a database server.",
+      fr: "Utilisateurs, scores, leçons et questions devaient être stockés et servis sans serveur de base de données.",
+      ar: "كان لا بد من حفظ المستخدمين والنتائج والدروس والأسئلة وتقديمها من دون خادم قاعدة بيانات.",
+    },
+    approach: {
+      en: "A JSON file behind small read/write helpers, exposed through a REST API in Express that the vanilla JavaScript front-end consumes.",
+      fr: "Un fichier JSON derrière de petites fonctions de lecture/écriture, exposé par une API REST Express que consomme le front-end en JavaScript natif.",
+      ar: "ملف JSON خلف دوال صغيرة للقراءة والكتابة، تعرضه واجهة REST API بـ Express تستهلكها الواجهة الأمامية المكتوبة بـ JavaScript خالص.",
+    },
+    learned: {
+      en: [
+        "Designing REST endpoints that a front-end consumes",
+        "Hashing passwords with bcrypt and issuing JWTs",
+        "Git branches, pull requests and merge conflicts in a team of four",
+      ],
+      fr: [
+        "Concevoir des endpoints REST consommés par un front-end",
+        "Hacher les mots de passe avec bcrypt et émettre des JWT",
+        "Branches Git, pull requests et conflits de fusion en équipe de quatre",
+      ],
+      ar: [
+        "تصميم نقاط REST تستهلكها واجهة أمامية",
+        "تجزئة كلمات المرور بـ bcrypt وإصدار رموز JWT",
+        "فروع Git وطلبات الدمج وحلّ التعارضات ضمن فريق من أربعة",
+      ],
     },
     features: {
       en: [

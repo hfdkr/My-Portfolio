@@ -1,207 +1,240 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { usePrefs, LANGS } from "../lib/preferences";
-import { useUI, SECTIONS } from "../lib/ui";
-import { CloseIcon, MenuIcon, MoonIcon, SunIcon } from "./Icons";
+import { useUI, scrollToSection, SECTIONS } from "../lib/ui";
+import { ScrollTrigger } from "../lib/gsap";
+import { emit, toast } from "../lib/events";
+import { SunIcon, MoonIcon } from "./Icons";
+import { Star } from "./Primitives";
+import InteractiveText from "./InteractiveText";
 
-const LANG_LABEL = {
-  en: { short: "EN", name: "English" },
-  fr: { short: "FR", name: "Français" },
-  ar: { short: "ع", name: "العربية" },
-};
+const LANG_SHORT = { en: "EN", fr: "FR", ar: "AR" };
+const LANG_NAMES = { en: "English", fr: "Français", ar: "العربية" };
 
-function Monogram() {
-  return (
-    <span className="relative inline-flex h-10 w-10 items-center justify-center" aria-hidden="true">
-      <svg viewBox="0 0 40 40" className="absolute inset-0 h-full w-full">
-        <defs>
-          <linearGradient id="hk-g" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="var(--accent)" />
-            <stop offset="1" stopColor="var(--cyan)" />
-          </linearGradient>
-        </defs>
-        {/* three stacked layers, seen from above — the site's central object */}
-        <path d="M20 3 36 11 20 19 4 11Z" fill="none" stroke="url(#hk-g)" strokeWidth="1.6" />
-        <path d="M4 18.5 20 26.5 36 18.5" fill="none" stroke="var(--line-strong)" strokeWidth="1.4" />
-        <path d="M4 26 20 34 36 26" fill="none" stroke="var(--amber)" strokeWidth="1.4" strokeDasharray="2.5 2.5" />
-      </svg>
-      <span className="relative -mt-[13px] text-[9px] font-black tracking-tight" style={{ fontStretch: "125%" }}>
-        HK
-      </span>
-    </span>
-  );
+function useActiveSection() {
+  const [active, setActive] = useState("");
+  useEffect(() => {
+    const els = SECTIONS.map((id) => document.getElementById(id)).filter(Boolean);
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) setActive(e.target.id);
+      },
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+  return active;
 }
 
-function LanguageSwitch({ className = "" }) {
-  const { lang, setLang, t } = usePrefs();
+function LangSwitch({ className = "" }) {
+  const { t, lang, setLang } = usePrefs();
   return (
-    <div role="group" aria-label={t("lang.label")} className={`flex items-center rounded-full border border-line p-0.5 ${className}`}>
+    <div role="group" aria-label={t("lang.label")} className={`flex items-center ${className}`}>
       {LANGS.map((l) => (
         <button
           key={l}
           type="button"
-          lang={l}
-          aria-pressed={lang === l}
-          aria-label={LANG_LABEL[l].name}
           onClick={() => setLang(l)}
-          className={`h-8 min-w-8 rounded-full px-2 text-xs font-bold transition-colors ${
-            lang === l ? "bg-ink text-bg" : "text-muted hover:text-ink"
-          }`}
+          aria-pressed={lang === l}
+          aria-label={LANG_NAMES[l]}
+          lang={l}
+          className={`mono relative min-h-10 min-w-9 px-1.5 text-[11px] tracking-wider transition-colors ${lang === l ? "text-ink" : "text-muted hover:text-ink"}`}
         >
-          {LANG_LABEL[l].short}
+          {LANG_SHORT[l]}
+          <span className={`absolute inset-x-2 bottom-2 h-px bg-accent transition-transform duration-500 ${lang === l ? "scale-x-100" : "scale-x-0"}`} aria-hidden="true" />
         </button>
       ))}
     </div>
   );
 }
 
-export default function Header() {
+function ThemeToggle() {
   const { t, theme, toggleTheme } = usePrefs();
+  return (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      aria-label={theme === "dark" ? t("theme.toLight") : t("theme.toDark")}
+      className="group relative inline-flex h-10 w-10 items-center justify-center overflow-hidden text-ink"
+    >
+      <span className={`absolute transition-transform duration-700 ease-[var(--ease-out-expo)] ${theme === "dark" ? "translate-y-0 rotate-0" : "-translate-y-8 -rotate-90"}`}>
+        <MoonIcon />
+      </span>
+      <span className={`absolute transition-transform duration-700 ease-[var(--ease-out-expo)] ${theme === "dark" ? "translate-y-8 rotate-90" : "translate-y-0 rotate-0"}`}>
+        <SunIcon />
+      </span>
+    </button>
+  );
+}
+
+export default function Header() {
+  const { t, lang } = usePrefs();
   const { openTerminal, openPalette } = useUI();
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [active, setActive] = useState(null);
-  const menuRef = useRef(null);
-  const toggleRef = useRef(null);
+  const active = useActiveSection();
+  const [menu, setMenu] = useState(false);
+  const bar = useRef(null);
+  const progress = useRef(null);
+  const clicks = useRef([]);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+  // Hide on scroll down, show on scroll up, solid background once past the hero top.
+  useLayoutEffect(() => {
+    const el = bar.current;
+    const st = ScrollTrigger.create({
+      start: 0,
+      end: "max",
+      onUpdate: (self) => {
+        const y = self.scroll();
+        el.dataset.solid = y > 40 ? "true" : "false";
+        el.dataset.hidden = self.direction === 1 && y > 600 ? "true" : "false";
+        if (progress.current) progress.current.style.transform = `scaleX(${self.progress})`;
+      },
+    });
+    return () => st.kill();
   }, []);
 
+  // Close the mobile menu with Escape; lock scroll while it is open.
   useEffect(() => {
-    const ids = ["top", ...SECTIONS];
-    const els = ids.map((id) => document.getElementById(id)).filter(Boolean);
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.id === "top" ? null : e.target.id)),
-      { rootMargin: "-45% 0px -50% 0px" },
-    );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!open) return;
-    menuRef.current?.querySelector("a")?.focus();
-    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    if (!menu) return;
+    const onKey = (e) => e.key === "Escape" && setMenu(false);
     window.addEventListener("keydown", onKey);
+    const prev = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = "hidden";
     return () => {
       window.removeEventListener("keydown", onKey);
-      toggleRef.current?.focus();
+      document.documentElement.style.overflow = prev;
     };
-  }, [open]);
+  }, [menu]);
 
-  const dark = theme === "dark";
+  const go = (id) => (e) => {
+    e.preventDefault();
+    setMenu(false);
+    scrollToSection(id);
+  };
+
+  // Five quick clicks on the star → the tiles flip. (Shh.)
+  const onMark = (e) => {
+    e.preventDefault();
+    const now = performance.now();
+    clicks.current = [...clicks.current.filter((c) => now - c < 1600), now];
+    if (clicks.current.length >= 5) {
+      clicks.current = [];
+      emit("wave");
+      toast(t("egg.maalem"));
+    }
+    scrollToSection("top");
+  };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5 sm:pt-4">
-      <a
-        href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:start-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-accent focus:px-3 focus:py-2 focus:text-accent-ink"
-      >
+    <>
+      <a href="#main" className="fixed start-4 top-3 z-[80] -translate-y-24 bg-ink px-4 py-2 text-sm font-semibold text-bg focus:translate-y-0">
         {t("skip")}
       </a>
-      <div
-        className={`mx-auto flex h-14 max-w-[1440px] items-center justify-between gap-4 rounded-2xl px-2 ps-3 transition-all duration-500 ${
-          scrolled || open ? "panel" : "border border-transparent"
-        }`}
+      <header
+        ref={bar}
+        data-solid="false"
+        data-hidden="false"
+        className="group/bar fixed inset-x-0 top-0 z-50 transition-[transform,background-color,border-color] duration-500 ease-[var(--ease-out-expo)] data-[hidden=true]:-translate-y-full data-[solid=true]:border-b data-[solid=true]:border-line data-[solid=true]:bg-[rgb(var(--scrim)/0.94)]"
       >
-        <a href="#top" className="flex items-center gap-2.5" aria-label="Hafid Karkouch">
-          <Monogram />
-          <span className="hidden text-sm font-bold sm:block" style={{ fontStretch: "118%" }} dir="ltr">
-            Hafid Karkouch
-          </span>
-        </a>
+        <div className="gutter mx-auto flex h-16 max-w-[1440px] items-center gap-4">
+          <a href="#top" onClick={onMark} className="group flex items-center gap-2.5 text-ink" aria-label="Hafid Karkouch — top">
+            <Star size={20} className="text-accent transition-transform duration-1000 ease-[var(--ease-out-expo)] group-hover:rotate-[135deg]" />
+            <InteractiveText text={lang === "ar" ? "حفيظ كركوش" : "Hafid Karkouch"} variant="nav" className="text-[0.95rem] font-semibold tracking-tight" />
+          </a>
 
-        <nav aria-label={t("nav.primary")} className="hidden lg:block">
-          <ul className="flex items-center gap-1 text-sm">
-            {SECTIONS.map((id) => (
-              <li key={id}>
-                <a
-                  href={`#${id}`}
-                  aria-current={active === id ? "true" : undefined}
-                  className={`relative block rounded-full px-3.5 py-2 transition-colors ${
-                    active === id ? "bg-[var(--accent-glow)] text-ink" : "text-muted hover:text-ink"
-                  }`}
-                >
-                  {t(`nav.${id}`)}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+          <nav aria-label={t("nav.primary")} className="ms-auto hidden lg:block">
+            <ul className="flex items-center gap-1">
+              {SECTIONS.map((id, i) => (
+                <li key={id}>
+                  <a
+                    href={`#${id}`}
+                    onClick={go(id)}
+                    aria-current={active === id ? "true" : undefined}
+                    className={`group relative inline-flex min-h-10 items-center gap-1.5 px-3 text-sm transition-colors ${active === id ? "text-ink" : "text-muted hover:text-ink"}`}
+                  >
+                    <span className="mono text-[10px] text-accent">0{i + 1}</span>
+                    <InteractiveText text={t(`nav.${id}`)} variant="nav" />
+                    <span className={`absolute inset-x-3 bottom-1.5 h-px origin-left bg-ink transition-transform duration-500 ease-[var(--ease-out-expo)] rtl:origin-right ${active === id ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`} aria-hidden="true" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-        <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={openTerminal}
-            aria-haspopup="dialog"
-            className="mono hidden h-9 items-center gap-2 rounded-full border border-line px-3 text-xs font-semibold text-ink transition-colors hover:border-accent hover:text-accent md:inline-flex"
-          >
-            <span className="text-[color:var(--cyan)]" aria-hidden="true" dir="ltr">&gt;_</span>
-            {t("nav.terminal")}
-          </button>
-          <button
-            type="button"
-            onClick={openPalette}
-            aria-haspopup="dialog"
-            aria-label={t("palette.open")}
-            className="mono hidden h-9 items-center rounded-full border border-line px-2.5 text-xs text-muted transition-colors hover:text-ink md:inline-flex"
-            dir="ltr"
-          >
-            Ctrl K
-          </button>
-          <LanguageSwitch className="hidden sm:flex" />
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label={dark ? t("theme.toLight") : t("theme.toDark")}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:text-ink"
-          >
-            {dark ? <SunIcon /> : <MoonIcon />}
-          </button>
-          <button
-            ref={toggleRef}
-            type="button"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full lg:hidden"
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            aria-label={open ? t("nav.close") : t("nav.menu")}
-            onClick={() => setOpen((o) => !o)}
-          >
-            {open ? <CloseIcon /> : <MenuIcon />}
-          </button>
+          <div className="ms-auto flex items-center gap-1 lg:ms-4">
+            <LangSwitch className="hidden sm:flex" />
+            <span className="mx-1 hidden h-4 w-px bg-line sm:block" aria-hidden="true" />
+            <ThemeToggle />
+            <button type="button" onClick={openTerminal} className="mono hidden min-h-10 items-center gap-2 px-2.5 text-xs text-muted transition-colors hover:text-ink md:inline-flex" aria-label={t("pal.openTerminal")}>
+              <span className="text-accent" aria-hidden="true">&gt;_</span>
+              {t("nav.terminal")}
+            </button>
+            <button type="button" onClick={openPalette} aria-label={t("palette.open")} className="mono hidden min-h-8 items-center border border-line px-2 text-[11px] text-muted transition-colors hover:border-line-strong hover:text-ink md:inline-flex">
+              ⌘K
+            </button>
+            <button
+              type="button"
+              onClick={() => setMenu(true)}
+              className="inline-flex min-h-10 items-center gap-2 px-2 text-sm font-medium lg:hidden"
+              aria-expanded={menu}
+              aria-controls="mobile-menu"
+            >
+              {t("nav.menu")}
+              <span className="flex w-5 flex-col gap-1.5" aria-hidden="true">
+                <span className="h-px w-full bg-ink" />
+                <span className="h-px w-3/5 bg-ink" />
+              </span>
+            </button>
+          </div>
         </div>
-      </div>
+        <div className="h-px origin-left bg-accent/70 rtl:origin-right" ref={progress} style={{ transform: "scaleX(0)" }} aria-hidden="true" />
+      </header>
 
-      <div id="mobile-menu" ref={menuRef} hidden={!open} className="panel mx-auto mt-2 max-w-[1440px] rounded-2xl !bg-surface-solid p-4 lg:hidden">
-        <nav aria-label={t("nav.primary")}>
-          <ul>
-            {SECTIONS.map((id) => (
-              <li key={id} className="border-b border-line last:border-b-0">
-                <a href={`#${id}`} onClick={() => setOpen(false)} className="display flex min-h-14 items-center text-2xl">
-                  {t(`nav.${id}`)}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <button
-            type="button"
-            onClick={() => {
-              setOpen(false);
-              openTerminal();
-            }}
-            className="mono inline-flex h-10 items-center gap-2 rounded-full border border-line px-4 text-sm"
-          >
-            <span className="text-[color:var(--cyan)]" aria-hidden="true" dir="ltr">&gt;_</span>
-            {t("nav.terminal")}
-          </button>
-          <LanguageSwitch />
-        </div>
+      {/* Mobile menu: full screen, big serif links that rise in one after another. */}
+      <div
+        id="mobile-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label={t("nav.menu")}
+        hidden={!menu}
+        className="fixed inset-0 z-[60] flex flex-col bg-bg lg:hidden"
+      >
+        {menu && (
+          <>
+            <div className="gutter flex h-16 items-center justify-between border-b border-line">
+              <Star size={20} className="text-accent" />
+              <button type="button" onClick={() => setMenu(false)} className="min-h-10 px-2 text-sm font-medium" autoFocus>
+                {t("nav.close")}
+              </button>
+            </div>
+            <nav aria-label={t("nav.primary")} className="gutter flex-1 overflow-y-auto py-8">
+              <ol className="space-y-1">
+                {SECTIONS.map((id, i) => (
+                  <li key={id} className="rise-in" style={{ animationDelay: `${80 + i * 60}ms` }}>
+                    <a href={`#${id}`} onClick={go(id)} className="flex items-baseline gap-4 border-b border-line py-4">
+                      <span className="mono text-xs text-accent">0{i + 1}</span>
+                      <InteractiveText text={t(`nav.${id}`)} className="display text-[clamp(2.4rem,11vw,3.6rem)]" />
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+            <div className="gutter flex items-center justify-between gap-4 border-t border-line py-4">
+              <LangSwitch />
+              <button
+                type="button"
+                onClick={() => {
+                  setMenu(false);
+                  openTerminal();
+                }}
+                className="mono inline-flex min-h-11 items-center gap-2 text-sm"
+              >
+                <span className="text-accent" aria-hidden="true">&gt;_</span>
+                {t("nav.terminal")}
+              </button>
+            </div>
+          </>
+        )}
       </div>
-    </header>
+    </>
   );
 }

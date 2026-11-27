@@ -3,16 +3,17 @@ import { usePrefs } from "../lib/preferences";
 import { useUI, scrollToSection } from "../lib/ui";
 import { usePrefersReducedMotion, LOCALES } from "../lib/hooks";
 import { run, complete } from "../lib/commands";
+import { emit, toast } from "../lib/events";
 
 const PROMPT_USER = "hafid@portfolio";
 // The terminal is always dark, whatever the site theme, so its colours are fixed.
 const COLORS = {
-  accent: "text-[#b3a9ff] underline decoration-[#b3a9ff]/40 underline-offset-2 hover:decoration-[#b3a9ff]",
-  title: "font-semibold text-white",
-  dim: "text-[#8d93c4]",
-  ok: "text-[#52e0ff]",
-  warn: "text-[#ffb547]",
-  err: "text-[#ff6b81]",
+  accent: "text-[#ff9a6b] underline decoration-[#ff9a6b]/40 underline-offset-2 hover:decoration-[#ff9a6b]",
+  title: "font-semibold text-[#f6f0e6]",
+  dim: "text-[#9c9286]",
+  ok: "text-[#5fd6b5]",
+  warn: "text-[#f0b860]",
+  err: "text-[#ff7a7a]",
 };
 
 function Line({ parts }) {
@@ -132,6 +133,14 @@ export default function Terminal() {
     }
     if (res.after === "lang") pendingLang.current = true;
     print(res.lines);
+    if (res.wave) {
+      window.setTimeout(() => {
+        close();
+        window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
+        emit("wave");
+        toast(t("egg.maalem"));
+      }, reduced ? 0 : 500);
+    }
     if (res.goto) {
       window.setTimeout(() => {
         close();
@@ -202,30 +211,26 @@ export default function Terminal() {
 
   return (
     <div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-6" onKeyDown={onDialogKey}>
-      <div className="absolute inset-0 bg-[#03040f]/55 backdrop-blur-[2px]" onClick={close} aria-hidden="true" />
+      <div className="fade-in absolute inset-0 bg-[#080706]/60" onClick={close} aria-hidden="true" />
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="term-title"
         dir="ltr"
-        className="term-in relative flex h-[min(88dvh,560px)] w-full max-w-3xl flex-col overflow-hidden rounded-t-2xl border border-white/10 bg-[#0a0c22]/95 text-[#e7e9ff] shadow-[0_40px_120px_-30px_rgba(0,0,0,.9),0_0_0_1px_rgba(139,125,255,.15)] sm:rounded-2xl"
+        className="rise-in relative flex h-[min(88dvh,560px)] w-full max-w-3xl flex-col overflow-hidden border border-[#f2ece2]/12 bg-[#11100e] text-[#ece5da] shadow-[0_50px_120px_-30px_rgba(0,0,0,.9)]"
         onClick={() => inputRef.current?.focus()}
       >
         {/* title bar */}
-        <div className="flex items-center gap-3 border-b border-white/10 bg-white/[0.03] px-4 py-2.5">
-          <div className="flex gap-1.5" aria-hidden="true">
-            <span className="h-3 w-3 rounded-full bg-[#ff5f6d]" />
-            <span className="h-3 w-3 rounded-full bg-[#ffbd4a]" />
-            <span className="h-3 w-3 rounded-full bg-[#35d07f]" />
-          </div>
-          <p id="term-title" className="mono flex-1 truncate text-center text-xs text-[#8d93c4]">
+        <div className="flex items-center gap-3 border-b border-[#f2ece2]/10 bg-[#f2ece2]/[0.03] px-4 py-2.5">
+          <span className="mono text-xs text-[#ff7a45]" aria-hidden="true">&gt;_</span>
+          <p id="term-title" className="mono flex-1 truncate text-center text-xs text-[#9c9286]">
             {PROMPT_USER} — {t("term.title")} — zsh
           </p>
           <button
             type="button"
             onClick={close}
             aria-label={t("term.close")}
-            className="mono rounded px-2 py-0.5 text-xs text-[#8d93c4] hover:bg-white/10 hover:text-white"
+            className="mono min-h-8 px-2 text-xs text-[#9c9286] hover:bg-[#f2ece2]/10 hover:text-[#f6f0e6]"
           >
             esc
           </button>
@@ -238,11 +243,12 @@ export default function Terminal() {
           ))}
           {/* prompt */}
           <label className="flex items-baseline gap-0" htmlFor="term-input">
-            <span className="shrink-0 text-[#52e0ff]">{PROMPT_USER}:~$&nbsp;</span>
+            <span className="shrink-0 text-[#5fd6b5]">{PROMPT_USER}:~$&nbsp;</span>
             <span className="sr-only">{t("term.input")}</span>
             <input
               id="term-input"
               ref={inputRef}
+              autoFocus
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={onKeyDown}
@@ -251,15 +257,15 @@ export default function Terminal() {
               autoCorrect="off"
               spellCheck={false}
               enterKeyHint="send"
-              className="mono min-w-0 flex-1 border-0 bg-transparent p-0 text-[#eef0ff] caret-[#52e0ff] outline-none focus:outline-none focus-visible:outline-none"
+              className="mono min-w-0 flex-1 border-0 bg-transparent p-0 text-[#f6f0e6] caret-[#ff7a45] outline-none focus:outline-none focus-visible:outline-none"
               style={{ outline: "none" }}
             />
           </label>
         </div>
 
         {/* quick commands for touch users */}
-        <div className="mono flex gap-2 overflow-x-auto border-t border-white/10 px-3 py-2 text-xs">
-          {["help", "whoami", "projects", "skills", "experience", "contact", "clear"].map((c) => (
+        <div className="mono flex gap-2 overflow-x-auto border-t border-[#f2ece2]/10 px-3 py-2 text-xs">
+          {["help", "whoami", "projects", "lab", "skills", "experience", "contact", "clear"].map((c) => (
             <button
               key={c}
               type="button"
@@ -268,7 +274,7 @@ export default function Terminal() {
                 submit(c);
                 inputRef.current?.focus();
               }}
-              className="shrink-0 rounded-md border border-white/10 px-2.5 py-1 text-[#c9ccf3] hover:border-[#8b7dff] hover:text-white"
+              className="min-h-8 shrink-0 border border-[#f2ece2]/12 px-2.5 text-[#d4ccbf] hover:border-[#ff7a45] hover:text-[#f6f0e6]"
             >
               {c}
             </button>
