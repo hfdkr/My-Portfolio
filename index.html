@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hafid Karkouch — Full-stack development student, Agadir</title>
+    <meta
+      name="description"
+      content="Hafid Karkouch, full-stack development student at eWA Digitale in Agadir, Morocco. Front-end and UI/UX focused, learning Node.js, Express and PostgreSQL. Looking for a PFE internship from April 2027."
+    />
+    <meta name="author" content="Hafid Karkouch" />
+    <meta name="theme-color" content="#e9ebf1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#05061a" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="canonical" href="%SITE_URL%/" />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content="Hafid Karkouch — Full-stack development student" />
+    <meta
+      property="og:description"
+      content="Front-end and UI/UX focused, learning the back-end one real project at a time. Looking for a PFE internship from April 2027."
+    />
+    <meta property="og:url" content="%SITE_URL%/" />
+    <meta property="og:image" content="%SITE_URL%/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="fr_FR" />
+    <meta property="og:locale:alternate" content="ar_MA" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Hafid Karkouch",
+        "jobTitle": "Full-stack development student",
+        "url": "%SITE_URL%/",
+        "email": "mailto:hafidkarkouch5@gmail.com",
+        "address": { "@type": "PostalAddress", "addressLocality": "Agadir", "addressCountry": "MA" },
+        "alumniOf": { "@type": "EducationalOrganization", "name": "eWA Digitale" },
+        "sameAs": ["https://github.com/hfdkr", "https://www.linkedin.com/in/hafid-k/"]
+      }
+    </script>
+
+    <!-- Apply saved theme + language before first paint (no flash). Keys match src/lib/storage.js -->
+    <script>
+      (function () {
+        var d = document.documentElement;
+        try {
+          var t = localStorage.getItem("hk.theme");
+          if (t !== "light" && t !== "dark") {
+            t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          }
+          d.dataset.theme = t;
+          var l = localStorage.getItem("hk.lang");
+          if (l === "fr" || l === "ar" || l === "en") {
+            d.lang = l;
+            d.dir = l === "ar" ? "rtl" : "ltr";
+          }
+        } catch (e) {
+          d.dataset.theme = "light";
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <main style="font-family: system-ui, sans-serif; max-width: 40rem; margin: 4rem auto; padding: 0 1.5rem; line-height: 1.6">
+        <h1>Hafid Karkouch</h1>
+        <p>Full-stack development student at eWA Digitale, Agadir, Morocco. Looking for a PFE internship from April 2027.</p>
+        <p>
+          <a href="mailto:hafidkarkouch5@gmail.com">hafidkarkouch5@gmail.com</a> ·
+          <a href="https://github.com/hfdkr">GitHub</a> ·
+          <a href="https://www.linkedin.com/in/hafid-k/">LinkedIn</a>
+        </p>
+      </main>
+    </noscript>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

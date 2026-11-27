@@ -1,0 +1,289 @@
+@import "tailwindcss";
+
+/* Self-hosted variable fonts (no third-party requests). */
+@import "@fontsource-variable/archivo/wdth.css";          /* display + UI, width axis 62–125 */
+@import "@fontsource-variable/jetbrains-mono/wght.css";   /* terminal + technical readouts */
+@import "@fontsource-variable/noto-sans-arabic/wdth.css"; /* Arabic text */
+@import "@fontsource-variable/noto-kufi-arabic/wght.css"; /* Arabic display */
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ------------------------------------------------------------------
+   Tokens
+   DARK  = midnight workspace: deep blue-black, metallic greys, three
+           controlled neons — Majorelle violet (identity), cyan (data
+           flowing), amber (things still being built / learned).
+   LIGHT = clean lab: cool neutral greys, white surfaces, soft shadows,
+           the same three hues, darkened for contrast.
+------------------------------------------------------------------- */
+:root {
+  --bg: #e9ebf1;
+  --bg-2: #f4f5f9;
+  --surface: rgb(255 255 255 / 0.78);
+  --surface-solid: #ffffff;
+  --ink: #10122a;
+  --muted: #545a78;
+  --line: rgb(16 18 42 / 0.12);
+  --line-strong: rgb(16 18 42 / 0.28);
+  --accent: #4a3dd0;
+  --accent-ink: #ffffff;
+  --accent-glow: rgb(74 61 208 / 0.22);
+  --cyan: #0a7c9c;
+  --amber: #8f5e00;
+  --amber-glow: rgb(214 150 20 / 0.22);
+  --pink: #b0306f;
+  --shadow: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 20px 50px -24px rgb(16 18 42 / 0.28);
+  --grid: rgb(16 18 42 / 0.06);
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #05061a;
+  --bg-2: #0b0d27;
+  --surface: rgb(17 20 48 / 0.72);
+  --surface-solid: #10132e;
+  --ink: #eef0ff;
+  --muted: #9ba1c9;
+  --line: rgb(190 196 255 / 0.12);
+  --line-strong: rgb(190 196 255 / 0.3);
+  --accent: #8b7dff;
+  --accent-ink: #07081c;
+  --accent-glow: rgb(139 125 255 / 0.35);
+  --cyan: #52e0ff;
+  --amber: #ffb547;
+  --amber-glow: rgb(255 181 71 / 0.28);
+  --pink: #ff7ac6;
+  --shadow: 0 1px 0 rgb(255 255 255 / 0.06) inset, 0 30px 60px -30px rgb(0 0 0 / 0.8);
+  --grid: rgb(190 196 255 / 0.05);
+  color-scheme: dark;
+}
+
+@theme {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-surface: var(--surface);
+  --color-surface-solid: var(--surface-solid);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-cyan: var(--cyan);
+  --color-amber: var(--amber);
+
+  --font-sans: "Archivo Variable", "Noto Sans Arabic Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-arabic: "Noto Sans Arabic Variable", "Archivo Variable", ui-sans-serif, sans-serif;
+  --font-kufi: "Noto Kufi Arabic Variable", "Noto Sans Arabic Variable", sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 6rem;
+    overflow-x: clip;
+  }
+  html[lang="ar"] {
+    font-family: var(--font-arabic);
+  }
+  body {
+    min-height: 100dvh;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    overflow-x: clip;
+  }
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  img {
+    display: block;
+    max-width: 100%;
+  }
+  button {
+    cursor: pointer;
+  }
+}
+
+/* Theme switch: transition colours only while switching. */
+html.theme-transition,
+html.theme-transition * {
+  transition:
+    background-color 450ms ease,
+    border-color 450ms ease,
+    color 450ms ease,
+    fill 450ms ease,
+    box-shadow 450ms ease !important;
+}
+
+@layer components {
+  /* Display type: Archivo pushed to its widest — or Kufi in Arabic. */
+  .display {
+    font-family: "Archivo Variable", var(--font-kufi);
+    font-stretch: 125%;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 0.92;
+  }
+  html[lang="ar"] .display {
+    font-family: var(--font-kufi);
+    letter-spacing: 0;
+    line-height: 1.25;
+  }
+  .mono {
+    font-family: var(--font-mono);
+  }
+
+  /* Spatial UI panel: a solid-ish surface with a hairline and a lit top edge. */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  }
+
+  /* Corner ticks, like a HUD frame. */
+  .hud {
+    position: relative;
+  }
+  .hud::before,
+  .hud::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: var(--accent);
+    pointer-events: none;
+  }
+  .hud::before {
+    top: -1px;
+    inset-inline-start: -1px;
+    border-top: 1.5px solid;
+    border-inline-start: 1.5px solid;
+  }
+  .hud::after {
+    bottom: -1px;
+    inset-inline-end: -1px;
+    border-bottom: 1.5px solid;
+    border-inline-end: 1.5px solid;
+  }
+
+  .link-line {
+    background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0% 1px;
+    transition: background-size 400ms var(--ease-out-expo);
+  }
+  [dir="rtl"] .link-line {
+    background-position: 100% 100%;
+  }
+  .link-line:hover,
+  .link-line:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Soft grid floor used behind project previews. */
+  .grid-floor {
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+}
+
+/* Custom cursor: only when JS enabled it (fine pointer + hover devices). */
+html.cursor-on,
+html.cursor-on a,
+html.cursor-on button,
+html.cursor-on [role="button"],
+html.cursor-on canvas {
+  cursor: none;
+}
+html.cursor-on input,
+html.cursor-on textarea {
+  cursor: text;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+.pulse-ring {
+  animation: pulse-ring 2.2s var(--ease-out-expo) infinite;
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+.caret {
+  animation: caret 1s steps(1) infinite;
+}
+
+@keyframes float-y {
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Overlay entrances */
+@keyframes term-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+}
+.term-in {
+  animation: term-in 420ms var(--ease-out-expo);
+}
+@keyframes pal-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+}
+.pal-in {
+  animation: pal-in 300ms var(--ease-out-expo);
+}
+@keyframes skill-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+.skill-in {
+  animation: skill-in 450ms var(--ease-out-expo);
+}
