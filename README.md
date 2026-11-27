@@ -84,7 +84,7 @@ It quotes no existing piece (no copyrighted recording or composition is used) an
 
 ## Sections
 
-Hero · About (+ development philosophy) · Selected work (three chapters: problem → what I did → what it taught me,
+Hero · CV (recruiter view + original PDF: download, preview) · About (+ development philosophy) · Selected work (three chapters: problem → what I did → what it taught me,
 full-screen case studies) · From the lab (course REST APIs with their real routes) · Toolbox (solid = in practice,
 outlined = learning) · Experience & education · Contact.
 
@@ -136,7 +136,7 @@ src/
 ├── App.jsx
 ├── liquid/          shader.js (GLSL) · engine.js (WebGL loop) · atmospheres.js (per section, per theme)
 ├── audio/           score.js · instruments.js · engine.js (Web Audio) · levels.js · MusicProvider.jsx (useMusic)
-├── data/            all content in en / fr / ar — only what can be checked in the repositories
+├── data/            all content in en / fr / ar — resume.js mirrors the CV (public/cv/) exactly
 ├── i18n/ui.js       interface text; *italic* in titles, {interactive} words in paragraphs
 ├── lib/             motion.js (reveals, magnetic, letter field) · commands.js (terminal) · preferences.jsx
 │                    ui.jsx · events.js · easter.js · hooks.js · gsap.js · storage.js
@@ -151,7 +151,55 @@ src/
 - **Skill moves from learning to practice**: change `status` in `src/data/skills.js` and add evidence to `where`.
 - **A section's mood**: edit its entry in `src/liquid/atmospheres.js`.
 
-## Deploy on Vercel
+## Deploy
 
-Import the repository (Vite is detected: build `npm run build`, output `dist`), then set your final URL in
-`SITE_URL` (`vite.config.js`) or as a `SITE_URL` environment variable.
+One codebase, any static host. Visitors only open the public URL — nothing to run.
+
+| | Value |
+|---|---|
+| Build command | `npm run build` |
+| Output directory | `dist` |
+| Node.js | 22 (from `.nvmrc`; 20.19+ works) |
+| Environment variables | none required · optional `SITE_URL` (see below) |
+
+**How it stays portable** — `base: "./"` makes every asset path relative, so the same `dist/` works at a domain
+root and under a sub-path (GitHub Pages: `/<repo>/`). The site is a single page with `#section` anchors, so no SPA
+rewrite rules are needed. `public/404.html` is served by every host for unknown paths: friendly URLs such as
+`/work`, `/cv` or `/contact` jump to the right section, anything else shows a small "page not found" with a link home.
+
+**`SITE_URL`** (optional, not a secret) — the public address, used only for the canonical link, Open Graph tags and
+structured data. Vercel, Netlify and Cloudflare Pages provide one automatically; set `SITE_URL` to use your own
+domain (e.g. `https://hafidkarkouch.dev`). Without any URL, those tags are left out — the site itself works the same.
+See `.env.example`.
+
+### Vercel
+1. vercel.com → **Add New… → Project** → import the GitHub repository.
+2. Settings are read from `vercel.json` (Vite, `npm run build`, `dist`). Deploy.
+3. Every push to `main` deploys to production; pull requests get preview URLs.
+
+### Netlify
+1. app.netlify.com → **Add new site → Import an existing project** → GitHub → the repository.
+2. Settings are read from `netlify.toml` (`npm run build`, `dist`; Node from `.nvmrc`). Deploy.
+3. Every push to `main` deploys; pull requests get deploy previews.
+
+### Cloudflare Pages
+1. dash.cloudflare.com → **Workers & Pages → Create → Pages → Connect to Git** → the repository.
+2. Framework preset **Vite** (or: build command `npm run build`, output directory `dist`). Node comes from `.nvmrc`.
+3. Every push to `main` deploys; other branches get preview URLs. Cache headers come from `public/_headers`.
+
+### GitHub Pages
+1. Repository → **Settings → Pages → Source: GitHub Actions**.
+2. **Settings → Secrets and variables → Actions → Variables** → new variable `DEPLOY_GITHUB_PAGES` = `true`.
+3. Push to `main` (or run the workflow by hand): `.github/workflows/deploy-github-pages.yml` builds and publishes.
+   It passes the Pages URL as `SITE_URL`, so the `/<repo>/` sub-path is handled. The workflow stays off until the
+   variable is set, so it never fails for people deploying elsewhere.
+
+### Any other static host
+Run `npm ci && npm run build` and upload the contents of `dist/`. Serve `404.html` for unknown paths if the host
+allows it.
+
+### Checked before delivery
+Production build served two ways — at a domain root (`npm run preview`) and under `/hafid-portfolio/` with
+GitHub Pages behaviour (404 page, trailing-slash redirect): no failed request, no console error; WebGL liquid, all
+fonts and images, CV download (original bytes) and preview, lazy soundtrack chunk with live audio, language + theme
+kept after a refresh, mobile layout, friendly URLs landing on their section.

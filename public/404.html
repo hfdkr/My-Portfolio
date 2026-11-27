@@ -12,9 +12,13 @@
       (function () {
         var sections = { cv: "resume", resume: "resume", about: "about", work: "work", projects: "work", skills: "skills", toolbox: "skills", journey: "experience", experience: "experience", contact: "contact" };
         var parts = location.pathname.split("/").filter(Boolean);
-        var onGithubPages = /\.github\.io$/.test(location.hostname);
-        var home = onGithubPages && parts.length ? "/" + parts[0] + "/" : "/";
-        var rest = onGithubPages ? parts.slice(1) : parts;
+        // The build writes the site's base path here (from SITE_URL, e.g. "/my-repo/").
+        // Without it, a *.github.io project site is detected from the URL.
+        var configured = "%BASE_PATH%";
+        var home = configured.charAt(0) === "/" ? configured
+          : /\.github\.io$/.test(location.hostname) && parts.length ? "/" + parts[0] + "/" : "/";
+        var depth = home.split("/").filter(Boolean).length;
+        var rest = parts.slice(depth);
         var target = rest.length ? sections[rest[rest.length - 1].toLowerCase().replace(/\.html?$/, "")] : null;
         window.__home = home;
         if (target) location.replace(home + "#" + target);

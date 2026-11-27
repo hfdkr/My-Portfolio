@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
@@ -42,6 +44,30 @@ function siteUrl() {
   };
 }
 
+// 404.html (copied from public/) learns the site's base path, so friendly URLs like /work
+// and its "home" link stay inside the site on sub-path hosts such as GitHub Pages.
+function notFoundBasePath() {
+  let outDir = "dist";
+  return {
+    name: "404-base-path",
+    apply: "build",
+    configResolved(config) {
+      outDir = config.build.outDir;
+    },
+    closeBundle() {
+      const file = path.resolve(outDir, "404.html");
+      if (!fs.existsSync(file)) return;
+      let basePath = "";
+      try {
+        if (SITE_URL) basePath = new URL(SITE_URL + "/").pathname;
+      } catch {
+        /* not a URL: keep auto-detection */
+      }
+      fs.writeFileSync(file, fs.readFileSync(file, "utf8").replace("%BASE_PATH%", basePath));
+    },
+  };
+}
+
 // Preload the three Latin font files the hero needs, so the name renders in its real face sooner.
 function preloadHeroFonts() {
   return {
@@ -68,5 +94,5 @@ export default defineConfig({
     // WebGL, audio and overlays are already split out and lazy-loaded.
     chunkSizeWarningLimit: 600,
   },
-  plugins: [react(), tailwindcss(), siteUrl(), preloadHeroFonts()],
+  plugins: [react(), tailwindcss(), siteUrl(), preloadHeroFonts(), notFoundBasePath()],
 });

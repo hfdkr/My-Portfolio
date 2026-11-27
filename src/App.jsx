@@ -38,6 +38,17 @@ export default function App() {
     return () => window.clearTimeout(id);
   }, [lang, dir]);
 
+  // Shared links like /#work or /#contact: the browser looks for the anchor before React has
+  // rendered it, so jump there once the page exists (and again once web fonts settle the layout).
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    if (!id || !/^[\w-]+$/.test(id)) return;
+    const jump = () => document.getElementById(id)?.scrollIntoView({ block: "start" });
+    const timer = window.setTimeout(jump, 60);
+    document.fonts?.ready.then(() => window.setTimeout(jump, 60));
+    return () => window.clearTimeout(timer);
+  }, []);
+
   // Web fonts change line lengths too.
   useEffect(() => {
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
