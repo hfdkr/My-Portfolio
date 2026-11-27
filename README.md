@@ -29,6 +29,33 @@ hovered button change the metal locally, measurably more than elsewhere.
 
 **Reduced motion** keeps a "gentle" liquid: about 9× slower, 30 fps, no ripples, no vortex, light barely drifting.
 
+## The soundtrack — "Gravity Well"
+
+An **original generative score**, written for this site and performed live in the browser with the Web Audio API.
+It quotes no existing piece (no copyrighted recording or composition is used) and nothing is downloaded.
+
+- **Instruments** (`src/audio/instruments.js`): church organ (additive drawbars, two detuned ranks), piano, detuned
+  pads, glassy arpeggio with echo, sub bass, a wooden ticking clock, noise swells — in a generated 5 s cathedral reverb.
+- **Score** (`src/audio/score.js`): 66 BPM, three progressions in D (suspended minor → lifted major → home), four
+  arpeggio figures and three piano motifs that rotate every phrase, so it develops instead of looping.
+- **Five movements** follow the page: *Signal* (hero) → *Drift* (about) → *Gravity* (skills, experience) →
+  *Ascent* (work: organ climax, swells) → *Home* (contact: resolves to D major). Changes wait for the next chord or
+  phrase — scrolling never jerks the music. A movement also grows fuller the longer the visitor stays in it.
+- **Engine** (`src/audio/engine.js`): lookahead scheduler on the audio clock; pause = fade out then suspend the
+  context, so play resumes exactly where it was. Loaded only on the first Play (≈3.7 KB gzipped).
+- **Player** (`components/MusicPlayer.jsx`): a small instrument in the corner (turning chrome ring, five live bars,
+  status dot) that opens into a console — status, title, live spectrum + waveform (`MusicVisualizer.jsx`, fed only by
+  the AnalyserNode), the five-movement journey with real phrase progress, play/pause, mute, volume.
+- **The page listens**: the liquid reads the same live levels — energy raises its glow, the phrasing pulses the
+  metal under the light and drops soft rings, the highs make the star dust twinkle. Silent → no effect.
+- **Respectful by default**: no sound before the visitor presses Play (no AudioContext is even created); if the
+  browser still blocks audio, a short message says to press Play. Volume, mute and "was on" are remembered — on the
+  next visit the player *offers* to resume, it never starts by itself. Also in the command menu and the terminal
+  (`music on | off`). Fully translated, RTL-aware, both themes.
+
+**Using a licensed recording instead**: put the file in `public/audio/`, set `file` and `credit` in
+`src/data/music.js`. If the file is missing or fails, the live score takes over automatically.
+
 ## Identity
 
 - **Colour hierarchy** — obsidian dominates; cobalt and ultraviolet are the identity; emerald for live states and
@@ -89,7 +116,7 @@ outlined = learning) · Experience & education · Contact.
 
 ## Stack
 
-React 19 · Vite 8 · Tailwind CSS 4 · WebGL + GLSL · GSAP 3 (ScrollTrigger, SplitText) · Fontsource.
+React 19 · Vite 8 · Tailwind CSS 4 · WebGL + GLSL · Web Audio API · GSAP 3 (ScrollTrigger, SplitText) · Fontsource.
 
 ## Run locally
 
@@ -108,12 +135,13 @@ npm run preview   # serve the build
 src/
 ├── App.jsx
 ├── liquid/          shader.js (GLSL) · engine.js (WebGL loop) · atmospheres.js (per section, per theme)
+├── audio/           score.js · instruments.js · engine.js (Web Audio) · levels.js · MusicProvider.jsx (useMusic)
 ├── data/            all content in en / fr / ar — only what can be checked in the repositories
 ├── i18n/ui.js       interface text; *italic* in titles, {interactive} words in paragraphs
 ├── lib/             motion.js (reveals, magnetic, letter field) · commands.js (terminal) · preferences.jsx
 │                    ui.jsx · events.js · easter.js · hooks.js · gsap.js · storage.js
 └── components/      LiquidBackground, Header, Hero, About, Work, Lab, Skills, Journey, Contact, Footer,
-                     InteractiveText, Terminal, CommandPalette, Cursor, Toast, Primitives, Icons
+                     InteractiveText, MusicPlayer, MusicVisualizer, Terminal, CommandPalette, Cursor, Toast, …
 ```
 
 ## Updating content

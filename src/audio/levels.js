@@ -2,7 +2,7 @@
 // The music engine registers a sampler; readers call sampleLevels() inside their own frame
 // loop. Sampling happens at most once per animation frame, however many readers there are.
 
-export const levels = { bass: 0, mid: 0, high: 0, energy: 0, active: false };
+export const levels = { bass: 0, mid: 0, high: 0, energy: 0, pulse: 0, active: false };
 
 let sampler = null;
 let lastFrame = -1;
@@ -11,7 +11,7 @@ let lastFrame = -1;
 export function setLevelSampler(fn) {
   sampler = fn;
   if (!fn) {
-    levels.bass = levels.mid = levels.high = levels.energy = 0;
+    levels.bass = levels.mid = levels.high = levels.energy = levels.pulse = 0;
     levels.active = false;
   }
 }

@@ -98,7 +98,7 @@ export function createLiquid(canvas, { theme = "dark", section = "top", mobile =
   let flow = 11.3; // start mid-flow, not at the noise origin
   let clock = 0;
   let boost = 0; // easter egg: mercury mode
-  const music = { energy: 0, bass: 0, high: 0, lastBass: 0, lastDrop: 0 }; // smoothed soundtrack levels
+  const music = { energy: 0, bass: 0, high: 0, pulse: 0, lastDrop: 0 }; // smoothed soundtrack levels
 
   // loop state (declared before anything can request a frame)
   let raf = 0;
@@ -228,15 +228,16 @@ export function createLiquid(canvas, { theme = "dark", section = "top", mobile =
     // the soundtrack, when it plays: smoothed so the metal breathes rather than flickers
     const lv = sampleLevels();
     const on = lv.active && !gentle;
-    music.energy = approach(music.energy, on ? lv.energy : 0, 3, dt);
-    music.bass = approach(music.bass, on ? lv.bass : 0, 6, dt);
+    // energy = the steady glow; pulse = the phrasing (swells and entries) on top of it
+    music.energy = approach(music.energy, on ? lv.energy * 0.6 + lv.pulse * 0.4 : 0, 3, dt);
+    music.bass = approach(music.bass, on ? lv.bass * 0.35 + lv.pulse * 0.65 : 0, 6, dt);
     music.high = approach(music.high, on ? lv.high : 0, 5, dt);
-    // a strong low-end onset drops a soft ring under the light (at most every 1.4 s)
-    if (on && lv.bass - music.lastBass > 0.18 && clock - music.lastDrop > 1.4) {
+    // a musical entry (a jump above the recent average) drops a soft ring under the light
+    if (on && lv.pulse > 0.5 && music.pulse <= 0.5 && clock - music.lastDrop > 1.4) {
       drop(pointer.x, pointer.y, 0.03);
       music.lastDrop = clock;
     }
-    music.lastBass = on ? lv.bass : 0;
+    music.pulse = on ? lv.pulse : 0;
 
     scroll = approach(scroll, scrollTarget, 6, dt);
     glide(dt);

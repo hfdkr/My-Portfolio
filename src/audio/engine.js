@@ -106,10 +106,14 @@ export class AudioEngine {
     if (MOVEMENTS[name]) this.requested = name;
   }
 
-  /** Writes { bass, mid, high, energy } (0…1) into `out` from the real signal. */
+  /**
+   * Writes { bass, mid, high, energy, pulse } (0…1) into `out` from the real signal.
+   * `pulse` is how far the music currently sits above its own recent average —
+   * it follows the phrasing (swells, entries, climaxes) rather than the constant drone.
+   */
   getLevels(out) {
     if (!this.analyser || this.status === "idle") {
-      out.bass = out.mid = out.high = out.energy = 0;
+      out.bass = out.mid = out.high = out.energy = out.pulse = 0;
       return out;
     }
     const f = this.freq;
@@ -119,10 +123,13 @@ export class AudioEngine {
       for (let i = a; i < b; i++) s += f[i];
       return s / ((b - a) * 255);
     };
-    out.bass = Math.min(1, avg(1, 7) * 1.25);
-    out.mid = Math.min(1, avg(7, 48) * 1.5);
-    out.high = Math.min(1, avg(48, 180) * 2.4);
-    out.energy = Math.min(1, out.bass * 0.45 + out.mid * 0.4 + out.high * 0.15);
+    // bins are ~43 Hz wide at 44.1 kHz: lows < 260 Hz, mids to ~900 Hz, highs (arpeggio, clock) to ~4 kHz
+    out.bass = Math.min(1, avg(1, 6));
+    out.mid = Math.min(1, avg(6, 21) * 1.4);
+    out.high = Math.min(1, avg(21, 95) * 5);
+    out.energy = Math.min(1, out.bass * 0.4 + out.mid * 0.4 + out.high * 0.2);
+    this.ema = this.ema == null ? out.energy : this.ema + (out.energy - this.ema) * 0.01;
+    out.pulse = Math.min(1, Math.max(0, (out.energy - this.ema) * 7));
     return out;
   }
 
