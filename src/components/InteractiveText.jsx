@@ -100,7 +100,7 @@ function InteractiveText({
   }, [text, breakable, emClassName]);
 
   const vars = {
-    ...(color && { "--it-color": color }),
+    ...(color && { "--it-fixed": color }),
     ...(duration && { "--it-dur": `${duration}ms` }),
     ...(lift != null && { "--it-lift": `${lift}em` }),
     ...(scale && { "--it-scale": scale }),

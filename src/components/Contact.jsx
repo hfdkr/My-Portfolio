@@ -42,7 +42,9 @@ export default function Contact() {
 
   return (
     <section id="contact" ref={root} aria-labelledby="contact-title" className="relative overflow-hidden border-t border-line pt-28 pb-20 md:pt-40">
-      <div className="gutter mx-auto max-w-[1440px]">
+      {/* reading scrim on the text side; the liquid keeps the far side for its finale */}
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgb(var(--scrim)/0.85),rgb(var(--scrim)/0.55)_55%,rgb(var(--scrim)/0.1))] rtl:bg-[linear-gradient(to_left,rgb(var(--scrim)/0.85),rgb(var(--scrim)/0.55)_55%,rgb(var(--scrim)/0.1))]" aria-hidden="true" />
+      <div className="gutter relative mx-auto max-w-[1440px]">
         <div className="grid gap-y-6 md:grid-cols-12 md:gap-x-8">
           <p className="eyebrow md:col-span-3" data-reveal>
             {t("contact.eyebrow")}
@@ -56,7 +58,7 @@ export default function Contact() {
             {/* the main channel */}
             <div className="mt-14 border-y border-line py-8" data-reveal>
               <a ref={email} href={`mailto:${profile.email}`} data-cursor="write" className="group inline-block max-w-full" dir="ltr">
-                <span className="serif link-line block text-[clamp(1.6rem,5.2vw,4.6rem)] leading-[1.1] tracking-tight">
+                <span className="headline link-line block text-[clamp(1.6rem,5.2vw,4.6rem)] leading-[1.1] tracking-tight">
                   <InteractiveText text={profile.email} variant="title" breakable />
                 </span>
               </a>
@@ -140,7 +142,7 @@ export default function Contact() {
                     <li key={name}>
                       <a href={href} target="_blank" rel="noopener noreferrer" data-cursor="open" className="group flex items-center justify-between gap-4 border-b border-line py-5">
                         <span>
-                          <InteractiveText text={name} className="serif block text-[1.8rem] leading-none tracking-tight" />
+                          <InteractiveText text={name} className="headline block text-[1.8rem] leading-none tracking-tight" />
                           <span className="mono mt-2 block text-[11px] text-muted" dir="ltr">
                             {short}
                           </span>

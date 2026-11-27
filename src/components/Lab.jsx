@@ -21,7 +21,7 @@ function Specimen({ api, index }) {
         <p className="mono text-[11px] text-muted">{api.year}</p>
       </header>
       <div className="flex flex-1 flex-col p-5 sm:p-7">
-        <InteractiveText as="h4" id={`lab-${api.id}`} text={pick(api.name)} className="serif text-[1.9rem] leading-tight tracking-tight" />
+        <InteractiveText as="h4" id={`lab-${api.id}`} text={pick(api.name)} className="headline text-[1.9rem] leading-tight tracking-tight" />
         <p className="mt-2 text-muted">{pick(api.summary)}</p>
 
         <p className="eyebrow mt-7">{t("lab.routes")}</p>

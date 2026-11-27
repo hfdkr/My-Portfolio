@@ -1,16 +1,16 @@
 import { usePrefs } from "../lib/preferences";
 import { scrollToSection } from "../lib/ui";
-import { Star } from "./Primitives";
+import { Mark } from "./Primitives";
 import InteractiveText from "./InteractiveText";
 
 export default function Footer() {
   const { t, lang } = usePrefs();
   const name = lang === "ar" ? "حفيظ كركوش" : "Hafid Karkouch";
   return (
-    <footer className="relative overflow-hidden border-t border-line pt-14">
+    <footer className="relative z-[1] overflow-hidden border-t border-line pt-14">
       <div className="gutter mx-auto grid max-w-[1440px] gap-6 text-sm text-muted md:grid-cols-12 md:gap-8">
         <p className="flex items-center gap-2.5 text-ink-2 md:col-span-3">
-          <Star size={14} className="text-accent" />
+          <Mark size={14} className="text-accent" />
           {t("footer.built")}
         </p>
         <p className="mono text-[11px] md:col-span-5">{t("footer.hint")}</p>

@@ -4,7 +4,7 @@ import { useUI, scrollToSection, SECTIONS } from "../lib/ui";
 import { ScrollTrigger } from "../lib/gsap";
 import { emit, toast } from "../lib/events";
 import { SunIcon, MoonIcon } from "./Icons";
-import { Star } from "./Primitives";
+import { Mark } from "./Primitives";
 import InteractiveText from "./InteractiveText";
 
 const LANG_SHORT = { en: "EN", fr: "FR", ar: "AR" };
@@ -111,7 +111,7 @@ export default function Header() {
     scrollToSection(id);
   };
 
-  // Five quick clicks on the star → the tiles flip. (Shh.)
+  // Five quick clicks on the mark → mercury mode. (Shh.)
   const onMark = (e) => {
     e.preventDefault();
     const now = performance.now();
@@ -119,7 +119,7 @@ export default function Header() {
     if (clicks.current.length >= 5) {
       clicks.current = [];
       emit("wave");
-      toast(t("egg.maalem"));
+      toast(t("egg.mercury"));
     }
     scrollToSection("top");
   };
@@ -137,7 +137,7 @@ export default function Header() {
       >
         <div className="gutter mx-auto flex h-16 max-w-[1440px] items-center gap-4">
           <a href="#top" onClick={onMark} className="group flex items-center gap-2.5 text-ink" aria-label="Hafid Karkouch — top">
-            <Star size={20} className="text-accent transition-transform duration-1000 ease-[var(--ease-out-expo)] group-hover:rotate-[135deg]" />
+            <Mark size={22} chrome className="transition-transform duration-1000 ease-[var(--ease-out-expo)] group-hover:rotate-[200deg]" />
             <InteractiveText text={lang === "ar" ? "حفيظ كركوش" : "Hafid Karkouch"} variant="nav" className="text-[0.95rem] font-semibold tracking-tight" />
           </a>
 
@@ -189,7 +189,7 @@ export default function Header() {
         <div className="h-px origin-left bg-accent/70 rtl:origin-right" ref={progress} style={{ transform: "scaleX(0)" }} aria-hidden="true" />
       </header>
 
-      {/* Mobile menu: full screen, big serif links that rise in one after another. */}
+      {/* Mobile menu: full screen, big headline links that rise in one after another. */}
       <div
         id="mobile-menu"
         role="dialog"
@@ -201,7 +201,7 @@ export default function Header() {
         {menu && (
           <>
             <div className="gutter flex h-16 items-center justify-between border-b border-line">
-              <Star size={20} className="text-accent" />
+              <Mark size={20} className="text-accent" />
               <button type="button" onClick={() => setMenu(false)} className="min-h-10 px-2 text-sm font-medium" autoFocus>
                 {t("nav.close")}
               </button>

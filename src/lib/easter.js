@@ -3,7 +3,7 @@ import { emit, toast } from "./events";
 
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 
-/** ↑ ↑ ↓ ↓ ← → ← → B A → the zellige field flips in a spiral. @returns {() => void} cleanup */
+/** ↑ ↑ ↓ ↓ ← → ← → B A → mercury mode (the liquid turns iridescent). @returns {() => void} cleanup */
 export function listenKonami(message) {
   let i = 0;
   const onKey = (e) => {
@@ -26,10 +26,10 @@ export function listenKonami(message) {
 export function greetDevelopers() {
   if (typeof window === "undefined" || window.__hkGreeted) return;
   window.__hkGreeted = true;
-  const style = "font: 600 13px/1.6 ui-monospace, monospace; color: #ff7a45";
+  const style = "font: 600 13px/1.6 ui-monospace, monospace; color: #7f9aff";
   // Intentional: the one console message of the site, for curious developers.
   console.info(
-    "%c✦ Hello, fellow developer.\n  The hero is one InstancedMesh, animated in the vertex shader.\n  Try the terminal (Ctrl `), or ↑ ↑ ↓ ↓ ← → ← → B A.\n  Source: https://github.com/hfdkr",
+    "%c◐ Hello, fellow developer.\n  The liquid behind this page is one fragment shader: domain-warped simplex noise,\n  normals from finite differences, a procedural studio reflection. No textures, no three.js.\n  Try the terminal (Ctrl `), or ↑ ↑ ↓ ↓ ← → ← → B A.\n  Source: https://github.com/hfdkr",
     style,
   );
 }

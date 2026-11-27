@@ -32,7 +32,7 @@ export function PreferencesProvider({ children }) {
     document.documentElement.dataset.theme = theme;
     document
       .querySelectorAll('meta[name="theme-color"]')
-      .forEach((m) => m.setAttribute("content", theme === "dark" ? "#0d0c0b" : "#f1ece3"));
+      .forEach((m) => m.setAttribute("content", theme === "dark" ? "#090a0e" : "#f1f0eb"));
   }, [theme]);
 
   const setLang = useCallback((next) => {

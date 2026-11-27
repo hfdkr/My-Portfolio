@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { on } from "../lib/events";
-import { Star } from "./Primitives";
+import { Mark } from "./Primitives";
 
 /** One quiet message at a time, bottom of the screen. Triggered with toast("…") from lib/events. */
 export default function Toast() {
@@ -22,7 +22,7 @@ export default function Toast() {
     <div role="status" aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-6 z-[85] flex justify-center px-4">
       {msg && (
         <p key={msg.id} className="rise-in flex max-w-lg items-start gap-3 border border-line-strong bg-surface px-5 py-3.5 text-sm text-ink shadow-[0_30px_60px_-30px_rgb(0_0_0/0.6)]">
-          <Star size={14} className="mt-0.5 shrink-0 text-accent" />
+          <Mark size={14} className="mt-0.5 shrink-0 text-accent" />
           {msg.text}
         </p>
       )}

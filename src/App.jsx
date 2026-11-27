@@ -15,6 +15,7 @@ import Terminal from "./components/Terminal";
 import CommandPalette from "./components/CommandPalette";
 import Cursor from "./components/Cursor";
 import Toast from "./components/Toast";
+import LiquidBackground from "./components/LiquidBackground";
 
 export default function App() {
   const { lang, dir, t } = usePrefs();
@@ -38,13 +39,14 @@ export default function App() {
   useEffect(() => {
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
     greetDevelopers();
-    return listenKonami(() => tRef.current("egg.maalem"));
+    return listenKonami(() => tRef.current("egg.mercury"));
   }, []);
 
   return (
     <UIProvider>
+      <LiquidBackground />
       <Header />
-      <main id="main" ref={mainRef} tabIndex={-1} className="outline-none">
+      <main id="main" ref={mainRef} tabIndex={-1} className="relative z-[1] outline-none">
         <Hero />
         <About />
         <Work />

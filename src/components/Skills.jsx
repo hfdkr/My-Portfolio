@@ -4,7 +4,7 @@ import { usePrefersReducedMotion, useFinePointer } from "../lib/hooks";
 import { useReveals } from "../lib/motion";
 import { skills, skillGroups } from "../data/skills";
 import { focus } from "../data/journey";
-import { SectionHead, Star } from "./Primitives";
+import { SectionHead, Mark } from "./Primitives";
 import InteractiveText from "./InteractiveText";
 
 function Detail({ skill, className = "" }) {
@@ -17,7 +17,7 @@ function Detail({ skill, className = "" }) {
         <span className={`inline-block h-2 w-2 ${learning ? "border border-accent" : "bg-ink"}`} aria-hidden="true" />
         {learning ? t("skills.learning") : t("skills.practice")}
       </p>
-      <p className="serif mt-4 text-[2rem] leading-none tracking-tight">{pick(skill.name)}</p>
+      <p className="headline mt-4 text-[2rem] leading-none tracking-tight">{pick(skill.name)}</p>
       <p className="mt-4 leading-relaxed text-ink-2">{pick(skill.desc)}</p>
       <p className="eyebrow mt-6">{t("skills.where")}</p>
       {skill.where.length ? (
@@ -86,7 +86,7 @@ export default function Skills() {
                               text={pick(s.name)}
                               variant="skill"
                               color={on ? "var(--ink)" : undefined}
-                              className={`serif text-[clamp(1.6rem,3vw,2.6rem)] leading-[1.15] tracking-tight transition-colors duration-300 ${
+                              className={`headline text-[clamp(1.6rem,3vw,2.6rem)] leading-[1.15] tracking-tight transition-colors duration-300 ${
                                 learning ? (on ? "text-accent [-webkit-text-stroke:0]" : "outline-text") : on ? "text-accent" : "text-ink"
                               }`}
                             />
@@ -110,7 +110,7 @@ export default function Skills() {
             <Detail skill={current} />
             <div className="border border-dashed border-line-strong p-6">
               <p className="eyebrow flex items-center gap-2">
-                <Star size={11} className="text-accent" /> {t("journey.focus")}
+                <Mark size={11} className="text-accent" /> {t("journey.focus")}
               </p>
               <ul className="mt-4 space-y-2 text-[0.95rem] text-ink-2">
                 {focus.map((f) => (

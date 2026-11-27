@@ -1,8 +1,9 @@
 // Small building blocks shared by every section.
+import { useId } from "react";
 import { usePrefs } from "../lib/preferences";
 import InteractiveText from "./InteractiveText";
 
-/** Section opener: eyebrow + big serif title + intro, on the 12-column grid. */
+/** Section opener: eyebrow + big headline title + intro, on the 12-column grid. */
 export function SectionHead({ id, eyebrow, title, intro, children }) {
   // SplitText rewrites the heading's DOM, so React must never reconcile inside it:
   // keying by language makes a language switch replace the whole element instead.
@@ -35,18 +36,25 @@ export function LiveDot({ className = "" }) {
   );
 }
 
-/** Eight-point star — the identity mark. */
-export function Star({ size = 18, className = "", strokeWidth = 0, filled = true }) {
-  // two squares, one rotated 45°
+/**
+ * The identity mark: a ring of liquid metal holding one reflected droplet.
+ * `chrome` paints it with the signature gradient (cobalt → ultraviolet → champagne).
+ */
+export function Mark({ size = 18, className = "", chrome = false }) {
+  const id = useId();
   return (
     <svg width={size} height={size} viewBox="-12 -12 24 24" className={className} aria-hidden="true" focusable="false">
-      <path
-        d="M0-11 3.2-7.7 7.8-7.8 7.7-3.2 11 0 7.7 3.2 7.8 7.8 3.2 7.7 0 11-3.2 7.7-7.8 7.8-7.7 3.2-11 0-7.7-3.2-7.8-7.8-3.2-7.7Z"
-        fill={filled ? "currentColor" : "none"}
-        stroke={strokeWidth ? "currentColor" : "none"}
-        strokeWidth={strokeWidth}
-        strokeLinejoin="round"
-      />
+      {chrome && (
+        <defs>
+          <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#7f9aff" />
+            <stop offset="0.5" stopColor="#8957e5" />
+            <stop offset="1" stopColor="#d8bd87" />
+          </linearGradient>
+        </defs>
+      )}
+      <circle r="9.5" fill="none" stroke={chrome ? `url(#${id})` : "currentColor"} strokeWidth="2.4" />
+      <path d="M2.2-6.4c2.9.6 4.9 3.1 4.9 6.1 0 1.1-.3 2.2-.8 3.1-1-2.5-3.4-4.3-6.2-4.3-.6 0-1.2.1-1.8.2.6-2.6 2-4.6 3.9-5.1Z" fill={chrome ? `url(#${id})` : "currentColor"} />
     </svg>
   );
 }

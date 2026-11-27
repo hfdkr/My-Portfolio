@@ -159,9 +159,9 @@ export function run(raw, ctx) {
       L.push(line(t("term.coffee")));
       break;
     }
-    case "zellige":
-    case "maalem": {
-      L.push(line(seg(t("term.zellige"), "ok")));
+    case "mercury":
+    case "chrome": {
+      L.push(line(seg(t("term.mercury"), "ok")));
       return { lines: L, wave: true };
     }
     case "hire": {

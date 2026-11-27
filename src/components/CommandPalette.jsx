@@ -123,7 +123,7 @@ export default function CommandPalette() {
   let lastGroup = "";
   return (
     <div className="fixed inset-0 z-[70] flex items-start justify-center px-4 pt-[12vh]">
-      <div className="fade-in absolute inset-0 bg-[#080706]/55" onClick={close} aria-hidden="true" />
+      <div className="fade-in absolute inset-0 bg-[#05060a]/55" onClick={close} aria-hidden="true" />
       <div role="dialog" aria-modal="true" aria-label={t("palette.open")} className="rise-in relative w-full max-w-xl overflow-hidden border border-line-strong bg-surface shadow-[0_50px_100px_-40px_rgb(0_0_0/0.6)]">
         <div className="flex items-center gap-3 border-b border-line px-4">
           <span className="mono text-xs text-accent" aria-hidden="true">⌘K</span>

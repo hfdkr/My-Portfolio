@@ -1,73 +1,95 @@
-# Hafid Karkouch — Portfolio (v3, "Zellige")
+# Hafid Karkouch — Portfolio (v4, "Liquid chrome")
 
 A cinematic, fast personal site in English, French and Arabic (full RTL), with designed night and day themes.
+The signature is a procedural liquid-metal surface that lives behind the whole page and changes mood with each section.
 
-## The concept: built tile by tile
+## The liquid
 
-Zellige craftsmen in Morocco cut every tile by hand and set it piece by piece; the mosaic only works when
-every piece is precise. That is how I want to build software — and it is the visual identity of the site.
+`src/liquid/` — one canvas, one full-screen triangle, one fragment shader. Plain WebGL: no three.js, no textures,
+no video. The engine is **5.7 KB gzipped**.
 
-- **Hero** — a floor of glazed eight-point stars (khatam). A warm light follows the pointer; tiles lift and tilt
-  away from it, and the light rises through the cross-shaped gaps: the code under the surface.
-  Scrolling away peels the nearest rows off. Night = basalt glaze and ember light; day = tadelakt plaster.
-- **Palette** — warm only: basalt / bone white / ember (an Agadir sunset) at night, plaster / ink / terracotta by day,
-  plus one glaze green for "live" states. Each project keeps its own colour, taken from its real UI.
-- **Type** — Fraunces (display serif, optical size + weight axes), Geist (text), Geist Mono (labels),
-  Noto Kufi Arabic / Noto Sans Arabic for Arabic.
+- **Surface** — a height field of domain-warped simplex noise (noise feeding noise), seen in **perspective** as a
+  plane receding into haze, with a slower far layer of light ribbons behind it. Normals come from two extra samples.
+- **Always alive** — every layer flows at its own, incommensurate speed; the warp slowly "breathes"; the light
+  orbits on its own when you stop moving; a drop falls somewhere on the metal every 2–6 s.
+- **Pointer** — stirs a **vortex** that turns with your motion, pulls the metal toward the cursor, and leaves
+  **ripple rings** along its path (8 alive at once). On touch screens, a tap drops a ring.
+- **Micro-interactions** — hovering a button, link, project preview or heading swells the metal under it and leans
+  the light toward it (one delegated listener for the whole page).
+- **Scroll** — carries the liquid with the page; scrolling fast stirs it. Each section has its own atmosphere
+  (`atmospheres.js`: presence, warp, iridescence, speed, position, perspective, five reflected colours) and the
+  engine glides between them. Hero: cobalt + ultraviolet. About: emerald + champagne. Work: steel. Skills: violet.
+  Experience: champagne. Contact: ultraviolet with a coral horizon. Light theme: pearl chrome.
+- **Material** — a mirror reflecting a procedural photo studio, thin-film iridescence on grazing angles, a
+  specular light that follows the pointer.
 
-## Sections
+Verified in the browser (engine clock and frame captures): 60 fps and a flow of 0.75 units/s at full motion;
+30 fps and 0.08 units/s with reduced motion; the screen changes on its own with no input; a mouse sweep and a
+hovered button change the metal locally, measurably more than elsewhere.
 
-Hero · About (scroll-lit manifesto, facts, "How I work") · Selected work (three chapters: problem → what I did →
-what it taught me, framed previews, full-screen case studies) · From the lab (course REST APIs with their real routes)
-· Toolbox (solid = in practice, outlined = learning) · Journey (education, internship, what's next) · Contact.
+**Reduced motion** keeps a "gentle" liquid: about 9× slower, 30 fps, no ripples, no vortex, light barely drifting.
+
+## Identity
+
+- **Colour hierarchy** — obsidian dominates; cobalt and ultraviolet are the identity; emerald for live states and
+  small surprises; champagne gold for luxury details; coral almost never; pearl for type; steel for secondary text.
+  Raw colours (`--cobalt`…) are for graphics, `--accent*` tokens are their WCAG-AA text versions per theme.
+- **Type** — Bricolage Grotesque (display, optical size + weight), Fraunces italic in *chrome ink* (a gradient fixed
+  to the viewport, so it shimmers while scrolling), Geist, Geist Mono; Noto Kufi / Noto Sans Arabic.
+- **Mark** — a ring of liquid metal holding one reflected droplet.
 
 ## Interactive typography
 
 `src/components/InteractiveText.jsx` — letters react one at a time.
 
 ```jsx
-<InteractiveText as="h2" variant="title" text="Three projects, *told honestly*." data-split />
+<InteractiveText as="h2" text="Three projects, *told honestly*." data-split />
 <Marked text="I {design} interfaces, {build} them…" />   // only {marked} words react
 ```
 
-- Hover is **pure CSS** (`:hover`, `:has()` for the two neighbours) → no JavaScript and no React re-render per letter.
-- Each letter has two layers: `.it-c` (GSAP entrance) and `.it-g` (CSS hover), so they never fight over `transform`.
-- Variants: `hero` (pointer field: lift, colour and Fraunces weight follow the distance to the cursor — `useLetterField`),
-  `title`, `nav`, `skill`, `word`, `cta`, `footer` (the faded signature lights up letter by letter).
-- Props: `color`, `duration`, `lift`, `scale`, `stagger`, `breakable`, `as`, `variant`.
-- Arabic is never split into letters (it would break letter joining): each Arabic word reacts as one unit.
-- Screen readers get the plain text once (visual letters are `aria-hidden`); selection/copy gives clean text;
-  focused links/buttons send a wave through their letters; touch gets a tap response; reduced motion keeps colour only.
+- Hover is pure CSS (`:hover`, `:has()` for the two neighbours): no JavaScript, no React re-render per letter.
+- Each letter takes a hue from the palette by position (cobalt · ultraviolet · emerald · champagne), lifts, grows and
+  tilts ±4°; neighbours follow at a third. Fast in, slow out.
+- Hero name: a pointer field (`useLetterField`) — closeness to the cursor drives lift, colour and Bricolage weight.
+- Arabic is never split into letters (that breaks letter joining): each Arabic word reacts as one unit.
+- Screen readers get the text once, selection/copy stays clean, keyboard focus sends a wave through link letters,
+  touch gets a tap response, reduced motion keeps colour only.
+
+## Sections
+
+Hero · About (+ development philosophy) · Selected work (three chapters: problem → what I did → what it taught me,
+full-screen case studies) · From the lab (course REST APIs with their real routes) · Toolbox (solid = in practice,
+outlined = learning) · Experience & education · Contact.
 
 ## Other features
 
-- **Terminal** (`Ctrl + \``) — real parser, history, Tab completion: `help about whoami skills projects lab experience
-  education contact github social date clear lang theme goto open exit`. Some commands are not listed.
-- **Command menu** (`Ctrl K` / `⌘K`) — sections, theme, language, copy email, links.
-- **Context cursor** — "View", "Open", "Copy", "Write" on the right targets (mouse only).
-- **Secrets** — try the Konami code, five quick clicks on the star logo, or the browser console.
+- **Terminal** (`Ctrl + \``) — parser, history, Tab completion: `help about whoami skills projects lab experience
+  education contact github social date clear lang theme goto open exit`. A few commands are not listed.
+- **Command menu** (`Ctrl K` / `⌘K`), **context cursor** ("View", "Open", "Copy", "Write").
+- **Secrets** — the Konami code, five quick clicks on the logo, the browser console.
 
-## Performance (measured on the production build)
+## Performance (production build, measured)
 
 | Scenario | LCP | CLS | Long tasks while scrolling |
 |---|---|---|---|
-| Desktop, no WebGL (fallback) | 0.42 s | 0.000 | 0 |
-| Desktop, CPU-rendered WebGL (worst case) | 0.78 s | 0.001 | 1 |
-| Mobile, 4× CPU throttle | 1.95 s | 0.000 | 1 (52 ms) |
+| Desktop, no WebGL (still image) | 0.36 s | 0.000 | 0 |
+| Desktop, WebGL rendered on the CPU (worst case) | 0.65 s | 0.000 | 3* |
+| Mobile, 4× CPU throttle | 1.48 s | 0.000 | 0 |
 
-How:
-- **One WebGL canvas**, plain three.js (no React renderer): every tile is a single `InstancedMesh` = one draw call.
-  All motion runs in the vertex shader from a few uniforms — the CPU updates ~8 numbers per frame.
-- The 3D chunk is **lazy-loaded after the page is idle**; the name is the LCP. A flat SVG of the same motif shows first,
-  and stays as the experience without WebGL, on low-memory devices or with Data Saver.
-- Renders only while visible and the tab is active; drops its pixel ratio by itself if frames get slow;
-  renders on demand with `prefers-reduced-motion`; shaders compile in parallel where the driver allows.
-- No `backdrop-filter` over the canvas, no React state in scroll handlers, animation loops that stop when idle.
-- Self-hosted fonts, the three Latin files the hero needs are preloaded; Arabic fonts load only when Arabic shows.
+\* only when the shader runs in software (first seconds, before the quality ladder steps down); on a real GPU the shader does not run on the main thread.
+
+- The liquid loads **after the page is idle**; a static still with the same composition shows first, and stays when
+  WebGL is missing, on low-memory devices or with Data Saver. A shader failure falls back to it silently.
+- It renders at ~half resolution (invisible on a smooth surface). On a slow GPU it climbs down a quality ladder by
+  itself — fewer pixels first, then 30 fps, then 15 fps — so scrolling and input stay responsive. It stops when the
+  tab is hidden. Resizing redraws immediately (no black flash).
+- Mobile: two noise octaves instead of three, 0.4× resolution, a wandering light instead of the pointer.
+- Memory: 240 language/theme switches → JS heap plateaus, DOM node count constant, still one canvas.
+- Self-hosted fonts; the three Latin files the hero needs are preloaded; Arabic fonts load only when Arabic shows.
 
 ## Stack
 
-React 19 · Vite 8 · Tailwind CSS 4 · three.js · GSAP 3 (ScrollTrigger, SplitText) · Fontsource.
+React 19 · Vite 8 · Tailwind CSS 4 · WebGL + GLSL · GSAP 3 (ScrollTrigger, SplitText) · Fontsource.
 
 ## Run locally
 
@@ -85,24 +107,23 @@ npm run preview   # serve the build
 ```
 src/
 ├── App.jsx
-├── data/            ← all content, in en / fr / ar (only describe what can be checked in the repos)
-│   ├── profile.js   projects.js   lab.js   experience.js   skills.js   journey.js
+├── liquid/          shader.js (GLSL) · engine.js (WebGL loop) · atmospheres.js (per section, per theme)
+├── data/            all content in en / fr / ar — only what can be checked in the repositories
 ├── i18n/ui.js       interface text; *italic* in titles, {interactive} words in paragraphs
-├── three/zellige.js the hero scene
 ├── lib/             motion.js (reveals, magnetic, letter field) · commands.js (terminal) · preferences.jsx
 │                    ui.jsx · events.js · easter.js · hooks.js · gsap.js · storage.js
-└── components/      Header, Hero, About, Work, Lab, Skills, Journey, Contact, Footer,
+└── components/      LiquidBackground, Header, Hero, About, Work, Lab, Skills, Journey, Contact, Footer,
                      InteractiveText, Terminal, CommandPalette, Cursor, Toast, Primitives, Icons
 ```
 
 ## Updating content
 
 - **Project**: screenshots in `public/projects/<name>-1600.webp` and `-800.webp` (16:10), then copy an object in
-  `src/data/projects.js` (role, challenge, approach, learned, features… in three languages). Its `id` becomes `open <id>`.
+  `src/data/projects.js`. Its `id` becomes `open <id>` in the terminal.
 - **Skill moves from learning to practice**: change `status` in `src/data/skills.js` and add evidence to `where`.
-- **Status line**: `status.*` strings in `src/i18n/ui.js`.
+- **A section's mood**: edit its entry in `src/liquid/atmospheres.js`.
 
 ## Deploy on Vercel
 
 Import the repository (Vite is detected: build `npm run build`, output `dist`), then set your final URL in
-`SITE_URL` (`vite.config.js`) or as a `SITE_URL` environment variable (canonical link, Open Graph, structured data).
+`SITE_URL` (`vite.config.js`) or as a `SITE_URL` environment variable.

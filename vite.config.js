@@ -23,7 +23,7 @@ export default defineConfig({
       name: "preload-hero-fonts",
       apply: "build",
       transformIndexHtml(html, ctx) {
-        const wanted = /(fraunces-latin-opsz-normal|fraunces-latin-wght-italic|geist-latin-wght-normal)-[\w-]+\.woff2$/;
+        const wanted = /(bricolage-grotesque-latin-opsz-normal|fraunces-latin-wght-italic|geist-latin-wght-normal)-[\w-]+\.woff2$/;
         const links = Object.keys(ctx.bundle || {})
           .filter((f) => wanted.test(f))
           .map((f) => `<link rel="preload" href="./${f}" as="font" type="font/woff2" crossorigin />`)

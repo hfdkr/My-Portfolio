@@ -2,56 +2,77 @@
 
 /* Self-hosted variable fonts — no third-party requests.
    Latin files are small; the Arabic files only download when Arabic text is on screen (unicode-range). */
-@import "@fontsource-variable/fraunces/opsz.css";        /* display serif, optical size + weight */
-@import "@fontsource-variable/fraunces/wght-italic.css"; /* italic accents */
-@import "@fontsource-variable/geist/wght.css";           /* text + UI */
-@import "@fontsource-variable/geist-mono/wght.css";      /* labels, terminal, technical readouts */
-@import "@fontsource-variable/noto-sans-arabic/wght.css";/* Arabic text */
-@import "@fontsource-variable/noto-kufi-arabic/wght.css";/* Arabic display */
+@import "@fontsource-variable/bricolage-grotesque/opsz.css"; /* display: weight + optical size (big = characterful) */
+@import "@fontsource-variable/fraunces/wght-italic.css";     /* italic serif accents */
+@import "@fontsource-variable/geist/wght.css";               /* text + UI */
+@import "@fontsource-variable/geist-mono/wght.css";          /* labels, terminal, technical readouts */
+@import "@fontsource-variable/noto-sans-arabic/wght.css";    /* Arabic text */
+@import "@fontsource-variable/noto-kufi-arabic/wght.css";    /* Arabic display */
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 /* ------------------------------------------------------------------
-   Identity — "Zellige: built tile by tile"
-   NIGHT  = basalt workshop: warm near-black, bone-white type, one ember
-            accent (an Agadir sunset), one glaze green for "live" states.
-   DAY    = tadelakt plaster: warm off-white, deep ink, terracotta accent.
-   Every hue is warm on purpose — no violet, no cyan.
+   Identity — "Liquid chrome"
+   Hierarchy: OBSIDIAN dominates · COBALT + ULTRAVIOLET are the identity
+   (links, accents, the liquid) · EMERALD for live states and small surprises
+   · CHAMPAGNE GOLD for luxury details (numbers, rules) · CORAL almost never
+   · PEARL for type. STEEL for secondary text.
+   Raw palette colours (--cobalt…) are for graphics; the --accent* tokens are
+   their text-safe versions (WCAG AA on the page background).
 ------------------------------------------------------------------- */
 :root {
-  --bg: #f1ece3;
-  --bg-2: #e9e2d6;
-  --surface: #f8f4ed;
-  --ink: #1a1612;
-  --ink-2: #3b342c;
-  --muted: #6a6055;
-  --line: rgb(26 22 18 / 0.12);
-  --line-strong: rgb(26 22 18 / 0.3);
-  --accent: #b5401b;
-  --accent-ink: #fbf7f0;
-  --accent-soft: rgb(181 64 27 / 0.1);
-  --glaze: #0f7a63;
+  --obsidian: #090a0e;
+  --cobalt: #4169ff;
+  --ultraviolet: #8957e5;
+  --emerald-raw: #16a889;
+  --gold-raw: #d8bd87;
+  --pearl: #f1f0eb;
+  --coral-raw: #ff7777;
+  --steel: #9297a2;
+
+  /* DAY — pearl gallery, ink type, deep metallic accents */
+  --bg: #f1f0eb;
+  --bg-2: #e7e6e0;
+  --surface: #f8f7f3;
+  --ink: #0b0c11;
+  --ink-2: #2a2d36;
+  --muted: #5b606c;
+  --line: rgb(11 12 17 / 0.12);
+  --line-strong: rgb(11 12 17 / 0.28);
+  --accent: #2d4fe0;       /* cobalt, text-safe */
+  --accent-2: #6a3ccf;     /* ultraviolet, text-safe */
+  --accent-ink: #ffffff;
+  --accent-soft: rgb(45 79 224 / 0.09);
+  --glaze: #0d7d65;        /* emerald, text-safe */
+  --gold: #85662a;         /* champagne, text-safe */
+  --coral: #c43c45;
   --chapter: var(--accent);
-  --scrim: 241 236 227;
-  --grain-opacity: 0.05;
+  --scrim: 241 240 235;
+  --grain-opacity: 0.045;
+  --chrome: linear-gradient(100deg, #2d4fe0 0%, #6a3ccf 42%, #9a5fd8 58%, #1f3fd0 100%);
   color-scheme: light;
 }
 
 [data-theme="dark"] {
-  --bg: #0d0c0b;
-  --bg-2: #151311;
-  --surface: #1a1815;
-  --ink: #f2ece2;
-  --ink-2: #d4ccbf;
-  --muted: #a1978a;
-  --line: rgb(242 236 226 / 0.1);
-  --line-strong: rgb(242 236 226 / 0.26);
-  --accent: #ff7a45;
-  --accent-ink: #160b05;
-  --accent-soft: rgb(255 122 69 / 0.12);
-  --glaze: #45c9a6;
-  --scrim: 13 12 11;
-  --grain-opacity: 0.07;
+  /* NIGHT — obsidian, pearl type, cobalt and ultraviolet light */
+  --bg: #090a0e;
+  --bg-2: #0e1016;
+  --surface: #111319;
+  --ink: #f1f0eb;
+  --ink-2: #cfd0d6;
+  --muted: #9297a2;
+  --line: rgb(241 240 235 / 0.1);
+  --line-strong: rgb(241 240 235 / 0.24);
+  --accent: #7f9aff;
+  --accent-2: #b08cf5;
+  --accent-ink: #090a0e;
+  --accent-soft: rgb(127 154 255 / 0.12);
+  --glaze: #3fd0ae;
+  --gold: #d8bd87;
+  --coral: #ff8a8a;
+  --scrim: 9 10 14;
+  --grain-opacity: 0.06;
+  --chrome: linear-gradient(100deg, #9bb0ff 0%, #c4a6ff 35%, #f1f0eb 52%, #d8bd87 68%, #7f9aff 100%);
   color-scheme: dark;
 }
 
@@ -65,12 +86,16 @@
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
   --color-glaze: var(--glaze);
+  --color-gold: var(--gold);
+  --color-coral: var(--coral);
   --color-chapter: var(--chapter);
 
   --font-sans: "Geist Variable", "Noto Sans Arabic Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", "Noto Kufi Arabic Variable", ui-sans-serif, sans-serif;
   --font-serif: "Fraunces Variable", "Noto Kufi Arabic Variable", ui-serif, Georgia, serif;
   --font-mono: "Geist Mono Variable", ui-monospace, "SFMono-Regular", Menlo, "Noto Sans Arabic Variable", monospace;
   --font-arabic: "Noto Sans Arabic Variable", "Geist Variable", ui-sans-serif, sans-serif;
@@ -135,19 +160,30 @@ html.theme-transition *::after {
 }
 
 @layer components {
-  /* Display serif. Fraunces' optical-size axis follows the font size automatically. */
+  /* Display grotesque: Bricolage, tight and large. Its weight/width axes are what the letters play with. */
   .display {
-    font-family: var(--font-serif);
+    font-family: var(--font-display);
     font-optical-sizing: auto;
-    font-weight: 340;
-    letter-spacing: -0.035em;
-    line-height: 0.92;
+    font-weight: 560;
+    letter-spacing: -0.045em;
+    line-height: 0.9;
   }
+  /* Italic accents: a serif in chrome ink. The gradient is fixed to the viewport,
+     so it stays continuous across split letters and shimmers while scrolling. */
   .display em,
   .serif-italic {
     font-family: "Fraunces Variable", var(--font-kufi);
     font-style: italic;
     font-weight: 300;
+    letter-spacing: -0.02em;
+  }
+  .display em,
+  .display em .it-g,
+  .chrome-ink {
+    background: var(--chrome) fixed;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
   html[lang="ar"] .display {
     font-family: var(--font-kufi);
@@ -160,12 +196,15 @@ html.theme-transition *::after {
     font-style: normal;
     font-weight: 400;
   }
-  .serif {
-    font-family: var(--font-serif);
-    font-optical-sizing: auto;
+  /* Medium headings (project facts, skills, journey): the display face at text-friendly settings. */
+  .headline {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.025em;
   }
-  html[lang="ar"] .serif {
+  html[lang="ar"] .headline {
     font-family: var(--font-kufi);
+    letter-spacing: 0;
   }
   .mono {
     font-family: var(--font-mono);
@@ -256,12 +295,12 @@ html.theme-transition *::after {
     color: var(--bg);
   }
   .btn-solid::before {
-    background: var(--accent);
+    background: linear-gradient(100deg, var(--cobalt), var(--ultraviolet));
   }
   .btn-solid:hover,
   .btn-solid:focus-visible {
-    color: var(--accent-ink);
-    border-color: var(--accent);
+    color: #ffffff;
+    border-color: transparent;
   }
   .btn-sm {
     min-height: 2.5rem;
@@ -411,11 +450,33 @@ html.cursor-on textarea {
    what makes it feel expensive. Transform/colour only: GPU-composited.
 ------------------------------------------------------------------- */
 .it {
-  --it-color: var(--accent);
-  --it-color-em: var(--ink);
   --it-lift: -0.07em;
   --it-scale: 1.05;
+  --it-tilt: 4;
   --it-dur: 750ms;
+}
+/* Each letter carries a hue from the signature palette, by position:
+   cobalt · ultraviolet · emerald · champagne. Sweeping across a word
+   leaves a short multi-colour trail; one letter alone stays one colour. */
+.it-c {
+  --hue: var(--accent);
+  --tilt: -1;
+  --it-color: var(--it-fixed, var(--hue));
+}
+.it-c:nth-child(4n + 2) {
+  --hue: var(--accent-2);
+  --tilt: 1;
+}
+.it-c:nth-child(4n + 3) {
+  --hue: var(--glaze);
+}
+.it-c:nth-child(4n + 4) {
+  --hue: var(--gold);
+  --tilt: 1;
+}
+.it[data-variant="nav"] .it-c,
+.it[data-variant="cta"] .it-c {
+  --hue: var(--accent);
 }
 .it-w {
   display: inline-block;
@@ -440,12 +501,9 @@ html.cursor-on textarea {
 
 @media (hover: hover) and (pointer: fine) {
   .it-c:hover > .it-g {
-    transform: translateY(var(--it-lift)) scale(var(--it-scale));
+    transform: translateY(var(--it-lift)) scale(var(--it-scale)) rotate(calc(var(--tilt) * var(--it-tilt) * 1deg));
     color: var(--it-color);
     transition-duration: calc(var(--it-dur) * 0.45);
-  }
-  .it em .it-c:hover > .it-g {
-    color: var(--it-color-em);
   }
   .it-c:hover + .it-c > .it-g,
   .it-c:has(+ .it-c:hover) > .it-g {
@@ -454,8 +512,9 @@ html.cursor-on textarea {
   }
   /* a soft glow, at night only */
   [data-theme="dark"] .it[data-variant="title"] .it-c:hover > .it-g,
-  [data-theme="dark"] .it[data-variant="footer"] .it-c:hover > .it-g {
-    text-shadow: 0 0 0.4em color-mix(in srgb, var(--it-color) 35%, transparent);
+  [data-theme="dark"] .it[data-variant="footer"] .it-c:hover > .it-g,
+  [data-theme="dark"] .it[data-variant="skill"] .it-c:hover > .it-g {
+    text-shadow: 0 0 0.45em color-mix(in srgb, var(--it-color) 40%, transparent);
   }
 }
 
@@ -478,6 +537,7 @@ button:focus-visible .it-g {
 
 /* Variants */
 .it[data-variant="nav"] {
+  --it-tilt: 0;
   --it-lift: -0.24em;
   --it-scale: 1.12;
   --it-dur: 550ms;
@@ -492,7 +552,8 @@ button:focus-visible .it-g {
   --it-dur: 600ms;
 }
 .it[data-variant="cta"] {
-  --it-color: currentColor;
+  --it-fixed: currentColor;
+  --it-tilt: 0;
   --it-lift: -0.28em;
   --it-scale: 1.08;
   --it-dur: 500ms;
@@ -513,13 +574,12 @@ button:focus-visible .it-g {
 .it[data-variant="hero"] {
   --it-lift: -0.06em;
   --it-scale: 1.035;
-  --w0: 340;
-  --w1: 560;
+  --w0: 560;
+  --w1: 800;
 }
 .it[data-variant="hero"] em {
-  --w0: 290;
-  --w1: 470;
-  --it-color: var(--ink);
+  --w0: 300;
+  --w1: 520;
 }
 html[lang="ar"] .it[data-variant="hero"],
 html[lang="ar"] .it[data-variant="hero"] em {
@@ -546,4 +606,20 @@ html[lang="ar"] .hero-name .line-mask {
 html[lang="ar"] .it[data-variant="hero"],
 html[lang="ar"] .it[data-variant="hero"] em {
   --w1: 760;
+}
+
+/* The liquid's static still: shown before the shader arrives, and instead of it
+   without WebGL. Same composition and colours as the hero atmosphere. */
+.liquid-still {
+  background:
+    radial-gradient(55% 60% at 72% 46%, rgb(65 105 255 / 0.28), transparent 70%),
+    radial-gradient(40% 45% at 84% 70%, rgb(137 87 229 / 0.22), transparent 70%),
+    radial-gradient(30% 30% at 60% 30%, rgb(241 240 235 / 0.06), transparent 70%),
+    var(--bg);
+}
+[data-theme="light"] .liquid-still {
+  background:
+    radial-gradient(55% 60% at 72% 46%, rgb(126 149 255 / 0.25), transparent 70%),
+    radial-gradient(40% 45% at 84% 70%, rgb(183 155 240 / 0.22), transparent 70%),
+    var(--bg);
 }

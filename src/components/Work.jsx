@@ -5,7 +5,7 @@ import { gsap } from "../lib/gsap";
 import { useReveals } from "../lib/motion";
 import { projects } from "../data/projects";
 import { CloseIcon } from "./Icons";
-import { SectionHead, ArrowUpRight, ArrowIcon, Star } from "./Primitives";
+import { SectionHead, ArrowUpRight, ArrowIcon, Mark } from "./Primitives";
 import Lab from "./Lab";
 import InteractiveText from "./InteractiveText";
 
@@ -185,7 +185,7 @@ function CaseDialog({ p, origin, onClose }) {
       <div className="sticky top-0 z-10 border-b border-line bg-bg">
         <div className="gutter mx-auto flex h-16 max-w-[1440px] items-center justify-between gap-4">
           <p className="mono flex items-center gap-2 text-xs text-muted">
-            <Star size={12} className="text-[var(--pc)]" />
+            <Mark size={12} className="text-[var(--pc)]" />
             {pick(p.context)}, {p.year}
           </p>
           <button type="button" onClick={close} className="inline-flex min-h-10 items-center gap-2 text-sm font-medium" autoFocus>
@@ -195,7 +195,7 @@ function CaseDialog({ p, origin, onClose }) {
       </div>
       <div className="case-body gutter mx-auto max-w-[1440px] pt-14 pb-24">
         <InteractiveText as="h2" id={`case-${p.id}`} text={p.name} color="var(--pc)" className="display text-[clamp(3rem,10vw,9rem)]" dir="ltr" />
-        <p className="serif mt-8 max-w-[34ch] text-[clamp(1.4rem,2.6vw,2.2rem)] leading-snug text-ink-2">{pick(p.summary)}</p>
+        <p className="headline mt-8 max-w-[34ch] text-[clamp(1.4rem,2.6vw,2.2rem)] leading-snug text-ink-2">{pick(p.summary)}</p>
 
         <div className="mt-16 grid gap-12 border-t border-line pt-10 md:grid-cols-12 md:gap-8">
           <div className="md:col-span-5">
@@ -209,7 +209,7 @@ function CaseDialog({ p, origin, onClose }) {
             <ul className="mt-3 border-t border-line">
               {pick(p.features).map((f) => (
                 <li key={f} className="flex gap-3 border-b border-line py-3 leading-snug">
-                  <Star size={10} className="mt-[0.4em] shrink-0 text-[var(--pc)]" />
+                  <Mark size={10} className="mt-[0.4em] shrink-0 text-[var(--pc)]" />
                   {f}
                 </li>
               ))}
@@ -287,7 +287,7 @@ function Chapter({ p, index, total, onOpen }) {
       <div className="h-px bg-[var(--pc)]" data-draw aria-hidden="true" />
       <header className="mt-6 grid items-end gap-y-4 md:grid-cols-12 md:gap-x-8">
         <p className="mono flex items-center gap-2.5 text-xs text-muted md:col-span-3" data-reveal>
-          <Star size={12} className="text-[var(--pc)]" />
+          <Mark size={12} className="text-[var(--pc)]" />
           <span className="text-ink">{pad(index + 1)}</span>
           <span>/ {pad(total)}</span>
           <span className="ms-2">{p.year}</span>
@@ -307,7 +307,7 @@ function Chapter({ p, index, total, onOpen }) {
           <p className="eyebrow text-[var(--pc)]" data-reveal>
             {pick(p.context)}
           </p>
-          <p className="serif mt-4 text-[clamp(1.35rem,2vw,1.75rem)] leading-snug tracking-tight" data-reveal>
+          <p className="headline mt-4 text-[clamp(1.35rem,2vw,1.75rem)] leading-snug tracking-tight" data-reveal>
             {pick(p.summary)}
           </p>
 

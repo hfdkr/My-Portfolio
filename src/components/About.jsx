@@ -4,7 +4,7 @@ import { usePrefersReducedMotion } from "../lib/hooks";
 import { gsap } from "../lib/gsap";
 import { useReveals } from "../lib/motion";
 import { profile } from "../data/profile";
-import { ArrowUpRight, Star } from "./Primitives";
+import { ArrowUpRight, Mark } from "./Primitives";
 import InteractiveText, { Marked } from "./InteractiveText";
 
 const PRINCIPLES = [1, 2, 3, 4];
@@ -91,10 +91,10 @@ export default function About() {
             {PRINCIPLES.map((n) => (
               <li key={n} className="group relative border-b border-line py-8 sm:pe-8 lg:border-b-0 lg:border-e lg:px-6 lg:first:ps-0 lg:last:border-e-0">
                 <p className="mono flex items-center gap-2 text-[11px] text-muted">
-                  <Star size={11} className="text-accent transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:rotate-90" />
+                  <Mark size={11} className="text-accent transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:rotate-90" />
                   0{n}
                 </p>
-                <InteractiveText as="p" text={t(`about.pr${n}.t`)} className="serif mt-5 text-[1.65rem] leading-tight tracking-tight" />
+                <InteractiveText as="p" text={t(`about.pr${n}.t`)} className="headline mt-5 text-[1.65rem] leading-tight tracking-tight" />
                 <p className="mt-3 max-w-[34ch] text-[0.95rem] leading-relaxed text-muted">{t(`about.pr${n}.b`)}</p>
               </li>
             ))}

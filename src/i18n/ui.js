@@ -33,17 +33,15 @@ export const ui = {
     "hero.ctaWork": "See selected work",
     "hero.ctaContact": "Get in touch",
     "hero.scroll": "Scroll",
-    "hero.fig": "Fig. 01 — Zellige field",
-    "hero.figTiles": "{n} hand-set tiles · 1 draw call",
-    "hero.figHint": "Move the light",
+    "hero.fig": "Fig. 01 — Liquid chrome",
+    "hero.figTech": "GLSL · domain-warped noise · 1 draw call",
+    "hero.figHint": "Move to bend the light",
     "hero.local": "Local time",
-    "hero.sceneLabel":
-      "Decorative 3D scene: a floor of glazed eight-point star tiles, the Moroccan zellige pattern, lit by a warm light that follows the pointer.",
 
     "about.eyebrow": "01 — About",
     "about.title": "About me",
     "about.statement":
-      "I {design} interfaces, {build} them, and learn everything that runs {behind} them — one {precise} piece at a time, the way {zellige} is made.",
+      "I {design} interfaces, {build} them, and learn everything that runs {behind} them — until the whole thing {flows}, from the first pixel to the {database}.",
     "about.p1":
       "I’m a second-year Full-Stack Development student at eWA Digitale in Agadir. I started with the front-end, and design came with it: I plan an interface in Figma before I write the first line of code.",
     "about.p2":
@@ -52,7 +50,7 @@ export const ui = {
     "about.studying": "Studying",
     "about.languages": "Languages",
     "about.certificate": "Certification",
-    "about.principles": "How I work",
+    "about.principles": "Development philosophy",
     "about.pr1.t": "Design before code",
     "about.pr1.b": "Layouts, components and both themes are planned in Figma before the first line is written.",
     "about.pr2.t": "Small things that work",
@@ -99,7 +97,7 @@ export const ui = {
     "skills.none": "Not tied to a public project yet",
     "skills.count": "{n} tools",
 
-    "journey.eyebrow": "04 — Journey",
+    "journey.eyebrow": "04 — Experience & education",
     "journey.title": "From a science bac to *my first internship*.",
     "journey.intro": "Education, experience and what comes next.",
     "journey.education": "Education",
@@ -141,14 +139,14 @@ export const ui = {
     "footer.built": "Designed and built in Agadir.",
     "footer.top": "Back to top",
     "footer.hint": "Ctrl K — command menu · Ctrl ` — terminal",
-    "footer.secret": "Some tiles hide secrets.",
+    "footer.secret": "The metal remembers a few secrets.",
 
-    "egg.maalem": "Maâlem mode — in zellige, the maâlem is the master who sets every tile by hand.",
+    "egg.mercury": "Mercury mode — no textures, no video: every reflection you see is computed, pixel by pixel.",
 
     "term.title": "Terminal",
     "term.close": "Close terminal",
     "term.input": "Terminal command",
-    "term.welcome": "Welcome to Hafid’s workshop. Type help to see what I can show you.",
+    "term.welcome": "Welcome to Hafid’s studio. Type help to see what I can show you.",
     "term.hint": "Tab completes · ↑ ↓ history · Ctrl L clears · Esc closes",
     "term.notFound": "command not found: {cmd} — type help",
     "term.help.title": "Available commands",
@@ -186,7 +184,7 @@ export const ui = {
     "term.education.cert": "certification",
     "term.sudo": "Nice try. No root access needed to hire me — type: contact",
     "term.coffee": "My first projects on GitHub were coffee-shop websites. Some habits stay.",
-    "term.zellige": "Setting the tiles…",
+    "term.mercury": "Heating the metal…",
     "term.hire": "Good choice. Taking you to the contact section…",
     "term.rm": "Permission denied. Also: rude.",
 
@@ -236,17 +234,15 @@ export const ui = {
     "hero.ctaWork": "Voir les projets",
     "hero.ctaContact": "Me contacter",
     "hero.scroll": "Défiler",
-    "hero.fig": "Fig. 01 — Champ de zellige",
-    "hero.figTiles": "{n} carreaux posés à la main · 1 draw call",
-    "hero.figHint": "Déplacez la lumière",
+    "hero.fig": "Fig. 01 — Chrome liquide",
+    "hero.figTech": "GLSL · bruit à domaine déformé · 1 draw call",
+    "hero.figHint": "Bougez pour plier la lumière",
     "hero.local": "Heure locale",
-    "hero.sceneLabel":
-      "Scène 3D décorative : un sol de carreaux émaillés en étoile à huit branches, le motif du zellige marocain, éclairé par une lumière chaude qui suit le pointeur.",
 
     "about.eyebrow": "01 — À propos",
     "about.title": "À propos de moi",
     "about.statement":
-      "Je {conçois} des interfaces, je les {construis}, et j’apprends tout ce qui tourne {derrière} — une pièce {précise} à la fois, comme on fabrique le {zellige}.",
+      "Je {conçois} des interfaces, je les {construis}, et j’apprends tout ce qui tourne {derrière} — jusqu’à ce que l’ensemble {coule}, du premier pixel à la {base} de données.",
     "about.p1":
       "Je suis en deuxième année de Développement Full Stack à eWA Digitale, à Agadir. J’ai commencé par le front-end, et le design est venu avec : je pense une interface sur Figma avant d’écrire la première ligne de code.",
     "about.p2":
@@ -255,7 +251,7 @@ export const ui = {
     "about.studying": "Formation",
     "about.languages": "Langues",
     "about.certificate": "Certification",
-    "about.principles": "Ma façon de travailler",
+    "about.principles": "Philosophie de développement",
     "about.pr1.t": "Le design avant le code",
     "about.pr1.b": "Mises en page, composants et deux thèmes sont pensés sur Figma avant la première ligne.",
     "about.pr2.t": "Des petites choses qui marchent",
@@ -302,7 +298,7 @@ export const ui = {
     "skills.none": "Pas encore lié à un projet public",
     "skills.count": "{n} outils",
 
-    "journey.eyebrow": "04 — Parcours",
+    "journey.eyebrow": "04 — Expérience et formation",
     "journey.title": "D’un bac scientifique à *mon premier stage*.",
     "journey.intro": "Formation, expérience, et la suite.",
     "journey.education": "Formation",
@@ -344,14 +340,14 @@ export const ui = {
     "footer.built": "Conçu et développé à Agadir.",
     "footer.top": "Retour en haut",
     "footer.hint": "Ctrl K — menu de commandes · Ctrl ` — terminal",
-    "footer.secret": "Certains carreaux cachent des secrets.",
+    "footer.secret": "Le métal garde quelques secrets.",
 
-    "egg.maalem": "Mode maâlem — dans le zellige, le maâlem est le maître artisan qui pose chaque carreau à la main.",
+    "egg.mercury": "Mode mercure — ni texture ni vidéo : chaque reflet est calculé, pixel par pixel.",
 
     "term.title": "Terminal",
     "term.close": "Fermer le terminal",
     "term.input": "Commande du terminal",
-    "term.welcome": "Bienvenue dans l’atelier de Hafid. Tapez help pour voir ce que je peux vous montrer.",
+    "term.welcome": "Bienvenue dans le studio de Hafid. Tapez help pour voir ce que je peux vous montrer.",
     "term.hint": "Tab complète · ↑ ↓ historique · Ctrl L efface · Échap ferme",
     "term.notFound": "commande introuvable : {cmd} — tapez help",
     "term.help.title": "Commandes disponibles",
@@ -389,7 +385,7 @@ export const ui = {
     "term.education.cert": "certification",
     "term.sudo": "Bien essayé. Pas besoin des droits root pour me recruter — tapez : contact",
     "term.coffee": "Mes premiers projets sur GitHub étaient des sites de coffee-shops. Certaines habitudes restent.",
-    "term.zellige": "Pose des carreaux…",
+    "term.mercury": "On chauffe le métal…",
     "term.hire": "Bon choix. Direction la section contact…",
     "term.rm": "Permission refusée. Et puis, ça ne se fait pas.",
 
@@ -438,17 +434,15 @@ export const ui = {
     "hero.ctaWork": "شاهد المشاريع",
     "hero.ctaContact": "تواصل معي",
     "hero.scroll": "مرّر",
-    "hero.fig": "الشكل 01 — حقل من الزليج",
-    "hero.figTiles": "{n} قطعة موضوعة باليد · استدعاء رسم واحد",
-    "hero.figHint": "حرّك الضوء",
+    "hero.fig": "الشكل 01 — كروم سائل",
+    "hero.figTech": "GLSL · ضجيج بمجال مُشوَّه · استدعاء رسم واحد",
+    "hero.figHint": "حرّك المؤشّر ليلتوي الضوء",
     "hero.local": "التوقيت المحلي",
-    "hero.sceneLabel":
-      "مشهد ثلاثي الأبعاد للزينة: أرضية من قطع مزججة على شكل نجمة ثمانية، نقش الزليج المغربي، يضيئها ضوء دافئ يتبع المؤشّر.",
 
     "about.eyebrow": "01 — نبذة",
     "about.title": "نبذة عنّي",
     "about.statement":
-      "{أصمّم} الواجهات {وأبنيها}، وأتعلّم كل ما يعمل {خلفها} — قطعة {دقيقة} بعد أخرى، كما يُصنع {الزليج}.",
+      "{أصمّم} الواجهات {وأبنيها}، وأتعلّم كل ما يعمل {خلفها} — حتى {ينساب} كل شيء، من أول بكسل إلى {قاعدة} البيانات.",
     "about.p1":
       "أنا طالب في السنة الثانية من تكوين «تقني متخصص في تطوير الويب الشامل» في eWA Digitale بأكادير. بدأت بالواجهة الأمامية، وجاء التصميم معها: أخطّط للواجهة على Figma قبل أن أكتب أول سطر من الكود.",
     "about.p2":
@@ -457,7 +451,7 @@ export const ui = {
     "about.studying": "الدراسة",
     "about.languages": "اللغات",
     "about.certificate": "الشهادة",
-    "about.principles": "طريقتي في العمل",
+    "about.principles": "فلسفتي في التطوير",
     "about.pr1.t": "التصميم قبل الكود",
     "about.pr1.b": "التخطيط والمكوّنات والوضعان، كلها تُرسم على Figma قبل كتابة أول سطر.",
     "about.pr2.t": "أشياء صغيرة تعمل",
@@ -504,7 +498,7 @@ export const ui = {
     "skills.none": "غير مرتبط بمشروع منشور بعد",
     "skills.count": "{n} أدوات",
 
-    "journey.eyebrow": "04 — المسار",
+    "journey.eyebrow": "04 — التجربة والتكوين",
     "journey.title": "من بكالوريا علمية إلى *أول تدريب*.",
     "journey.intro": "الدراسة، والتجربة، وما بعدهما.",
     "journey.education": "الدراسة",
@@ -546,14 +540,14 @@ export const ui = {
     "footer.built": "صُمّم وبُني في أكادير.",
     "footer.top": "العودة إلى الأعلى",
     "footer.hint": "Ctrl K — قائمة الأوامر · Ctrl ` — الطرفية",
-    "footer.secret": "بعض القطع تخفي أسراراً.",
+    "footer.secret": "المعدن يحتفظ ببعض الأسرار.",
 
-    "egg.maalem": "وضع المعلّم — في الزليج، المعلّم هو الحِرفي الذي يضع كل قطعة بيده.",
+    "egg.mercury": "وضع الزئبق — لا صور ولا فيديو: كل انعكاس تراه محسوب بكسلاً بكسلاً.",
 
     "term.title": "الطرفية",
     "term.close": "إغلاق الطرفية",
     "term.input": "أمر الطرفية",
-    "term.welcome": "مرحباً بك في ورشة حفيظ. اكتب help لترى ما يمكنني أن أعرضه عليك.",
+    "term.welcome": "مرحباً بك في استوديو حفيظ. اكتب help لترى ما يمكنني أن أعرضه عليك.",
     "term.hint": "Tab للإكمال · ↑ ↓ السجل · Ctrl L للمسح · Esc للإغلاق",
     "term.notFound": "أمر غير موجود: {cmd} — اكتب help",
     "term.help.title": "الأوامر المتاحة",
@@ -591,7 +585,7 @@ export const ui = {
     "term.education.cert": "الشهادة",
     "term.sudo": "محاولة جيدة. لا حاجة لصلاحيات root لتوظيفي — اكتب: contact",
     "term.coffee": "أولى مشاريعي على GitHub كانت مواقع لمقاهٍ. بعض العادات تبقى.",
-    "term.zellige": "جارٍ وضع القطع…",
+    "term.mercury": "جارٍ تسخين المعدن…",
     "term.hire": "اختيار موفّق. ننتقل إلى قسم التواصل…",
     "term.rm": "تم رفض الإذن. وهذا تصرّف غير لائق أيضاً.",
 

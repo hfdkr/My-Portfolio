@@ -5,7 +5,7 @@ import { gsap } from "../lib/gsap";
 import { useReveals } from "../lib/motion";
 import { journey, focus } from "../data/journey";
 import { experience } from "../data/experience";
-import { SectionHead, Star, LiveDot, ArrowUpRight } from "./Primitives";
+import { SectionHead, Mark, LiveDot, ArrowUpRight } from "./Primitives";
 import { FrameGlyph } from "./Icons";
 import InteractiveText from "./InteractiveText";
 
@@ -28,7 +28,7 @@ function Internship({ job }) {
         </p>
       </div>
       <div className="px-5 py-6 sm:px-7">
-        <p className="serif text-[1.5rem] leading-tight tracking-tight">{pick(job.role)}</p>
+        <p className="headline text-[1.5rem] leading-tight tracking-tight">{pick(job.role)}</p>
         <p className="mt-4 leading-relaxed text-ink-2">{pick(job.summary)}</p>
         <div className="mt-7 grid gap-8 md:grid-cols-2">
           <div>
@@ -115,13 +115,13 @@ export default function Journey() {
                     {j.current && <LiveDot />}
                     {t(KIND_LABEL[j.kind])}
                   </p>
-                  <InteractiveText as="h3" text={pick(j.title)} className={`serif mt-2 text-[clamp(1.5rem,2.6vw,2.2rem)] leading-tight tracking-tight ${isNext ? "text-muted" : ""}`} />
+                  <InteractiveText as="h3" text={pick(j.title)} className={`headline mt-2 text-[clamp(1.5rem,2.6vw,2.2rem)] leading-tight tracking-tight ${isNext ? "text-muted" : ""}`} />
                   {j.text && <p className="mt-3 max-w-[62ch] leading-relaxed text-ink-2">{pick(j.text)}</p>}
                   {job && <Internship job={job} />}
                   {j.showFocus && (
                     <div className="mt-5 border border-dashed border-line-strong p-5 lg:hidden">
                       <p className="eyebrow flex items-center gap-2">
-                        <Star size={11} className="text-accent" /> {t("journey.focus")}
+                        <Mark size={11} className="text-accent" /> {t("journey.focus")}
                       </p>
                       <ul className="mt-3 grid gap-1.5 text-[0.95rem] text-ink-2 sm:grid-cols-2">
                         {focus.map((f) => (
