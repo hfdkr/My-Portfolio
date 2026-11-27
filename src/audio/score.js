@@ -114,6 +114,7 @@ export const MOVEMENT_ORDER = ["intro", "exploration", "development", "projects"
 // Which movement each section of the page asks for.
 export const SECTION_TO_MOVEMENT = {
   top: "intro",
+  resume: "exploration",
   about: "exploration",
   work: "projects",
   skills: "development",

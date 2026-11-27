@@ -1,0 +1,4 @@
+# Netlify: build settings (the Node version comes from .nvmrc; cache headers from public/_headers).
+[build]
+  command = "npm run build"
+  publish = "dist"

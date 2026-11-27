@@ -4,6 +4,9 @@ import { useUI, scrollToSection, SECTIONS } from "../lib/ui";
 import { copyText } from "../lib/hooks";
 import { profile } from "../data/profile";
 import { useMusic } from "../audio/MusicProvider";
+import { emit } from "../lib/events";
+import { cvUrl } from "./Resume";
+import { cvFile } from "../data/resume";
 
 const LANG_NAMES = { en: "English", fr: "Français", ar: "العربية" };
 
@@ -51,6 +54,21 @@ export default function CommandPalette() {
         run: () => setLang(l),
         keep: true,
       })),
+      {
+        id: "cv-download",
+        group: t("pal.actions"),
+        label: t("pal.cvDownload"),
+        keywords: "cv resume pdf download curriculum télécharger",
+        icon: "↓",
+        run: () => {
+          const a = document.createElement("a");
+          a.href = cvUrl;
+          a.download = cvFile.downloadName;
+          a.click();
+          close();
+        },
+      },
+      { id: "cv-view", group: t("pal.actions"), label: t("pal.cvView"), keywords: "cv resume pdf view preview voir", icon: "▤", run: () => { close(); emit("cv:view"); } },
       { id: "music", group: t("pal.actions"), label: t("pal.music"), keywords: "music sound soundtrack audio musique son", icon: "♪", run: () => toggleMusic(), keep: true },
       {
         id: "copy",

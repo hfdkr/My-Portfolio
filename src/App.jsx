@@ -6,6 +6,7 @@ import { listenKonami, greetDevelopers } from "./lib/easter";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import About from "./components/About";
+import Resume from "./components/Resume";
 import Work from "./components/Work";
 import Skills from "./components/Skills";
 import Journey from "./components/Journey";
@@ -51,6 +52,7 @@ export default function App() {
       <Header />
       <main id="main" ref={mainRef} tabIndex={-1} className="relative z-[1] outline-none">
         <Hero />
+        <Resume />
         <About />
         <Work />
         <Skills />

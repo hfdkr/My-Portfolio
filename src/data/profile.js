@@ -31,9 +31,9 @@ export const profile = {
     {
       label: "about.languages",
       value: {
-        en: "Amazigh (native), Arabic, French, English",
-        fr: "Amazigh (langue maternelle), arabe, français, anglais",
-        ar: "الأمازيغية (اللغة الأم)، العربية، الفرنسية، الإنجليزية",
+        en: "Amazigh (native), Arabic (fluent), French (intermediate), English (intermediate)",
+        fr: "Amazigh (langue maternelle), arabe (courant), français (intermédiaire), anglais (intermédiaire)",
+        ar: "الأمازيغية (اللغة الأم)، العربية (بطلاقة)، الفرنسية (متوسط)، الإنجليزية (متوسط)",
       },
     },
     {

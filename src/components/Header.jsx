@@ -151,7 +151,7 @@ export default function Header() {
                     aria-current={active === id ? "true" : undefined}
                     className={`group relative inline-flex min-h-10 items-center gap-1.5 px-3 text-sm transition-colors ${active === id ? "text-ink" : "text-muted hover:text-ink"}`}
                   >
-                    <span className="mono text-[10px] text-accent">0{i + 1}</span>
+                    <span className="mono text-[10px] text-accent">0{i}</span>
                     <InteractiveText text={t(`nav.${id}`)} variant="nav" />
                     <span className={`absolute inset-x-3 bottom-1.5 h-px origin-left bg-ink transition-transform duration-500 ease-[var(--ease-out-expo)] rtl:origin-right ${active === id ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`} aria-hidden="true" />
                   </a>
@@ -211,7 +211,7 @@ export default function Header() {
                 {SECTIONS.map((id, i) => (
                   <li key={id} className="rise-in" style={{ animationDelay: `${80 + i * 60}ms` }}>
                     <a href={`#${id}`} onClick={go(id)} className="flex items-baseline gap-4 border-b border-line py-4">
-                      <span className="mono text-xs text-accent">0{i + 1}</span>
+                      <span className="mono text-xs text-accent">0{i}</span>
                       <InteractiveText text={t(`nav.${id}`)} className="display text-[clamp(2.4rem,11vw,3.6rem)]" />
                     </a>
                   </li>

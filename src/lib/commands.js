@@ -8,10 +8,11 @@ import { experience } from "../data/experience";
 import { skills, skillGroups } from "../data/skills";
 import { journey } from "../data/journey";
 import { lab } from "../data/lab";
+import { resume } from "../data/resume";
 import { SECTIONS } from "./ui";
 
 export const COMMANDS = [
-  "help", "about", "whoami", "skills", "projects", "lab", "experience", "education",
+  "help", "about", "whoami", "cv", "skills", "projects", "lab", "experience", "education",
   "contact", "github", "social", "date", "music", "clear", "lang", "theme", "goto", "open", "exit",
 ];
 
@@ -20,6 +21,7 @@ const ARGS = {
   theme: ["dark", "light"],
   goto: SECTIONS,
   music: ["on", "off"],
+  cv: ["download"],
   open: projects.map((p) => p.id),
 };
 
@@ -261,6 +263,20 @@ export function run(raw, ctx) {
       }
       L.push(line(seg(t("term.goto.done", { section: t(`nav.${arg}`) }), "ok")));
       return { lines: L, goto: arg };
+    }
+
+    case "cv": {
+      if (arg === "download") return { lines: [line(seg(t("term.cv.download"), "ok"))], download: true };
+      L.push(line(seg(profile.name, "title"), seg(`  ${pick(resume.title)}`, "dim")));
+      L.push(line(seg(pick(resume.seeking), "ok")));
+      L.push(blank());
+      for (const e of resume.experience) L.push(line(seg(pick(e.period).padEnd(26), "dim"), `${pick(e.role)} — ${e.company}`));
+      for (const e of resume.education) L.push(line(seg(e.years.padEnd(26), "dim"), `${pick(e.title)} — ${pick(e.school)}`));
+      L.push(blank());
+      L.push(line(seg("email     ", "dim"), seg(resume.contact.email, "accent", `mailto:${resume.contact.email}`)));
+      L.push(line(seg("phone     ", "dim"), seg(resume.contact.phone, "accent", resume.contact.phoneHref)));
+      L.push(line(seg("→ cv download", "dim")));
+      break;
     }
 
     case "music": {

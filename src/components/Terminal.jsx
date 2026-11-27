@@ -5,6 +5,8 @@ import { usePrefersReducedMotion, LOCALES } from "../lib/hooks";
 import { run, complete } from "../lib/commands";
 import { emit, toast } from "../lib/events";
 import { useMusic } from "../audio/MusicProvider";
+import { cvUrl } from "./Resume";
+import { cvFile } from "../data/resume";
 
 const PROMPT_USER = "hafid@portfolio";
 // The terminal is always dark, whatever the site theme, so its colours are fixed.
@@ -135,6 +137,12 @@ export default function Terminal() {
     }
     if (res.after === "lang") pendingLang.current = true;
     print(res.lines);
+    if (res.download) {
+      const a = document.createElement("a");
+      a.href = cvUrl;
+      a.download = cvFile.downloadName;
+      a.click();
+    }
     if (res.music) {
       // typed + Enter is a user gesture: the browser allows the sound to start
       const on = res.music === "on" || (res.music === "toggle" && music.status !== "playing");

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Hafid Karkouch — page not found</title>
+    <script>
+      // Served by every static host for unknown paths (Vercel, Netlify, Cloudflare Pages, GitHub Pages).
+      // The site is one page: friendly URLs like /work or /cv go to the matching section.
+      // On GitHub Pages project sites the site lives under /<repo>/, so "home" keeps that prefix.
+      (function () {
+        var sections = { cv: "resume", resume: "resume", about: "about", work: "work", projects: "work", skills: "skills", toolbox: "skills", journey: "experience", experience: "experience", contact: "contact" };
+        var parts = location.pathname.split("/").filter(Boolean);
+        var onGithubPages = /\.github\.io$/.test(location.hostname);
+        var home = onGithubPages && parts.length ? "/" + parts[0] + "/" : "/";
+        var rest = onGithubPages ? parts.slice(1) : parts;
+        var target = rest.length ? sections[rest[rest.length - 1].toLowerCase().replace(/\.html?$/, "")] : null;
+        window.__home = home;
+        if (target) location.replace(home + "#" + target);
+      })();
+    </script>
+    <style>
+      :root { color-scheme: dark light; }
+      body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #090a0e; color: #f1f0eb; font: 16px/1.6 ui-sans-serif, system-ui, sans-serif; }
+      @media (prefers-color-scheme: light) { body { background: #f1f0eb; color: #0b0c11; } a { color: #2d4fe0 !important; } }
+      main { padding: 2rem; max-width: 32rem; }
+      p.code { font: 12px ui-monospace, monospace; letter-spacing: .15em; text-transform: uppercase; opacity: .6; }
+      h1 { font-size: clamp(2.5rem, 8vw, 4rem); line-height: 1; letter-spacing: -.04em; margin: .5rem 0 1rem; }
+      a { color: #7f9aff; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="code">404</p>
+      <h1>Lost in space.</h1>
+      <p>This page doesn’t exist. · Cette page n’existe pas. · هذه الصفحة غير موجودة.</p>
+      <p><a id="home" href="/">← Hafid Karkouch</a></p>
+    </main>
+    <script>
+      document.getElementById("home").href = window.__home || "/";
+    </script>
+  </body>
+</html>

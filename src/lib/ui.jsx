@@ -3,7 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 // Which overlay is open: null | "terminal" | "palette"
 const UIContext = createContext(null);
 
-export const SECTIONS = ["about", "work", "skills", "experience", "contact"];
+export const SECTIONS = ["resume", "about", "work", "skills", "experience", "contact"];
 
 export function scrollToSection(id) {
   const el = document.getElementById(id);

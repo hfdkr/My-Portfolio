@@ -7,6 +7,8 @@ import { profile } from "../data/profile";
 import { CopyIcon, CheckIcon } from "./Icons";
 import { LiveDot, ArrowUpRight } from "./Primitives";
 import InteractiveText from "./InteractiveText";
+import { CvActions } from "./Resume";
+import { emit } from "../lib/events";
 
 const TOPICS = ["pfe", "project", "hello"];
 
@@ -73,6 +75,7 @@ export default function Contact() {
                 </p>
                 <p className="mono tnum text-[11px] text-muted">{t("contact.local", { time })}</p>
               </div>
+              <CvActions small onView={() => emit("cv:view")} className="mt-5" />
             </div>
 
             <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:gap-8">

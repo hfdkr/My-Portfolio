@@ -7,6 +7,8 @@ import { useMagnetic, useLetterField } from "../lib/motion";
 import { profile } from "../data/profile";
 import { LiveDot, ArrowIcon } from "./Primitives";
 import InteractiveText, { Marked } from "./InteractiveText";
+import { cvUrl } from "./Resume";
+import { cvFile } from "../data/resume";
 
 // The liquid itself lives in <LiquidBackground> (fixed, behind the whole page);
 // the hero is pure typography composed over its strongest moment.
@@ -129,6 +131,9 @@ export default function Hero() {
               className="link-line py-1 text-sm font-medium"
             >
               {t("hero.ctaContact")}
+            </a>
+            <a href={cvUrl} download={cvFile.downloadName} className="link-line inline-flex items-center gap-1.5 py-1 text-sm font-medium">
+              {t("hero.cv")} <span aria-hidden="true">↓</span>
             </a>
           </div>
         </div>

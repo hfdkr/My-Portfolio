@@ -66,7 +66,7 @@ export const journey = [
   },
   {
     kind: "next",
-    date: { en: "April 2027", fr: "Avril 2027", ar: "أبريل 2027" },
+    date: { en: "Mid-March 2027", fr: "Mi-mars 2027", ar: "منتصف مارس 2027" },
     title: { en: "PFE internship", fr: "Stage PFE", ar: "تدريب نهاية الدراسة (PFE)" },
     text: {
       en: "Joining a team for my end-of-studies internship — after building one complete full-stack project on PostgreSQL.",
