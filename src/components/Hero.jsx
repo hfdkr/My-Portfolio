@@ -24,9 +24,8 @@ export default function Hero() {
   useMagnetic(cta, { enabled: fine && !reduced, strength: 0.28 });
   useLetterField(name, { enabled: fine && !reduced, deps: [lang] });
 
-  const ar = lang === "ar";
-  const first = ar ? profile.nameLines.ar[0] : profile.nameLines.latin[0].toUpperCase();
-  const last = ar ? profile.nameLines.ar[1] : profile.nameLines.latin[1];
+  const first = profile.nameLines.latin[0].toUpperCase();
+  const last = profile.nameLines.latin[1];
 
   // Entrance: the name rises through its masks letter by letter, then the details settle.
   // Content is in the DOM and usable from the first frame — nothing waits for this.
@@ -35,7 +34,7 @@ export default function Hero() {
     const ctx = gsap.context(() => {
       gsap
         .timeline({ delay: 0.1 })
-        .from(".hero-name .it-c", { yPercent: 118, rotate: ar ? 0 : 7, duration: 1.4, stagger: 0.045 }, 0)
+        .from(".hero-name .it-c", { yPercent: 118, rotate: 7, duration: 1.4, stagger: 0.045 }, 0)
         .from(".hero-meta", { autoAlpha: 0, y: 18, duration: 1.1, stagger: 0.08 }, 0.45)
         // the intro only rises — never invisible, so it counts as painted immediately (LCP)
         .from(".hero-intro", { y: 18, duration: 1.1 }, 0.45)
@@ -44,7 +43,7 @@ export default function Hero() {
         .set(".hero-name .line-mask", { overflow: "visible" });
     }, root);
     return () => ctx.revert();
-  }, [reduced, lang, ar]);
+  }, [reduced, lang]);
 
   // Leaving: the name drifts up slower than the page, the details fade.
   useLayoutEffect(() => {
@@ -70,7 +69,7 @@ export default function Hero() {
 
       {/* a real coordinate on the edge — the kind of detail you only see if you look */}
       <p className="hero-meta mono pointer-events-none absolute end-5 top-1/2 hidden origin-center translate-x-1/2 rotate-90 text-[10px] tracking-[0.3em] text-muted lg:block rtl:-translate-x-1/2" aria-hidden="true">
-        AGADIR · 30.42°N 9.60°W
+        <span lang="zgh-Tfng" className="tfng text-[11px] tracking-[0.2em]">ⴰⴳⴰⴷⵉⵔ</span> · AGADIR · 30.42°N 9.60°W
       </p>
 
       <div className="gutter relative mx-auto flex h-full max-w-[1440px] flex-col pt-24 pb-8 sm:pb-10">

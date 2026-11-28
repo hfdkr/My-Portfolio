@@ -17,7 +17,7 @@ export const COMMANDS = [
 ];
 
 const ARGS = {
-  lang: ["en", "fr", "ar"],
+  lang: ["en", "fr"],
   theme: ["dark", "light"],
   goto: SECTIONS,
   music: ["on", "off"],
@@ -148,6 +148,11 @@ export function run(raw, ctx) {
     }
 
     // ---- not listed in help: small rewards for the curious ----
+    case "azul": {
+      L.push(line(seg("ⴰⵣⵓⵍ", "title"), seg("  azul", "dim")));
+      L.push(line(t("term.azul")));
+      break;
+    }
     case "sudo": {
       L.push(line(seg(t("term.sudo"), "warn")));
       break;
@@ -238,7 +243,7 @@ export function run(raw, ctx) {
 
     case "lang": {
       if (!ARGS.lang.includes(arg)) {
-        L.push(line(seg(t("term.usage", { usage: "lang en | fr | ar" }), "err")));
+        L.push(line(seg(t("term.usage", { usage: "lang en | fr" }), "err")));
         break;
       }
       ctx.setLang(arg);

@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { KEYS, read, write } from "./storage";
 import { ui } from "../i18n/ui";
 
-export const LANGS = ["en", "fr", "ar"];
+export const LANGS = ["en", "fr"];
 const PrefsContext = createContext(null);
 
 function initialLang() {
@@ -18,7 +18,7 @@ function initialTheme() {
 export function PreferencesProvider({ children }) {
   const [lang, setLangState] = useState(initialLang);
   const [theme, setThemeState] = useState(initialTheme);
-  const dir = lang === "ar" ? "rtl" : "ltr";
+  const dir = "ltr";
 
   useEffect(() => {
     const root = document.documentElement;

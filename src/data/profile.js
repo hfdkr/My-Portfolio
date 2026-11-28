@@ -1,9 +1,9 @@
-// Personal information. Text shown on the page is written as { en, fr, ar }.
+// Personal information. Text shown on the page is written as { en, fr }.
 
 export const profile = {
   name: "Hafid Karkouch",
-  // The two lines of the big name in the hero. Arabic is shown when the site is in Arabic.
-  nameLines: { latin: ["Hafid", "Karkouch"], ar: ["حفيظ", "كركوش"] },
+  // The two lines of the big name in the hero.
+  nameLines: { latin: ["Hafid", "Karkouch"] },
   timeZone: "Africa/Casablanca",
 
   // Shown in the status widget. Edit by hand — it is not a live availability feed.
@@ -18,14 +18,13 @@ export const profile = {
   facts: [
     {
       label: "about.based",
-      value: { en: "Agadir, Morocco", fr: "Agadir, Maroc", ar: "أكادير، المغرب" },
+      value: { en: "Agadir, Morocco", fr: "Agadir, Maroc" },
     },
     {
       label: "about.studying",
       value: {
         en: "Technicien Spécialisé en Développement Full Stack, eWA Digitale (2025–2027)",
         fr: "Technicien Spécialisé en Développement Full Stack, eWA Digitale (2025–2027)",
-        ar: "تقني متخصص في تطوير الويب الشامل (Full Stack)، eWA Digitale ‏(2025–2027)",
       },
     },
     {
@@ -33,7 +32,6 @@ export const profile = {
       value: {
         en: "Amazigh (native), Arabic (fluent), French (intermediate), English (intermediate)",
         fr: "Amazigh (langue maternelle), arabe (courant), français (intermédiaire), anglais (intermédiaire)",
-        ar: "الأمازيغية (اللغة الأم)، العربية (بطلاقة)، الفرنسية (متوسط)، الإنجليزية (متوسط)",
       },
     },
     {
@@ -41,7 +39,6 @@ export const profile = {
       value: {
         en: "Responsive Web Design — freeCodeCamp",
         fr: "Responsive Web Design — freeCodeCamp",
-        ar: "Responsive Web Design — freeCodeCamp",
       },
       href: "https://www.freecodecamp.org/certification/hafid_karkouch/responsive-web-design",
     },

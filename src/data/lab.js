@@ -6,11 +6,10 @@ export const lab = [
     id: "parcauto",
     name: "API ParcAuto",
     year: "2026",
-    kind: { en: "Course exercise · solo", fr: "Exercice de cours · seul", ar: "تمرين دراسي · فردي" },
+    kind: { en: "Course exercise · solo", fr: "Exercice de cours · seul" },
     summary: {
       en: "A REST API to manage the vehicles of a car-rental agency.",
       fr: "Une API REST pour gérer les véhicules d’une agence de location.",
-      ar: "واجهة REST API لتسيير سيارات وكالة لكراء السيارات.",
     },
     notes: {
       en: [
@@ -25,12 +24,6 @@ export const lab = [
         "Chaque erreur répond en JSON — 400, 404, JSON invalide, 500",
         "Un middleware de journalisation affiche la méthode et l’URL de chaque requête",
       ],
-      ar: [
-        "التحقق من الحقول الإلزامية ومن تفرّد رقم التسجيل قبل أي إنشاء",
-        "التصفية حسب التوفّر عبر سلسلة الاستعلام: ‎?disponible=true",
-        "كل خطأ يُجاب عنه بصيغة JSON — ‏400، 404، JSON غير صالح، 500",
-        "وسيط (middleware) لتسجيل طريقة كل طلب ورابطه",
-      ],
     },
     routes: [
       ["GET", "/vehicules", "200"],
@@ -44,13 +37,12 @@ export const lab = [
   },
   {
     id: "mediatheque",
-    name: { en: "Media library API", fr: "API Médiathèque", ar: "API المكتبة" },
+    name: { en: "Media library API", fr: "API Médiathèque" },
     year: "2026",
-    kind: { en: "Course exercise · solo", fr: "Exercice de cours · seul", ar: "تمرين دراسي · فردي" },
+    kind: { en: "Course exercise · solo", fr: "Exercice de cours · seul" },
     summary: {
       en: "Books, members and loans — three resources that depend on each other.",
       fr: "Livres, adhérents et emprunts — trois ressources qui dépendent l’une de l’autre.",
-      ar: "كتب ومنخرطون وإعارات — ثلاثة موارد يعتمد بعضها على بعض.",
     },
     notes: {
       en: [
@@ -62,11 +54,6 @@ export const lab = [
         "Un emprunt est refusé si le livre ou l’adhérent n’existe pas",
         "Un livre déjà emprunté ne peut pas l’être à nouveau",
         "Créer un emprunt rend le livre indisponible",
-      ],
-      ar: [
-        "تُرفض الإعارة إذا لم يكن الكتاب أو المنخرط موجوداً",
-        "لا يمكن إعارة كتاب مُعار أصلاً",
-        "إنشاء إعارة يجعل الكتاب غير متوفّر",
       ],
     },
     routes: [

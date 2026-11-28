@@ -28,7 +28,8 @@ export class AudioEngine {
   /**
    * @param {{ file?: string | null, lite?: boolean, onStatus?: (s: string) => void, onMovement?: (m: string) => void }} options
    */
-  constructor({ context = null, file = null, lite = false, onStatus, onMovement } = {}) {
+  constructor({ context = null, file = null, lite = false, onStatus, onMovement, onSource } = {}) {
+    this.onSource = onSource;
     this.givenContext = context;
     this.file = file;
     this.lite = lite;
@@ -68,6 +69,7 @@ export class AudioEngine {
       }
     }
     if (!this.media) this.#startScheduler();
+    this.onSource?.(this.media ? "file" : "score");
     const now = this.ctx.currentTime;
     this.master.gain.cancelScheduledValues(now);
     this.master.gain.setValueAtTime(Math.max(0.0001, this.master.gain.value), now);
@@ -135,7 +137,12 @@ export class AudioEngine {
 
   /** Where the journey is: movement, chord, and progress through the current phrase (0…1). */
   getPosition() {
-    if (!this.ctx || this.media) return { movement: this.movement, phrase: 0 };
+    if (this.media) {
+      // a recorded track: real position in the file
+      const d = this.media.duration;
+      return { movement: this.movement, phrase: Number.isFinite(d) && d > 0 ? this.media.currentTime / d : 0, current: this.media.currentTime, duration: Number.isFinite(d) ? d : 0 };
+    }
+    if (!this.ctx) return { movement: this.movement, phrase: 0 };
     const elapsed = this.ctx.currentTime - this.phraseStart;
     const phraseLength = STEP * STEPS_PER_CHORD * CHORDS_PER_PHRASE;
     return { movement: this.movement, phrase: Math.min(1, Math.max(0, elapsed / phraseLength)) };

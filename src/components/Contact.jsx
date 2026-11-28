@@ -5,7 +5,7 @@ import { gsap } from "../lib/gsap";
 import { useReveals, useMagnetic } from "../lib/motion";
 import { profile } from "../data/profile";
 import { CopyIcon, CheckIcon } from "./Icons";
-import { LiveDot, ArrowUpRight } from "./Primitives";
+import { LiveDot, ArrowUpRight, Tifinagh } from "./Primitives";
 import InteractiveText from "./InteractiveText";
 import { CvActions } from "./Resume";
 import { emit } from "../lib/events";
@@ -48,9 +48,14 @@ export default function Contact() {
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgb(var(--scrim)/0.85),rgb(var(--scrim)/0.55)_55%,rgb(var(--scrim)/0.1))] rtl:bg-[linear-gradient(to_left,rgb(var(--scrim)/0.85),rgb(var(--scrim)/0.55)_55%,rgb(var(--scrim)/0.1))]" aria-hidden="true" />
       <div className="gutter relative mx-auto max-w-[1440px]">
         <div className="grid gap-y-6 md:grid-cols-12 md:gap-x-8">
-          <p className="eyebrow md:col-span-3" data-reveal>
-            {t("contact.eyebrow")}
-          </p>
+          <div className="md:col-span-3" data-reveal>
+            <p className="eyebrow">{t("contact.eyebrow")}</p>
+            {/* Azul — "hello" in Tamazight, my first language */}
+            <p className="mt-5 flex items-baseline gap-3 text-muted" title={t("contact.azulMeaning")}>
+              <Tifinagh text="ⴰⵣⵓⵍ" meaning={t("contact.azulMeaning")} className="text-[1.6rem] text-ink" />
+              <span className="mono text-[11px]" aria-hidden="true">azul</span>
+            </p>
+          </div>
           <div className="md:col-span-9">
             <InteractiveText as="h2" key={lang} id="contact-title" text={t("contact.title")} className="display text-[clamp(4rem,14vw,13rem)]" data-split />
             <p className="mt-8 max-w-[52ch] text-lg leading-relaxed text-ink-2" data-reveal>

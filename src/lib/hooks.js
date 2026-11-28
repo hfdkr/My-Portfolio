@@ -49,7 +49,7 @@ export function hasWebGL() {
   return webglCache;
 }
 
-export const LOCALES = { en: "en-GB", fr: "fr-FR", ar: "ar-MA" };
+export const LOCALES = { en: "en-GB", fr: "fr-FR" };
 
 export async function copyText(text) {
   try {

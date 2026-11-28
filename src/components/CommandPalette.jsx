@@ -8,7 +8,7 @@ import { emit } from "../lib/events";
 import { cvUrl } from "./Resume";
 import { cvFile } from "../data/resume";
 
-const LANG_NAMES = { en: "English", fr: "Français", ar: "العربية" };
+const LANG_NAMES = { en: "English", fr: "Français" };
 
 export default function CommandPalette() {
   const { t, lang, setLang, toggleTheme, theme } = usePrefs();

@@ -8,7 +8,10 @@
 // the player falls back to the generative score automatically.
 
 export const music = {
-  file: null,
-  credit: null, // e.g. { en: "Composer — Title (licence)", fr: "…", ar: "…" }
-  title: { en: "Gravity Well", fr: "Puits de gravité", ar: "بئر الجاذبية" },
+  // Your track: drop it at public/audio/soundtrack.mp3 (any other name: change this path).
+  // Until the file exists, the live score below plays instead — nothing breaks.
+  file: "audio/soundtrack.mp3",
+  fileTitle: null, // e.g. { en: "Track title — Artist", fr: "…" } — shown in the player for the MP3
+  credit: null, // e.g. { en: "Licence / source", fr: "…" }
+  title: { en: "Gravity Well", fr: "Puits de gravité" }, // the generative score's title
 };

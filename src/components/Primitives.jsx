@@ -37,11 +37,13 @@ export function LiveDot({ className = "" }) {
 }
 
 /**
- * The identity mark: a ring of liquid metal holding one reflected droplet.
+ * The identity mark: a ring of liquid metal holding ⵣ (yaz), the Amazigh sign of the free person —
+ * drawn as strokes, so it is crisp at every size and needs no font.
  * `chrome` paints it with the signature gradient (cobalt → ultraviolet → champagne).
  */
 export function Mark({ size = 18, className = "", chrome = false }) {
   const id = useId();
+  const paint = chrome ? `url(#${id})` : "currentColor";
   return (
     <svg width={size} height={size} viewBox="-12 -12 24 24" className={className} aria-hidden="true" focusable="false">
       {chrome && (
@@ -53,9 +55,24 @@ export function Mark({ size = 18, className = "", chrome = false }) {
           </linearGradient>
         </defs>
       )}
-      <circle r="9.5" fill="none" stroke={chrome ? `url(#${id})` : "currentColor"} strokeWidth="2.4" />
-      <path d="M2.2-6.4c2.9.6 4.9 3.1 4.9 6.1 0 1.1-.3 2.2-.8 3.1-1-2.5-3.4-4.3-6.2-4.3-.6 0-1.2.1-1.8.2.6-2.6 2-4.6 3.9-5.1Z" fill={chrome ? `url(#${id})` : "currentColor"} />
+      <circle r="10.4" fill="none" stroke={paint} strokeWidth="1.9" />
+      <path d={YAZ} fill="none" stroke={paint} strokeWidth="1.9" strokeLinecap="round" />
     </svg>
+  );
+}
+
+/** ⵣ as a path (viewBox centred on 0,0, about 13 units tall): a stem, an open cup above, an arch below. */
+export const YAZ = "M0-6.6V6.6M-4.4-6.1C-4.4-3.3-2.4-1.5 0-1.5S4.4-3.3 4.4-6.1M-4.4 6.1C-4.4 3.3-2.4 1.5 0 1.5S4.4 3.3 4.4 6.1";
+
+/** A Tifinagh word, set as identity (not as content): `lang` for the browser, a translation for screen readers. */
+export function Tifinagh({ text, meaning, className = "" }) {
+  return (
+    <span className={`tfng ${className}`}>
+      <span lang="zgh-Tfng" aria-hidden="true">
+        {text}
+      </span>
+      <span className="sr-only">{meaning}</span>
+    </span>
   );
 }
 

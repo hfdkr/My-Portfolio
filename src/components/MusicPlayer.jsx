@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePrefs } from "../lib/preferences";
 import { useMusic } from "../audio/MusicProvider";
 import { MOVEMENT_ORDER } from "../audio/score";
@@ -38,32 +38,64 @@ const STATUS_DOT = {
   error: "bg-coral",
 };
 
-/** Fills the current movement's segment with the real progress through the phrase (no re-render: direct DOM). */
-function usePhraseProgress(engineRef, fillRef, active) {
+const clock = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+
+/**
+ * Real progress, written straight to the DOM (no re-render): through the current phrase for the
+ * live score, through the file for the MP3 (with its time readout).
+ */
+function usePhraseProgress(engineRef, fillRef, timeRef, active) {
   useEffect(() => {
     if (!active) return;
     let raf = 0;
     const loop = () => {
       const pos = engineRef.current?.getPosition();
       if (fillRef.current && pos) fillRef.current.style.transform = `scaleX(${pos.phrase})`;
+      if (timeRef?.current && pos?.duration) timeRef.current.textContent = `${clock(pos.current)} / ${clock(pos.duration)}`;
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [engineRef, fillRef, active]);
+  }, [engineRef, fillRef, timeRef, active]);
+}
+
+/** First visit: a discreet invitation, a few seconds in. Never plays by itself; can be dismissed for good. */
+function Invitation({ onPlay, onDismiss, t }) {
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const id = window.setTimeout(() => setShown(true), 3500);
+    return () => window.clearTimeout(id);
+  }, []);
+  if (!shown) return null;
+  return (
+    <div className="rise-in hud-corners relative flex items-center gap-1 border border-line-strong bg-bg py-1.5 ps-3 pe-1.5 text-[12px] text-ink-2">
+      <button type="button" onClick={onPlay} className="group inline-flex min-h-9 items-center gap-2.5 pe-2 text-ink">
+        <span className="music-invite-dot" aria-hidden="true" />
+        {t("music.invite")}
+        <span className="mono text-[10px] tracking-wider text-muted uppercase">{t("music.inviteHint")}</span>
+      </button>
+      <button type="button" onClick={onDismiss} aria-label={t("music.dismiss")} className="inline-flex h-8 w-8 items-center justify-center text-muted hover:text-ink">
+        ×
+      </button>
+    </div>
+  );
 }
 
 export default function MusicPlayer() {
   const { t, pick } = usePrefs();
   const m = useMusic();
-  const { status, volume, muted, movement, expanded, setExpanded, toggle, setVolume, toggleMute, engineRef, resumeHint, play } = m;
+  const { status, volume, muted, movement, expanded, setExpanded, toggle, setVolume, toggleMute, engineRef, resumeHint, play, source, invited, dismissInvite } = m;
+  const isFile = source === "file";
   const playing = status === "playing";
   const panel = useRef(null);
   const playBtn = useRef(null);
   const opener = useRef(null);
   const fill = useRef(null);
+  const timeRef = useRef(null);
   const current = MOVEMENT_ORDER.indexOf(movement);
-  usePhraseProgress(engineRef, fill, expanded && playing && !music.file);
+  usePhraseProgress(engineRef, fill, timeRef, expanded && playing);
+  const title = isFile ? (music.fileTitle ? pick(music.fileTitle) : t("music.portal")) : pick(music.title);
+  const about = music.credit && isFile ? pick(music.credit) : isFile ? t("music.fileAbout") : t("music.about");
 
   // Esc collapses; focus moves into the panel when it opens and back when it closes
   useEffect(() => {
@@ -98,15 +130,27 @@ export default function MusicPlayer() {
 
         <div className="mt-4 flex items-end justify-between gap-3">
           <div className="min-w-0">
-            <p className="serif-italic chrome-ink truncate text-[1.7rem] leading-none">{pick(music.title)}</p>
-            <p className="mt-1.5 text-[11px] leading-snug text-muted">{music.credit ? pick(music.credit) : t("music.about")}</p>
+            <p className="serif-italic chrome-ink truncate text-[1.7rem] leading-none">{title}</p>
+            <p className="mt-1.5 text-[11px] leading-snug text-muted">{about}</p>
           </div>
         </div>
 
-        <MusicVisualizer engineRef={engineRef} playing={playing} className="mt-4 h-16 w-full" />
+        {expanded && <MusicVisualizer engineRef={engineRef} playing={playing} className="mt-3 h-32 w-full" />}
 
-        {/* the journey: five movements; the current one fills with the phrase */}
-        {!music.file && (
+        {/* the MP3: real position in the track */}
+        {isFile && (
+          <div className="mt-3">
+            <div className="relative h-[3px] overflow-hidden bg-line" aria-hidden="true">
+              <span ref={fill} className="absolute inset-0 origin-left bg-accent rtl:origin-right" style={{ transform: "scaleX(0)" }} />
+            </div>
+            <p ref={timeRef} className="mono mt-2 text-end text-[10px] text-muted tnum" aria-hidden="true">
+              0:00
+            </p>
+          </div>
+        )}
+
+        {/* the live score: five movements; the current one fills with the phrase */}
+        {!isFile && (
           <div className="mt-3">
             <div className="flex gap-1" aria-hidden="true">
               {MOVEMENT_ORDER.map((name, i) => (
@@ -165,6 +209,8 @@ export default function MusicPlayer() {
       </section>
 
       {/* resume offer: only if the music was on last visit — never plays by itself */}
+      {!invited && !resumeHint && !expanded && status === "idle" && <Invitation onPlay={play} onDismiss={dismissInvite} t={t} />}
+
       {resumeHint && !expanded && status === "idle" && (
         <div className="rise-in flex items-center gap-3 border border-line-strong bg-bg py-2 ps-3 pe-2 text-[12px] text-ink-2">
           {t("music.resume")}

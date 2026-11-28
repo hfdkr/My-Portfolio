@@ -4,7 +4,7 @@ import { usePrefersReducedMotion, useIsMobile } from "../lib/hooks";
 import { useReveals } from "../lib/motion";
 import { resume, cvFile } from "../data/resume";
 import { CloseIcon } from "./Icons";
-import { SectionHead, LiveDot, ArrowUpRight, Mark } from "./Primitives";
+import { SectionHead, LiveDot, ArrowUpRight, Mark, Tifinagh } from "./Primitives";
 import InteractiveText from "./InteractiveText";
 import { on } from "../lib/events";
 
@@ -197,7 +197,7 @@ export default function Resume() {
         {/* identity card */}
         <aside className="lg:col-span-4">
           <div className="hud-corners relative border border-line-strong bg-[rgb(var(--scrim)/0.85)] p-6 lg:sticky lg:top-24" data-reveal>
-            <p className="display text-[2.1rem] leading-none tracking-tight">{lang === "ar" ? "حفيظ كركوش" : "Hafid Karkouch"}</p>
+            <p className="display text-[2.1rem] leading-none tracking-tight">Hafid Karkouch</p>
             <p className="mt-3 font-medium text-accent">{pick(resume.title)}</p>
             <p className="mt-2 flex items-center gap-2 text-sm text-ink-2">
               <LiveDot />
@@ -332,7 +332,10 @@ export default function Resume() {
               <ul className="space-y-3">
                 {resume.languages.map((l) => (
                   <li key={l.name.en} className="flex items-center justify-between gap-4">
-                    <span>{pick(l.name)}</span>
+                    <span className="flex items-baseline gap-2.5">
+                      {pick(l.name)}
+                      {l.native && <Tifinagh text={l.native} meaning="" className="text-[0.8rem] text-muted" />}
+                    </span>
                     <span className="flex items-center gap-3">
                       <span className="text-[0.8rem] text-muted">{t(`resume.lv${l.level}`)}</span>
                       <span className="flex gap-1" aria-hidden="true">

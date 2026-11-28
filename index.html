@@ -26,7 +26,6 @@
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:locale:alternate" content="fr_FR" />
-    <meta property="og:locale:alternate" content="ar_MA" />
     <meta name="twitter:card" content="summary_large_image" />
 
     <script type="application/ld+json">
@@ -54,10 +53,7 @@
           }
           d.dataset.theme = t;
           var l = localStorage.getItem("hk.lang");
-          if (l === "fr" || l === "ar" || l === "en") {
-            d.lang = l;
-            d.dir = l === "ar" ? "rtl" : "ltr";
-          }
+          if (l === "fr" || l === "en") d.lang = l;
         } catch (e) {
           d.dataset.theme = "light";
         }

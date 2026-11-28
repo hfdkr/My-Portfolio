@@ -3,7 +3,7 @@ import { usePrefs } from "../lib/preferences";
 import { useIsMobile } from "../lib/hooks";
 import { KEYS, read, write } from "../lib/storage";
 import { ScrollTrigger } from "../lib/gsap";
-import { toast } from "../lib/events";
+import { toast, emit } from "../lib/events";
 import { SECTION_ORDER } from "../liquid/atmospheres";
 import { SECTION_TO_MOVEMENT } from "./score";
 import { setLevelSampler } from "./levels";
@@ -25,9 +25,10 @@ function loadPrefs() {
       volume: typeof p.volume === "number" ? Math.min(1, Math.max(0, p.volume)) : 0.7,
       muted: p.muted === true,
       on: p.on === true,
+      invited: p.invited === true,
     };
   } catch {
-    return { volume: 0.7, muted: false, on: false };
+    return { volume: 0.7, muted: false, on: false, invited: false };
   }
 }
 
@@ -41,6 +42,8 @@ export function MusicProvider({ children }) {
   const [movement, setMovement] = useState("intro");
   const [expanded, setExpanded] = useState(false);
   const [resumeHint, setResumeHint] = useState(saved.on);
+  const [source, setSource] = useState(null); // "file" (the MP3) | "score" (fallback) | null before the first play
+  const [invited, setInvited] = useState(saved.invited);
   const engineRef = useRef(null);
   const pendingMovement = useRef("intro"); // the section's movement, known before the first play
   const tRef = useRef(t);
@@ -67,6 +70,7 @@ export function MusicProvider({ children }) {
             if (st === "error") toast(tRef.current("music.error"));
           },
           onMovement: setMovement,
+          onSource: setSource,
         });
         e.setVolume(prefsRef.current.volume);
         e.setMuted(prefsRef.current.muted);
@@ -119,7 +123,11 @@ export function MusicProvider({ children }) {
     }
     e.setMovement(pendingMovement.current);
     const st = await e.play();
-    if (st === "playing") persist({ on: true });
+    if (st === "playing") {
+      persist({ on: true, invited: true });
+      setInvited(true);
+      emit("portal", true); // the Sound Portal opens — and stays, dormant, when paused
+    }
   }, [engine, persist]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const pause = useCallback(() => {
@@ -182,9 +190,14 @@ export function MusicProvider({ children }) {
     [],
   );
 
+  const dismissInvite = useCallback(() => {
+    setInvited(true);
+    persist({ invited: true });
+  }, [persist]);
+
   const value = useMemo(
-    () => ({ status, volume, muted, movement, expanded, resumeHint, setExpanded, play, pause, toggle, setVolume, toggleMute, engineRef }),
-    [status, volume, muted, movement, expanded, resumeHint, play, pause, toggle, setVolume, toggleMute],
+    () => ({ status, volume, muted, movement, expanded, resumeHint, source, invited, dismissInvite, setExpanded, play, pause, toggle, setVolume, toggleMute, engineRef }),
+    [status, volume, muted, movement, expanded, resumeHint, source, invited, dismissInvite, play, pause, toggle, setVolume, toggleMute],
   );
   return <MusicContext.Provider value={value}>{children}</MusicContext.Provider>;
 }

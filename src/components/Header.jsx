@@ -7,8 +7,8 @@ import { SunIcon, MoonIcon } from "./Icons";
 import { Mark } from "./Primitives";
 import InteractiveText from "./InteractiveText";
 
-const LANG_SHORT = { en: "EN", fr: "FR", ar: "AR" };
-const LANG_NAMES = { en: "English", fr: "Français", ar: "العربية" };
+const LANG_SHORT = { en: "EN", fr: "FR" };
+const LANG_NAMES = { en: "English", fr: "Français" };
 
 function useActiveSection() {
   const [active, setActive] = useState("");
@@ -138,7 +138,7 @@ export default function Header() {
         <div className="gutter mx-auto flex h-16 max-w-[1440px] items-center gap-4">
           <a href="#top" onClick={onMark} className="group flex items-center gap-2.5 text-ink" aria-label="Hafid Karkouch — top">
             <Mark size={22} chrome className="transition-transform duration-1000 ease-[var(--ease-out-expo)] group-hover:rotate-[200deg]" />
-            <InteractiveText text={lang === "ar" ? "حفيظ كركوش" : "Hafid Karkouch"} variant="nav" className="text-[0.95rem] font-semibold tracking-tight" />
+            <InteractiveText text="Hafid Karkouch" variant="nav" className="text-[0.95rem] font-semibold tracking-tight" />
           </a>
 
           <nav aria-label={t("nav.primary")} className="ms-auto hidden lg:block">

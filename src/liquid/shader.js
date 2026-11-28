@@ -132,9 +132,11 @@ float field(vec2 p) {
     vec2 d = p - portalP;
     float pr = length(d);
     float R = portalRadius(atan(d.y, d.x));
-    float w = 0.05 + 0.02 * uAudio.x * uPortalLive;
+    // a calmer pool around the portal, so its rim reads clearly against the flow
+    h = mix(h, h * 0.3, smoothstep(R + 0.2, R + 0.03, pr) * uPortal);
+    float w = 0.034 + 0.014 * uAudio.x * uPortalLive;
     float rim = exp(-(pr - R) * (pr - R) / (w * w));
-    h += rim * (0.45 + 0.45 * (uAudio.x * 0.6 + uAudio.y * 0.4) * uPortalLive) * uPortal;
+    h += rim * (0.8 + 0.5 * (uAudio.x * 0.6 + uAudio.y * 0.4) * uPortalLive) * uPortal;
     float inside = smoothstep(R, R * 0.62, pr) * uPortal;
     float pulse = sin(pr * 38.0 - uPortalTime * 3.2) * 0.05 * uAudio.x * uPortalLive;
     h = mix(h, h * 0.12 + pulse, inside);
@@ -226,12 +228,14 @@ void main() {
     vec3 cobalt = vec3(0.255, 0.412, 1.0), violet = vec3(0.537, 0.341, 0.898), emerald = vec3(0.086, 0.659, 0.537);
     vec3 silver = vec3(0.78, 0.8, 0.86), champagne = vec3(0.847, 0.741, 0.529);
     vec3 nebula = mix(mix(cobalt, violet, 0.5 + 0.5 * n), emerald, smoothstep(0.35, 0.9, n) * (0.25 + uAudio.y * 0.5 * live));
-    vec3 deep = uBg * 0.55 + nebula * (0.12 + 0.22 * uAudio.y * live) * smoothstep(-0.2, 0.8, n);
+    vec3 deep = uBg * 0.55 + nebula * (0.18 + 0.26 * uAudio.y * live) * smoothstep(-0.2, 0.8, n);
     deep += champagne * pow(max(0.0, 1.0 - pr / (PR + 1e-4)), 7.0) * (0.06 + 0.22 * uAudio.x * live); // a faint core
     col = mix(col, deep + col * 0.3, inside * 0.88);
     // the rim catches extra light on the bass
-    float rimLight = exp(-pow((pr - PR) / 0.03, 2.0)) * uPortal;
-    col += mix(silver, champagne, 0.5) * rimLight * (0.06 + 0.3 * uAudio.x * live);
+    float rimLine = exp(-pow((pr - PR) / 0.009, 2.0)) * uPortal;   // a thin line of light along the rim
+    float rimGlow = exp(-pow((pr - PR) / 0.05, 2.0)) * uPortal;    // and a faint halo
+    col += mix(silver, champagne, 0.5 + 0.5 * sin(atan(pd.y, pd.x) * 2.0 + uPortalTime * 0.4)) * rimLine * (0.28 + 0.45 * uAudio.x * live);
+    col += cobalt * rimGlow * (0.05 + 0.12 * uAudio.y * live);
     // particles in orbit, each at its own speed and direction; the highs make them sparkle
     if (abs(pr - PR) < 0.17) {
       for (int i = 0; i < PARTICLES; i++) {
@@ -241,13 +245,13 @@ void main() {
         float ang = fi * 6.2831853 / float(PARTICLES) + uPortalTime * (0.18 + seed * 0.3) * dir;
         float rad = portalRadius(ang) + (seed - 0.5) * 0.09 + 0.02 * sin(uPortalTime * (1.1 + seed) + fi);
         vec2 pp = portalP + vec2(cos(ang), sin(ang)) * rad;
-        float size = 0.003 + 0.0035 * uAudio.z * live + 0.0015 * seed;
+        float size = 0.0045 + 0.004 * uAudio.z * live + 0.002 * seed;
         float dd = length(p - pp);
         float b = exp(-dd * dd / (size * size));
         float k = mod(fi, 5.0);
         vec3 pc = k < 1.0 ? cobalt : k < 2.0 ? violet : k < 3.0 ? emerald : k < 4.0 ? silver : champagne;
         float sparkle = 0.55 + 0.45 * sin(uPortalTime * (3.0 + seed * 4.0) + fi * 2.3);
-        col += pc * b * (0.35 + 0.65 * sparkle * (0.4 + uAudio.z * live)) * uPortal;
+        col += pc * b * (0.55 + 0.9 * sparkle * (0.4 + uAudio.z * live)) * uPortal;
       }
     }
     // around the portal the liquid is fully present, whatever the section — the portal is a window
