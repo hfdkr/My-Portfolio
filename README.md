@@ -1,6 +1,7 @@
 # Hafid Karkouch — Portfolio (v4, "Liquid chrome")
 
-A cinematic, fast personal site in English, French and Arabic (full RTL), with designed night and day themes.
+A cinematic, fast personal site in English and French, with designed night and day themes, and a quiet Amazigh
+signature: the ⵣ in the mark and a few words in Tifinagh.
 The signature is a procedural liquid-metal surface that lives behind the whole page and changes mood with each section.
 
 ## The liquid
@@ -51,10 +52,22 @@ It quotes no existing piece (no copyrighted recording or composition is used) an
 - **Respectful by default**: no sound before the visitor presses Play (no AudioContext is even created); if the
   browser still blocks audio, a short message says to press Play. Volume, mute and "was on" are remembered — on the
   next visit the player *offers* to resume, it never starts by itself. Also in the command menu and the terminal
-  (`music on | off`). Fully translated, RTL-aware, both themes.
+  (`music on | off`). Translated (EN/FR), both themes.
 
-**Using a licensed recording instead**: put the file in `public/audio/`, set `file` and `credit` in
-`src/data/music.js`. If the file is missing or fails, the live score takes over automatically.
+**Your MP3**: put it at **`public/audio/soundtrack.mp3`** (or change `file` in `src/data/music.js`), and fill
+`fileTitle` / `credit` there. It is only downloaded when the visitor turns the sound on. If the file is missing or
+cannot play, the live score above takes over automatically — nothing breaks.
+
+### The Sound Portal
+
+When the visitor turns the sound on (a discreet invitation appears a few seconds in; it never plays by itself),
+a **portal rises out of the liquid** — part of the same shader, not a second canvas: a ring of liquid chrome whose rim
+breathes with the bass and carries waves from the mids and a shimmer from the highs, a calm deep mirror inside with a
+slow nebula, particles in orbit (electric blue, violet, emerald, silver, champagne) that sparkle with the highs, and
+the cursor's vortex bending it. It moves and changes temperament per section (`PORTAL` in `atmospheres.js`):
+mysterious in the hero, calm in About, rhythmic in Skills, strongest in Work, peaceful in Contact, out of the way in
+the CV. Paused, it stays — dormant, slowly turning. The player's visualizer is the same idea in miniature: the
+spectrum wrapped around a ring (no equalizer bars), with the real track position for the MP3.
 
 ## Identity
 
@@ -62,8 +75,13 @@ It quotes no existing piece (no copyrighted recording or composition is used) an
   small surprises; champagne gold for luxury details; coral almost never; pearl for type; steel for secondary text.
   Raw colours (`--cobalt`…) are for graphics, `--accent*` tokens are their WCAG-AA text versions per theme.
 - **Type** — Bricolage Grotesque (display, optical size + weight), Fraunces italic in *chrome ink* (a gradient fixed
-  to the viewport, so it shimmers while scrolling), Geist, Geist Mono; Noto Kufi / Noto Sans Arabic.
-- **Mark** — a ring of liquid metal holding one reflected droplet.
+  to the viewport, so it shimmers while scrolling), Geist, Geist Mono, and Noto Sans Tifinagh for the Tifinagh words.
+- **Mark** — a ring of liquid metal holding ⵣ (yaz), the Amazigh sign, drawn as strokes (crisp at any size, no font
+  needed; also the favicon).
+- **Tifinagh, as identity — not as a translation**: ⴰⴳⴰⴷⵉⵔ (Agadir) beside the coordinates in the hero and in the
+  footer, ⴰⵣⵓⵍ (*azul*, "hello") opening the contact section, ⵜⴰⵎⴰⵣⵉⵖⵜ beside "Amazigh" in the CV, and `azul` in the
+  terminal. Each word is marked `lang="zgh-Tfng"` and translated for screen readers. Set in Noto Sans Tifinagh,
+  checked to render from the webfont on desktop and mobile.
 
 ## Interactive typography
 
@@ -78,7 +96,7 @@ It quotes no existing piece (no copyrighted recording or composition is used) an
 - Each letter takes a hue from the palette by position (cobalt · ultraviolet · emerald · champagne), lifts, grows and
   tilts ±4°; neighbours follow at a third. Fast in, slow out.
 - Hero name: a pointer field (`useLetterField`) — closeness to the cursor drives lift, colour and Bricolage weight.
-- Arabic is never split into letters (that breaks letter joining): each Arabic word reacts as one unit.
+- Joined scripts are never split into letters (that would break letter joining): such words react as one unit.
 - Screen readers get the text once, selection/copy stays clean, keyboard focus sends a wave through link letters,
   touch gets a tap response, reduced motion keeps colour only.
 
@@ -112,7 +130,7 @@ outlined = learning) · Experience & education · Contact.
   tab is hidden. Resizing redraws immediately (no black flash).
 - Mobile: two noise octaves instead of three, 0.4× resolution, a wandering light instead of the pointer.
 - Memory: 240 language/theme switches → JS heap plateaus, DOM node count constant, still one canvas.
-- Self-hosted fonts; the three Latin files the hero needs are preloaded; Arabic fonts load only when Arabic shows.
+- Self-hosted fonts; the three Latin files the hero needs are preloaded; the Tifinagh subset (~18 KB) loads only where Tifinagh shows.
 
 ## Stack
 
@@ -136,7 +154,7 @@ src/
 ├── App.jsx
 ├── liquid/          shader.js (GLSL) · engine.js (WebGL loop) · atmospheres.js (per section, per theme)
 ├── audio/           score.js · instruments.js · engine.js (Web Audio) · levels.js · MusicProvider.jsx (useMusic)
-├── data/            all content in en / fr / ar — resume.js mirrors the CV (public/cv/) exactly
+├── data/            all content in en / fr — resume.js mirrors the CV (public/cv/) exactly
 ├── i18n/ui.js       interface text; *italic* in titles, {interactive} words in paragraphs
 ├── lib/             motion.js (reveals, magnetic, letter field) · commands.js (terminal) · preferences.jsx
 │                    ui.jsx · events.js · easter.js · hooks.js · gsap.js · storage.js
